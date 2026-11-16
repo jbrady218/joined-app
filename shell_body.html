@@ -1,0 +1,20 @@
+<title>Joined</title>
+<style>html,body{margin:0;height:100%;background:#0a2a47}#jl{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;color:#d4af37;font:600 20px Georgia,serif;letter-spacing:.05em}</style>
+</head><body><div id="jl">Joined</div>
+<script>
+(async function(){
+  var SRC='https://raw.githubusercontent.com/jbrady218/joined-app/main/app.html';
+  async function get(u,ms){
+    var c=new AbortController(),t=setTimeout(function(){c.abort()},ms);
+    try{var r=await fetch(u,{cache:'no-store',signal:c.signal});if(!r.ok)throw new Error(r.status);
+      var h=await r.text();if(h.indexOf('<title>Joined</title>')<0||h.indexOf('route();')<0)throw new Error('bad');return h;}
+    finally{clearTimeout(t)}
+  }
+  var html;
+  try{html=await get(SRC,8000)}catch(e){
+    try{html=await get('/app.html',20000)}catch(e2){location.replace('/app.html');return}
+  }
+  document.open();document.write(html);document.close();
+})();
+</script>
+</body></html>
