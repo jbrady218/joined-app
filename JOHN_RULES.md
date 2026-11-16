@@ -5,7 +5,7 @@
 3. Keep checking word meanings in context (audit.js after every build; approve only after review).
 4. Church videos go in the Family section only, nowhere in the scripture reader.
 5. Don't build things he didn't ask for. Don't guess at Firebase or other screens he hasn't shown; work from his screenshots.
-6. Talks: 1996 to today, by the First Presidency, the Twelve, or the RS, YW or Primary general presidencies (no Seventy). Each one verified against its footnotes.
+6. Talks (updated Nov 16): any General Conference talk, 1996 to today, any speaker (Seventies included). Skip talks centered on retired programs or policies (home/visiting teaching, etc.). Two labels: "Quotes this chapter" (verified against the talk's footnotes) and "On this topic" (same ideas, no direct citation).
 7. Zips are numbered (joined-site-6, -7, ...) and unzip into their own matching folder. Always give the Terminal code: cd ~/Downloads/joined-site-N && firebase deploy --only hosting
 8. Study tools panel stays closed until he opens it. The family age choice is remembered.
 9. Keep chat replies short. No notes or summaries in chat; deliver and say in a line or two what changed.
@@ -14,3 +14,5 @@
 12. Don't keep bringing up GitHub or other pending setup steps unprompted.
 13. He wants videos from the Church's YouTube channels only, and kids' videos hidden for Adults.
 14. Whole-verse highlights must look the same as word highlights.
+15. Full histories and bios: only well-documented facts, with sources; say plainly where scholars disagree. Data in history.js.
+16. Shipping: python3 make_app.py, node audit.js, push to main. No zips or Terminal unless a Firebase-side file changes, and tell John first.
