@@ -2282,26 +2282,20 @@ const LD={
  g4:{n:"4. Toward the building",saw:"Other multitudes felt their way toward the great and spacious building. Many drowned in the depths of the fountain, many wandered in strange roads, and a great multitude entered the building (8:31–33).",means:"Those who never seek the path, choosing the pride and approval of the world.",r:["1ne.8:31","1ne.8:32","1ne.8:33"]},
  family:{n:"Lehi's family",saw:"Sariah, Sam and Nephi came when Lehi called and ate the fruit. Laman and Lemuel would not come (8:14–18).",means:"Lehi told this dream because he feared for Laman and Lemuel (8:4, 36–37).",r:["1ne.8:16","1ne.8:18"],term:"lehifamily"}};
 let LD_SEL=null;
+const ART="https://raw.githubusercontent.com/jbrady218/joined-app/main/art/";
+const LD_HIT={waste:'<path d="M0 0 H125 Q95 48 40 68 Q15 76 0 76 Z"/>',guide:'<circle cx="25" cy="40" r="15"/>',
+ field:'<path d="M0 138 Q80 128 135 158 L168 260 H0 Z"/>',river:'<path d="M232 0 L268 0 L258 120 L276 260 L232 260 L242 130 Z"/>',fountain:'<ellipse cx="251" cy="66" rx="18" ry="11"/>',
+ building:'<rect x="276" y="4" width="76" height="78"/>',tree:'<circle cx="200" cy="56" r="36"/>',mists:'<ellipse cx="112" cy="172" rx="62" ry="32"/>'};
+const LD_RING={waste:[45,30,34],guide:[25,40,17],field:[60,205,40],river:[252,170,26],fountain:[251,66,16],building:[314,44,42],tree:[200,56,38],mists:[112,172,40],path:[100,175,30],rod:[150,135,22],g1:[120,150,13],g2:[165,52,13],g3:[222,94,13],g4:[305,150,13],family:[232,28,13]};
 function ldSVG(){
- const hs=(k,inner)=>`<g data-ld="${k}" style="cursor:pointer">${inner}</g>`,on=k=>LD_SEL===k?' stroke="#e2b453" stroke-width="3"':"";
+ const mk=(k,x,y,t,c)=>`<g data-ld="${k}" style="cursor:pointer"><circle cx="${x}" cy="${y}" r="10" fill="${c}" stroke="#fff" stroke-width="1.5"/><text x="${x}" y="${y+4}" fill="#fff" font-size="11" font-weight="700" text-anchor="middle" font-family="sans-serif" pointer-events="none">${t}</text></g>`;
+ const R=LD_SEL&&LD_RING[LD_SEL];
  return `<svg viewBox="0 0 360 260" width="100%" style="display:block;max-width:460px;margin:0 auto;border-radius:12px" role="img" aria-label="Lehi's dream">
- <defs><linearGradient id="ldsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4ead2"/><stop offset="1" stop-color="#e6dcc0"/></linearGradient></defs>
- <rect width="360" height="260" fill="url(#ldsky)"/>
- ${hs("waste",`<path d="M0 0 H120 Q90 40 40 60 Q15 70 0 66 Z" fill="#3a3a44"${on("waste")}/>`)}
- ${hs("guide",`<circle cx="26" cy="24" r="5" fill="#fff"${on("guide")}/><path d="M19 46 Q26 26 33 46 Z" fill="#fff"/>`)}
- ${hs("field",`<path d="M0 150 Q80 130 170 160 L190 260 H0 Z" fill="#b9c99a"${on("field")}/>`)}
- ${hs("river",`<path d="M238 58 C228 110 252 150 236 190 C224 220 240 245 236 260 L262 260 C266 240 252 220 262 190 C276 150 250 110 256 58 Z" fill="#7d7a5c"${on("river")}/>`)}
- ${hs("fountain",`<ellipse cx="247" cy="56" rx="16" ry="7" fill="#6aa8c9"${on("fountain")}/>`)}
- ${hs("path",`<path d="M22 248 C70 210 120 170 192 104" stroke="#d9c79c" stroke-width="9" fill="none" stroke-linecap="round"${LD_SEL==="path"?' style="stroke:#e2b453"':""}/>`)}
- ${hs("rod",`<path d="M30 252 C78 212 128 172 198 108" stroke="#4a4f57" stroke-width="3.5" fill="none" stroke-linecap="round"${LD_SEL==="rod"?' style="stroke:#e2b453"':""}/>`)}
- ${hs("mists",`<g opacity=".8"><ellipse cx="100" cy="182" rx="44" ry="15" fill="#8d8f98"/><ellipse cx="132" cy="166" rx="34" ry="12" fill="#9a9ca5"/><ellipse cx="78" cy="196" rx="28" ry="10" fill="#a2a4ad"/></g>${LD_SEL==="mists"?'<ellipse cx="105" cy="180" rx="60" ry="30" fill="none" stroke="#e2b453" stroke-width="3"/>':""}`)}
- ${hs("tree",`<rect x="201" y="78" width="7" height="34" fill="#6b4f33"/><circle cx="205" cy="70" r="24" fill="#5b7f35"${on("tree")}/><g fill="#fff">${[[193,62],[205,56],[216,66],[198,76],[212,78],[205,68]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="3.2"/>`).join("")}</g>`)}
- ${hs("building",`<g transform="translate(286 20)"><rect width="60" height="62" rx="2" fill="#c9b9a1"${on("building")}/><path d="M-4 0 L30 -14 L64 0 Z" fill="#a8977e"/>${[0,1,2].map(r=>[0,1,2,3].map(c=>`<rect x="${6+c*13}" y="${8+r*17}" width="8" height="10" fill="#7a6a54"/>`).join("")).join("")}<path d="M10 70 q20 8 40 0" stroke="#a8977e" stroke-dasharray="3 4" fill="none"/></g>`)}
- ${hs("g1",`<circle cx="120" cy="150" r="9" fill="#0f2a47"/><text x="120" y="154" fill="#fff" font-size="11" font-weight="700" text-anchor="middle" font-family="sans-serif">1</text>`)}
- ${hs("g2",`<circle cx="176" cy="64" r="9" fill="#0f2a47"/><text x="176" y="68" fill="#fff" font-size="11" font-weight="700" text-anchor="middle" font-family="sans-serif">2</text>`)}
- ${hs("g3",`<circle cx="226" cy="96" r="9" fill="#0f2a47"/><text x="226" y="100" fill="#fff" font-size="11" font-weight="700" text-anchor="middle" font-family="sans-serif">3</text>`)}
- ${hs("g4",`<circle cx="300" cy="150" r="9" fill="#0f2a47"/><text x="300" y="154" fill="#fff" font-size="11" font-weight="700" text-anchor="middle" font-family="sans-serif">4</text>`)}
- ${hs("family",`<circle cx="276" cy="58" r="9" fill="#b08a2e"/><text x="276" y="62" fill="#fff" font-size="10" font-weight="700" text-anchor="middle" font-family="sans-serif">L</text>`)}
+ <rect width="360" height="260" fill="#efe3c4"/><image href="${ART}lehis-dream.webp" x="0" y="0" width="360" height="260" preserveAspectRatio="xMidYMid slice"/>
+ <g fill="#000" fill-opacity="0">${Object.entries(LD_HIT).map(([k,v])=>`<g data-ld="${k}" style="cursor:pointer">${v}</g>`).join("")}</g>
+ <g fill="none" stroke="#000" stroke-opacity="0" stroke-linecap="round"><path data-ld="path" d="M22 247 C70 210 120 170 192 96" stroke-width="20" style="cursor:pointer"/><path data-ld="rod" d="M26 249 C74 212 124 172 196 98" stroke-width="7" style="cursor:pointer"/></g>
+ ${R?`<circle cx="${R[0]}" cy="${R[1]}" r="${R[2]}" fill="none" stroke="#e2b453" stroke-width="3.5" pointer-events="none"/>`:""}
+ ${mk("g1",120,150,"1","#0f2a47")}${mk("g2",165,52,"2","#0f2a47")}${mk("g3",222,94,"3","#0f2a47")}${mk("g4",305,150,"4","#0f2a47")}${mk("family",232,28,"L","#b08a2e")}
  </svg>`;}
 function ldInfo(){if(!LD_SEL)return `<p class="muted" style="font-size:13px;margin:8px 0 0">Tap any part of the picture, or a name below.</p>`;const x=LD[LD_SEL];
  return `<div class="lang-flag" style="margin:10px 0 0"><b>${esc(x.n)}</b><p style="margin:6px 0 0"><i>What Lehi saw:</i> ${esc(x.saw)}</p><p style="margin:6px 0 0"><i>What it means:</i> ${esc(x.means)}</p>
@@ -2351,11 +2345,12 @@ const NV=[
  {era:"The latter days",t:"Two churches",ic:"two",r:"14:1–17",refs:["1ne.14:10","1ne.14:12","1ne.14:14"],d:"There are “save two churches only”: the church of the Lamb of God and the church of the devil. The Lamb's church was few in number, but Nephi saw the power of the Lamb descend upon the Saints, “armed with righteousness and with the power of God in great glory.”",lehi:null},
  {era:"The latter days",t:"John will write the rest",ic:"scroll",r:"14:18–30",refs:["1ne.14:20","1ne.14:27","1ne.14:28"],d:"Nephi saw a man in a white robe: John, one of the Twelve Apostles, who would write the rest, including the end of the world. Nephi was forbidden to write more and said he had written “but a small part” of what he saw.",lehi:null}];
 let NV_I=0;
+const NV_IMG={0:"nv01",1:"nv02",2:"nv03",3:"nv04",4:"nv05",5:"nv06",6:"nv07",7:"nv08",8:"nv09",10:"nv11",11:"nv12",12:"nv13",13:"nv14",14:"nv15"};
 function nvIcon(k){return `<svg viewBox="0 0 120 80" width="100%" style="max-width:300px;display:block;margin:0 auto;border-radius:12px;background:#0f2a47"><g fill="none" stroke="#e2b453" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">${NV_ICON[k]}</g></svg>`;}
 function nvStage(){const s=NV[NV_I];const eras=[...new Set(NV.map(x=>x.era))];
  return `<div class="sec"><div style="display:flex;gap:4px;margin-bottom:8px">${eras.map(e=>`<span style="flex:1;text-align:center;font:600 10.5px var(--sans);padding:4px 2px;border-radius:6px;${e===s.era?"background:#0f2a47;color:#f4dfa0":"background:var(--line);color:var(--muted)"}">${e}</span>`).join("")}</div>
   <div style="display:flex;gap:5px;overflow-x:auto;padding-bottom:4px">${NV.map((x,i)=>`<button class="chip" data-nv="${i}" style="min-width:34px;${i===NV_I?"background:#0f2a47;color:#fff;border-color:transparent":""}">${i+1}</button>`).join("")}</div></div>
- <div class="sec">${nvIcon(s.ic)}</div>
+ <div class="sec">${NV_IMG[NV_I]?`<img src="${ART}${NV_IMG[NV_I]}.webp" alt="" style="display:block;width:100%;max-width:460px;margin:0 auto;aspect-ratio:3/2;object-fit:cover;border-radius:12px;background:#0f2a47" onerror="this.outerHTML=nvIcon('${s.ic}')">`:nvIcon(s.ic)}</div>
  <div class="sec"><h3>${NV_I+1}. ${esc(s.t)} · 1 Nephi ${s.r}</h3><p>${esc(s.d)}</p>
   <div class="row" style="margin-top:6px">${s.refs.map(r=>`<button class="chip" data-goto='{"type":"verse","ref":"${r}"}'>${refLabel(r)}</button>`).join("")}${s.lehi?`<button class="chip" data-nvlehi="${s.lehi}">In Lehi’s dream</button>`:""}</div>
   <div style="display:flex;justify-content:space-between;margin-top:12px"><button class="btn" data-nv="${Math.max(0,NV_I-1)}" ${NV_I===0?"disabled":""}>‹ Back</button><button class="btn" data-nv="${Math.min(NV.length-1,NV_I+1)}" ${NV_I===NV.length-1?"disabled":""}>Next ›</button></div></div>`;}
