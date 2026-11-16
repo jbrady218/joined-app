@@ -1,3 +1,4 @@
+const ART="https://raw.githubusercontent.com/jbrady218/joined-app/main/art/";
 // Book of Mormon visual guides. Each opens from a tappable word or a button in the chapter.
 // ---------- The allegory of the olive tree (Jacob 5) ----------
 const OL_STEPS=[
@@ -73,7 +74,7 @@ const OL_KEY=`<div style="display:flex;flex-wrap:wrap;gap:10px 14px;font-size:12
  <span><span style="display:inline-block;width:9px;height:9px;background:#0f2a47;border-radius:50%;vertical-align:middle"></span> servants</span></div>`;
 function olStage(){const s=OL_STEPS[OL_I];
  return `<div class="sec"><div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:4px">${OL_STEPS.map((x,i)=>`<button class="chip" data-olstep="${i}" aria-pressed="${i===OL_I}" style="${i===OL_I?"background:var(--navy,#0f2a47);color:#fff;border-color:transparent":""}">${i+1}</button>`).join("")}</div></div>
-  <div class="sec">${olSVG(s)}${OL_KEY}</div>
+  <div class="sec"><img src="${ART}olive${OL_I+1}.webp" alt="" style="display:block;width:100%;max-width:520px;margin:0 auto;aspect-ratio:3/2;object-fit:cover;border-radius:12px;background:#efe3c4" onerror="this.outerHTML=olSVG(OL_STEPS[OL_I])+OL_KEY"></div>
   <div class="sec"><h3>${OL_I+1}. ${esc(s.t)} · Jacob ${s.r}</h3><p>${esc(s.what)}</p></div>
   <div class="sec"><h3>What it means</h3><p>${esc(s.means)}</p>
   <div class="row" style="margin-top:6px">${s.refs.map(r=>`<button class="chip" data-goto='{"type":"verse","ref":"jacob.${r}"}'>Jacob ${r}</button>`).join("")}</div>
@@ -336,7 +337,6 @@ const LD={
  g4:{n:"4. Toward the building",saw:"Other multitudes felt their way toward the great and spacious building. Many drowned in the depths of the fountain, many wandered in strange roads, and a great multitude entered the building (8:31–33).",means:"Those who never seek the path, choosing the pride and approval of the world.",r:["1ne.8:31","1ne.8:32","1ne.8:33"]},
  family:{n:"Lehi's family",saw:"Sariah, Sam and Nephi came when Lehi called and ate the fruit. Laman and Lemuel would not come (8:14–18).",means:"Lehi told this dream because he feared for Laman and Lemuel (8:4, 36–37).",r:["1ne.8:16","1ne.8:18"],term:"lehifamily"}};
 let LD_SEL=null;
-const ART="https://raw.githubusercontent.com/jbrady218/joined-app/main/art/";
 const LD_HIT={waste:'<path d="M0 0 H125 Q95 48 40 68 Q15 76 0 76 Z"/>',guide:'<circle cx="25" cy="40" r="15"/>',
  field:'<path d="M0 138 Q80 128 135 158 L168 260 H0 Z"/>',river:'<path d="M232 0 L268 0 L258 120 L276 260 L232 260 L242 130 Z"/>',fountain:'<ellipse cx="251" cy="66" rx="18" ry="11"/>',
  building:'<rect x="276" y="4" width="76" height="78"/>',tree:'<circle cx="200" cy="56" r="36"/>',mists:'<ellipse cx="112" cy="172" rx="62" ry="32"/>'};
