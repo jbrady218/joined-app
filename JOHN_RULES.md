@@ -16,3 +16,6 @@
 14. Whole-verse highlights must look the same as word highlights.
 15. Full histories and bios: only well-documented facts, with sources; say plainly where scholars disagree. Data in history.js.
 16. Shipping: python3 make_app.py, node audit.js, push to main. No zips or Terminal unless a Firebase-side file changes, and tell John first.
+17. PLANNED (John, Nov 16): when the rest of the Book of Mormon is added, show 3 Nephi side by side with the Bible chapters it parallels (Matthew 5–7, Isaiah 54, Malachi 3–4, etc.), and do the same for the Isaiah chapters in 1–2 Nephi. Keep the helps that make Isaiah easier to understand. Explain where the Book of Mormon wording differs and what scholars say about its Hebrew-like features, accurately and with sources.
+18. On hold to save usage: talks on every chapter. D&C/PGP helps only if usage allows.
+19. Family Come, Follow Me readings run through Dec 27, 2026. The 2027 New Testament readings need adding before then.
