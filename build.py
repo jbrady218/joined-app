@@ -14,7 +14,8 @@ body='''
 <script>const TEXTS=__TEXTS__;const LOGO_MARK="__MARK__";</script>
 <script>__GLOSS__</script>
 <script>__GLOSS2__
-__GLOSS3__</script>
+__GLOSS3__
+__HISTORY__</script>
 <script>__BOOKS__
 __CH2__</script>
 <script>__MAPS__</script>
@@ -25,7 +26,7 @@ __IMPORTER__</script>
 <script>__ACCOUNT__</script>
 <script>__APP__</script>
 '''
-for k,f in [('__TEXTS__','texts.json'),('__GLOSS__','gloss.js'),('__GLOSS2__','gloss2.js'),('__GLOSS3__','gloss3.js'),('__BOOKS__','books.js'),('__CH2__','chapters2.js'),('__MAPS__','maps.js'),('__FAMDATA__','family_data.js'),('__FAMILY__','family.js'),('__LESSON__','lesson.js'),('__IMPORTER__','importer.js'),('__ACCOUNT__','account.js'),('__APP__','app.js')]:
+for k,f in [('__TEXTS__','texts.json'),('__GLOSS__','gloss.js'),('__GLOSS2__','gloss2.js'),('__GLOSS3__','gloss3.js'),('__HISTORY__','history.js'),('__BOOKS__','books.js'),('__CH2__','chapters2.js'),('__MAPS__','maps.js'),('__FAMDATA__','family_data.js'),('__FAMILY__','family.js'),('__LESSON__','lesson.js'),('__IMPORTER__','importer.js'),('__ACCOUNT__','account.js'),('__APP__','app.js')]:
     body=body.replace(k,open(f).read(),1)
 body=body.replace('__ICON__','data:image/png;base64,'+b64('logo/icon128sq.png')).replace('__MARK__','data:image/png;base64,'+b64('logo/mark.png'))
 open('daniel-study.html','w').write(head+body)

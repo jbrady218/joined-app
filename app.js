@@ -388,6 +388,7 @@ function renderPanel(){if(view==="books"){renderBooks();return;}
     h=`<div class="p-head"><h2 class="p-title">${esc(t.name)}</h2><button class="btn p-close" data-close>Close</button></div>
     ${t.say?`<div class="pron"><button class="play" data-say="${P.key}" aria-label="Say it out loud"><svg viewBox="0 0 10 10"><path d="M2 1l7 4-7 4z"/></svg></button><div class="resp">${esc(t.resp)}<em>${t.respLabel||"Tap to hear it"}</em></div></div>`:""}`+tabs("term",[
       ["Definition","Definition",`<div class="sec"><p>${esc(t.plain)}</p></div>${t.bg?`<div class="sec"><h3>Background</h3><p>${esc(t.bg)}</p></div>`:""}`],
+      ...(t.deep?[[t.deep.tab,t.deep.tab,deepHTML(t.deep)]]:[]),
       ...(t.heb?[["Original","Original",`<div class="orig"><span class="heb" ${t.script==="grk"?'dir="ltr" lang="el"':'dir="rtl" lang="he"'}>${t.heb}</span><span><i>${esc(t.tr)}</i> · ${esc(t.lang)}</span>${t.strong?`<span class="chip">Strong's ${t.strong}</span>`:""}</div>${DEFS[P.key]?`<p class="def"><strong>Definition:</strong> ${esc(DEFS[P.key])}</p>`:""}`]]:[]),
       ...(t.w1828?[["1828","1828",`<div class="sec"><p class="w1828">“${esc(t.w1828)}”</p><p class="muted" style="font-size:12.5px">Noah Webster, <i>An American Dictionary of the English Language</i> (1828). This is how the word was used in Joseph Smith's day.</p></div>`]]:[]),
       ...(TERM_MAPS[P.key]?[["Map","Map",`<div class="sec">${mapSVG(TERM_MAPS[P.key])}</div>`]]:[]),
