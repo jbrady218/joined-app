@@ -1,6 +1,6 @@
 // ---- Family Come, Follow Me: a short reading and question for each day, sized for your children's ages ----
 const FAM_AGES=[["Ages 3–7","little"],["Ages 8–11","kids"],["Ages 12–17","teens"],["Adults","adults"]];
-const GL_SLUG={Daniel:"ot/dan",Hosea:"ot/hosea",Joel:"ot/joel",Amos:"ot/amos",Obadiah:"ot/obad",Jonah:"ot/jonah"};
+const GL_SLUG={Daniel:"ot/dan",Hosea:"ot/hosea",Joel:"ot/joel",Amos:"ot/amos",Obadiah:"ot/obad",Jonah:"ot/jonah",Micah:"ot/micah",Nahum:"ot/nahum",Habakkuk:"ot/hab",Zephaniah:"ot/zeph",Haggai:"ot/hag",Zechariah:"ot/zech",Malachi:"ot/mal",Isaiah:"ot/isa",Luke:"nt/luke"};
 // Videos from the Church's own media library, matched to a day's reading. Checked against each video's page.
 // Videos from the Church's own YouTube channels only. Each one checked against the channel that posted it.
 // kids:1 = made for children, so it is not shown to the Adults group.
