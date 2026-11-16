@@ -1,20 +1,66 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0a2a47"><meta name="apple-mobile-web-app-title" content="Joined"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="icon" href="/icon-192.png"><title>Joined</title>
-<style>html,body{margin:0;height:100%;background:#0a2a47}#jl{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;color:#d4af37;font:600 20px Georgia,serif;letter-spacing:.05em}</style>
-</head><body><div id="jl">Joined</div>
+<style>
+html,body{margin:0;height:100%;background:#0a2a47;overflow:hidden}
+#sp{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 42%,#14406b 0%,#0a2a47 60%,#071d33 100%);transition:opacity .45s ease}
+#sp svg{width:min(56vw,250px);height:auto;overflow:visible}
+#sp h1{margin:6px 0 0;font:400 clamp(30px,9vw,44px) Georgia,'Times New Roman',serif;letter-spacing:.14em;color:#e8bd55;opacity:0;transform:translateY(10px);animation:tx .6s ease-out 1.5s forwards}
+#sp p{margin:8px 0 0;font:italic 15px Georgia,serif;color:#cdd7e3;opacity:0;animation:tx .6s ease-out 1.8s forwards}
+.pg{transform-box:view-box;transform-origin:130px 222px;transform:scaleX(0) scaleY(.6);animation:pg .7s cubic-bezier(.2,.8,.3,1) .15s forwards}
+.st{transform-box:view-box;transform-origin:130px 222px;opacity:0;animation:up .65s cubic-bezier(.34,1.7,.6,1) forwards}
+.cd{stroke-dasharray:260;stroke-dashoffset:260;animation:cd .5s ease-out 1.25s forwards}
+.gl{opacity:0;animation:gl 1.2s ease-out 1.3s forwards}
+@keyframes pg{to{transform:none}}
+@keyframes up{0%{opacity:0;transform:translateY(70px) rotate(0) scaleY(.2)}25%{opacity:1}100%{opacity:1;transform:rotate(var(--a)) translateY(0) scaleY(1)}}
+@keyframes cd{to{stroke-dashoffset:0}}
+@keyframes gl{50%{opacity:.55}100%{opacity:.25}}
+@keyframes tx{to{opacity:1;transform:none}}
+@keyframes pu{50%{opacity:.6}}
+#sp.wait svg{animation:pu 1.6s ease-in-out infinite}
+#sp.out{opacity:0}
+@media (prefers-reduced-motion:reduce){.pg,.st,.cd,.gl,#sp h1,#sp p{animation-duration:.01s!important;animation-delay:0s!important}}
+</style>
+</head><body>
+<div id="sp" aria-label="Joined">
+<svg viewBox="0 0 260 250" aria-hidden="true">
+<defs>
+<linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#b8861c"/><stop offset=".45" stop-color="#f6d77a"/><stop offset="1" stop-color="#c99a2e"/></linearGradient>
+<linearGradient id="b" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#f3d27a"/><stop offset="1" stop-color="#a87a18"/></linearGradient>
+<radialGradient id="h"><stop offset="0" stop-color="#ffe9a8"/><stop offset="1" stop-color="#ffe9a8" stop-opacity="0"/></radialGradient>
+</defs>
+<ellipse class="gl" cx="130" cy="120" rx="120" ry="110" fill="url(#h)"/>
+<g>
+<path class="pg" d="M130 222 C108 200 70 196 22 210 L18 222 C64 210 104 214 130 236 Z" fill="url(#b)"/>
+<path class="pg" d="M130 222 C152 200 190 196 238 210 L242 222 C196 210 156 214 130 236 Z" fill="url(#b)"/>
+</g>
+<g id="sk">
+<path class="st" style="--a:-22deg;animation-delay:.55s" d="M121 222 L121 60 L130 44 L139 60 L139 222 Z" fill="url(#g)"/>
+<path class="st" style="--a:22deg;animation-delay:.65s" d="M121 222 L121 60 L130 44 L139 60 L139 222 Z" fill="url(#g)"/>
+<path class="st" style="--a:-11deg;animation-delay:.75s" d="M120 222 L120 40 L130 24 L140 40 L140 222 Z" fill="url(#g)"/>
+<path class="st" style="--a:11deg;animation-delay:.85s" d="M120 222 L120 40 L130 24 L140 40 L140 222 Z" fill="url(#g)"/>
+<path class="st" style="--a:0deg;animation-delay:.95s" d="M119 222 L119 22 L130 4 L141 22 L141 222 Z" fill="url(#g)"/>
+</g>
+<path class="cd" d="M98 160 C116 176 144 176 162 160" fill="none" stroke="#f6d77a" stroke-width="7" stroke-linecap="round"/>
+<path class="cd" d="M100 176 C118 160 142 160 160 176" fill="none" stroke="#d9a93c" stroke-width="7" stroke-linecap="round" style="animation-delay:1.4s"/>
+</svg>
+<h1>Joined</h1>
+<p>They shall become one in thine hand.</p>
+</div>
 <script>
 (async function(){
-  var SRC='https://raw.githubusercontent.com/jbrady218/joined-app/main/app.html';
-  async function get(u,ms){
-    var c=new AbortController(),t=setTimeout(function(){c.abort()},ms);
-    try{var r=await fetch(u,{cache:'no-store',signal:c.signal});if(!r.ok)throw new Error(r.status);
-      var h=await r.text();if(h.indexOf('<title>Joined</title>')<0||h.indexOf('route();')<0)throw new Error('bad');return h;}
-    finally{clearTimeout(t)}
-  }
-  var html;
-  try{html=await get(SRC,8000)}catch(e){
-    try{html=await get('/app.html',20000)}catch(e2){location.replace('/app.html');return}
-  }
+  var SRC='https://raw.githubusercontent.com/jbrady218/joined-app/main/app.html',KEY='/__joined_app',SHOW=3000,t0=Date.now(),sp=document.getElementById('sp');
+  function ok(h){return h&&h.indexOf('<title>Joined</title>')>=0&&h.indexOf('route();')>=0}
+  async function get(u,ms){var c=new AbortController(),t=setTimeout(function(){c.abort()},ms);
+    try{var r=await fetch(u,{cache:'no-store',signal:c.signal});if(!r.ok)throw 0;var h=await r.text();if(!ok(h))throw 0;return h}finally{clearTimeout(t)}}
+  async function cached(){try{var r=await (await caches.open('joined')).match(KEY);if(r){var h=await r.text();if(ok(h))return h}}catch(e){}}
+  function store(h){try{caches.open('joined').then(function(c){c.put(KEY,new Response(h,{headers:{'content-type':'text/html'}}))})}catch(e){}}
+  var fresh=null,fp=get(SRC,15000).then(function(h){fresh=h;store(h);return h},function(){return null});
+  var html=await cached();
+  await new Promise(function(r){setTimeout(r,Math.max(0,SHOW-(Date.now()-t0)))});
+  if(fresh)html=fresh;
+  if(!html){sp.className='wait';html=await fp;
+    if(!html){try{html=await get('/app.html',20000)}catch(e){location.replace('/app.html');return}}}
+  sp.className='out';await new Promise(function(r){setTimeout(r,450)});
   document.open();document.write(html);document.close();
 })();
 </script>
