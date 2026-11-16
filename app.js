@@ -342,6 +342,7 @@ function renderReader(){
   <div class="cols${md==="both"?"":" two"}">`;
   for(let v=1;v<=vcount(bk,ch);v++){
     const ref=MR(bk,ch,v),hl=S.hl[ref],n=notesFor({type:"verse",ref}).length,lb=libRefs(ref).length;
+    if(typeof INLINE_AT!=="undefined"&&INLINE_AT[ref])h+=INLINE_AT[ref]();
     if(ref===ARAMAIC_AT) h+=`<span class="lang-flag">From the middle of this verse to 7:28, Daniel is written in <strong>Aramaic</strong> instead of Hebrew. Tap “Syriack” to learn why.</span>`;
     const num=`<button class="vn" data-v="${ref}" aria-label="Verse ${v} options">${v}</button>`;
     const mk=(n?`<span class="mark" title="${n} note${n>1?"s":""}">✎${n>1?n:""}</span>`:"")+(lb?`<span class="lib-mark" title="Quoted in your books">BOOK</span>`:"")+"";
@@ -398,6 +399,7 @@ function renderPanel(){if(view==="books"){renderBooks();return;}
     const nN=notesFor({type:"term",key:P.key}).length;
     h=`<div class="p-head"><h2 class="p-title">${esc(t.name)}</h2><button class="btn p-close" data-close>Close</button></div>
     ${t.say?`<div class="pron"><button class="play" data-say="${P.key}" aria-label="Say it out loud"><svg viewBox="0 0 10 10"><path d="M2 1l7 4-7 4z"/></svg></button><div class="resp">${esc(t.resp)}<em>${t.respLabel||"Tap to hear it"}</em></div></div>`:""}`+tabs("term",[
+      ...(t.chart?[["Chart","Chart",t.chart()]]:[]),
       ["Definition","Definition",`<div class="sec"><p>${esc(t.plain)}</p></div>${t.bg?`<div class="sec"><h3>Background</h3><p>${esc(t.bg)}</p></div>`:""}`],
       ...(t.deep?[[t.deep.tab,t.deep.tab,deepHTML(t.deep)]]:[]),
       ...(t.heb?[["Original","Original",`<div class="orig"><span class="heb" ${t.script==="grk"?'dir="ltr" lang="el"':'dir="rtl" lang="he"'}>${t.heb}</span><span><i>${esc(t.tr)}</i> · ${esc(t.lang)}</span>${t.strong?`<span class="chip">Strong's ${t.strong}</span>`:""}</div>${DEFS[P.key]?`<p class="def"><strong>Definition:</strong> ${esc(DEFS[P.key])}</p>`:""}`]]:[]),

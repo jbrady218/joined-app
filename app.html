@@ -1918,6 +1918,31 @@ hagoth:{tab:"Bio",secs:[
  ["The voyages",["Many Nephites sailed north with their families and supplies. One ship was never heard of again, and Mormon notes that others too went forth and their fate was unknown (63:6–8)."]]],src:[]}
 };
 Object.keys(DEEP_ALMA).forEach(k=>{TERMS[k].deep=DEEP_ALMA[k];});
+// ---------- Nephite money chart (Alma 11) ----------
+const COINS=[
+ {k:"senine",n:"Senine",m:"gold",v:1},{k:"seon",n:"Seon",m:"gold",v:2},{k:"shum",n:"Shum",m:"gold",v:4},{k:"limnah",n:"Limnah",m:"gold",v:7,note:"Worth all the other gold pieces together (1 + 2 + 4)."},
+ {k:"senum",n:"Senum",m:"silver",v:1},{k:"amnor",n:"Amnor",m:"silver",v:2},{k:"ezrom",n:"Ezrom",m:"silver",v:4},{k:"onti",n:"Onti",m:"silver",v:7,note:"Worth all the other silver pieces together. Zeezrom offered Amulek six of these: 42 days’ pay (11:22)."},
+ {k:"antion",n:"Antion",m:"gold",v:1.5,note:"Worth three shiblons (11:19)."},
+ {k:"shiblon",n:"Shiblon",m:"silver",v:0.5},{k:"shiblum",n:"Shiblum",m:"silver",v:0.25},{k:"leah",n:"Leah",m:"silver",v:0.125}];
+const fmtV=v=>v===0.5?"½":v===0.25?"¼":v===0.125?"⅛":v===1.5?"1½":String(v);
+function coinChart(){
+ const row=c=>`<button class="coin" data-coin="${c.k}" style="display:flex;align-items:center;gap:10px;width:100%;padding:6px 0;background:none;border:0;cursor:pointer;text-align:left;color:var(--ink)">
+  <span style="width:74px;font-weight:600">${c.n}</span>
+  <span style="flex:1;height:14px;border-radius:7px;background:var(--line);overflow:hidden"><span style="display:block;height:100%;width:${Math.max(4,c.v/7*100)}%;background:${c.m==="gold"?"#d4a72c":"#a9b3bf"}"></span></span>
+  <span style="width:34px;text-align:right;font-variant-numeric:tabular-nums">${fmtV(c.v)}</span></button>`;
+ const grp=(t,list)=>`<div class="sec"><h3>${t}</h3>${list.map(row).join("")}</div>`;
+ return `<div class="sec"><p>One senine of gold or one senum of silver bought a measure of barley or other grain, and was a judge’s pay for one day (11:3, 7). Numbers show days’ pay. Tap a coin.</p>
+</div>`+
+  grp("Gold",COINS.filter(c=>c.m==="gold"&&c.v>=1&&c.k!=="antion"))+grp("Silver",COINS.filter(c=>c.m==="silver"&&c.v>=1))+
+  grp("Smaller pieces",COINS.filter(c=>c.v<1||c.k==="antion"));}
+document.addEventListener("click",e=>{
+ const b=e.target.closest("[data-coin]");
+ if(b){const c=COINS.find(x=>x.k===b.dataset.coin);document.querySelectorAll(".coin-info").forEach(x=>x.remove());const el=document.createElement("p");el.className="lang-flag coin-info";el.style.margin="4px 0 10px";b.after(el);if(c){const same=COINS.find(x=>x!==c&&x.v===c.v&&x.v>=1);
+  el.innerHTML=`<b>${c.n}</b> (${c.m}) = ${fmtV(c.v)} ${c.v===1?"day’s":"days’"} pay, or ${fmtV(c.v)} ${c.v===1?"measure":"measures"} of grain.${same?` Same value as one ${same.n.toLowerCase()} of ${same.m}.`:""}${c.note?" "+c.note:""}`;
+  document.querySelectorAll("[data-coin]").forEach(x=>x.style.opacity=x===b?"1":".55");}return;}
+ const t=e.target.closest("[data-term]");if(t&&TERMS[t.dataset.term]&&TERMS[t.dataset.term].chart)TAB.term="Chart";},true);
+TERMS.nephitemoney.chart=coinChart;TERMS.shiblon_money.chart=coinChart;
+const INLINE_AT={"alma.11:3":()=>`<button class="lang-flag" data-term="nephitemoney" style="width:100%;text-align:left;cursor:pointer;color:inherit;font:inherit;font-family:var(--sans)">🪙 <b>Nephite money chart.</b> Tap to see what each gold and silver piece was worth.</button>`};
 </script>
 <script>// Books in the library. Refs everywhere use the form "dan.3:18".
 const BOOKS={
@@ -3394,6 +3419,7 @@ function renderReader(){
   <div class="cols${md==="both"?"":" two"}">`;
   for(let v=1;v<=vcount(bk,ch);v++){
     const ref=MR(bk,ch,v),hl=S.hl[ref],n=notesFor({type:"verse",ref}).length,lb=libRefs(ref).length;
+    if(typeof INLINE_AT!=="undefined"&&INLINE_AT[ref])h+=INLINE_AT[ref]();
     if(ref===ARAMAIC_AT) h+=`<span class="lang-flag">From the middle of this verse to 7:28, Daniel is written in <strong>Aramaic</strong> instead of Hebrew. Tap “Syriack” to learn why.</span>`;
     const num=`<button class="vn" data-v="${ref}" aria-label="Verse ${v} options">${v}</button>`;
     const mk=(n?`<span class="mark" title="${n} note${n>1?"s":""}">✎${n>1?n:""}</span>`:"")+(lb?`<span class="lib-mark" title="Quoted in your books">BOOK</span>`:"")+"";
@@ -3450,6 +3476,7 @@ function renderPanel(){if(view==="books"){renderBooks();return;}
     const nN=notesFor({type:"term",key:P.key}).length;
     h=`<div class="p-head"><h2 class="p-title">${esc(t.name)}</h2><button class="btn p-close" data-close>Close</button></div>
     ${t.say?`<div class="pron"><button class="play" data-say="${P.key}" aria-label="Say it out loud"><svg viewBox="0 0 10 10"><path d="M2 1l7 4-7 4z"/></svg></button><div class="resp">${esc(t.resp)}<em>${t.respLabel||"Tap to hear it"}</em></div></div>`:""}`+tabs("term",[
+      ...(t.chart?[["Chart","Chart",t.chart()]]:[]),
       ["Definition","Definition",`<div class="sec"><p>${esc(t.plain)}</p></div>${t.bg?`<div class="sec"><h3>Background</h3><p>${esc(t.bg)}</p></div>`:""}`],
       ...(t.deep?[[t.deep.tab,t.deep.tab,deepHTML(t.deep)]]:[]),
       ...(t.heb?[["Original","Original",`<div class="orig"><span class="heb" ${t.script==="grk"?'dir="ltr" lang="el"':'dir="rtl" lang="he"'}>${t.heb}</span><span><i>${esc(t.tr)}</i> · ${esc(t.lang)}</span>${t.strong?`<span class="chip">Strong's ${t.strong}</span>`:""}</div>${DEFS[P.key]?`<p class="def"><strong>Definition:</strong> ${esc(DEFS[P.key])}</p>`:""}`]]:[]),
