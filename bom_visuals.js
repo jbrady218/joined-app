@@ -399,7 +399,7 @@ const NV=[
  {era:"The latter days",t:"Two churches",ic:"two",r:"14:1–17",refs:["1ne.14:10","1ne.14:12","1ne.14:14"],d:"There are “save two churches only”: the church of the Lamb of God and the church of the devil. The Lamb's church was few in number, but Nephi saw the power of the Lamb descend upon the Saints, “armed with righteousness and with the power of God in great glory.”",lehi:null},
  {era:"The latter days",t:"John will write the rest",ic:"scroll",r:"14:18–30",refs:["1ne.14:20","1ne.14:27","1ne.14:28"],d:"Nephi saw a man in a white robe: John, one of the Twelve Apostles, who would write the rest, including the end of the world. Nephi was forbidden to write more and said he had written “but a small part” of what he saw.",lehi:null}];
 let NV_I=0;
-const NV_IMG={0:"nv01",1:"nv02",2:"nv03",3:"nv04",4:"nv05",5:"nv06",6:"nv07",7:"nv08",8:"nv09",10:"nv11",11:"nv12",12:"nv13",13:"nv14",14:"nv15"};
+const NV_IMG={0:"nv01",1:"nv02",2:"nv03",3:"nv04",4:"nv05",5:"nv06",6:"nv07",7:"nv08",8:"nv09",9:"nv10",10:"nv11",11:"nv12",12:"nv13",13:"nv14",14:"nv15"};
 function nvIcon(k){return `<svg viewBox="0 0 120 80" width="100%" style="max-width:300px;display:block;margin:0 auto;border-radius:12px;background:#0f2a47"><g fill="none" stroke="#e2b453" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">${NV_ICON[k]}</g></svg>`;}
 function nvStage(){const s=NV[NV_I];const eras=[...new Set(NV.map(x=>x.era))];
  return `<div class="sec"><div style="display:flex;gap:4px;margin-bottom:8px">${eras.map(e=>`<span style="flex:1;text-align:center;font:600 10.5px var(--sans);padding:4px 2px;border-radius:6px;${e===s.era?"background:#0f2a47;color:#f4dfa0":"background:var(--line);color:var(--muted)"}">${e}</span>`).join("")}</div>
