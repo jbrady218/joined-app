@@ -99,3 +99,9 @@ magdalene:{tab:"Bio",secs:[
  src:[]}
 };
 Object.keys(DEEP_NT).forEach(k=>{if(TERMS[k])TERMS[k].deep=DEEP_NT[k];});
+// ---------- New Testament words ----------
+Object.assign(TERMS,{
+easy:G({name:"easy",forms:["easy"],resp:"khray-STOS",say:"khray stoss",heb:"χρηστός",tr:"chrēstos",strong:"G5543",books:["mat"],only:["mat.11"],diff:true,
+ plain:"Kind, good, well-fitting. Not “effortless”: a yoke that is chrēstos fits well and does not rub.",
+ bg:"The same Greek word describes God's kindness: “he is kind unto the unthankful and to the evil” (Luke 6:35). A yoke was carved to fit the neck of a particular ox so it could pull without chafing. Jesus was a carpenter, and the early Christian writer Justin Martyr (about AD 160) says He made ploughs and yokes. Jesus does not promise no burden; He promises a yoke made to fit, shared with Him."})
+});

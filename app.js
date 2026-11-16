@@ -29,7 +29,7 @@ function ensureText(b){if(TEXTS[b])return Promise.resolve(true);if(TEXT_LOAD[b])
   const key="/__text_"+b+"_v1",net=()=>fetch(TEXT_SRC+b+".json",{cache:"no-store"}).then(r=>r.ok?r.json():null).catch(()=>null);
   return TEXT_LOAD[b]=(async()=>{let j=null;try{const r=await (await caches.open("joined")).match(key);if(r)j=await r.json();}catch(e){}
     const save=x=>{try{caches.open("joined").then(c=>c.put(key,new Response(JSON.stringify(x))));}catch(e){}};
-    if(j)net().then(x=>{if(x&&x.kjv){save(x);TEXTS[b]=x;}});else{j=await net();if(j&&j.kjv)save(j);else j=null;}
+    if(j)net().then(x=>{if(x&&(x.kjv||x.std)){save(x);TEXTS[b]=x;}});else{j=await net();if(j&&(j.kjv||j.std))save(j);else j=null;}
     if(j){TEXTS[b]=j;return true;}TEXT_LOAD[b]=null;return false;})();}
 const vtext=(ref,ver)=>{const p=PR(ref);if(!TEXTS[p.b])return "";const V=TEXTS[p.b][ver]?ver:Object.keys(TEXTS[p.b])[0];return TEXTS[p.b][V][p.c][p.v-1];};
 const vcount=(b,c)=>!TEXTS[b]?0:TEXTS[b][Object.keys(TEXTS[b])[0]][c].length;
@@ -102,7 +102,8 @@ function parseRef(q){q=q.trim().toLowerCase().replace(/\.(?=\s|\d|$)/g,"");let b
 function doSearch(q){q=q.trim();const out=[];if(!q)return "";
   const pr=parseRef(q);
   if(pr){(pr.b?[pr.b]:BOOK_ORDER).forEach(b=>{const B=BOOKS[b];if(!B.chs.includes(pr.c))return;
-      if(pr.v&&pr.v<=vcount(b,pr.c)){const ref=MR(b,pr.c,pr.v);out.push(`<button class="sres" data-goto='{"type":"verse","ref":"${ref}"}'><span class="rk">Go to</span><strong>${refLabel(ref)}</strong><span class="rt">${esc(vtext(ref,"kjv"))}</span></button>`);}
+      if(pr.v&&!TEXTS[b]){out.push(`<a class="sres" href="${hashFor(b,pr.c)}"><span class="rk">Go to</span><strong>${chapLabel(b,pr.c)}</strong><span class="rt">Opens the chapter</span></a>`);}
+      else if(pr.v&&pr.v<=vcount(b,pr.c)){const ref=MR(b,pr.c,pr.v);out.push(`<button class="sres" data-goto='{"type":"verse","ref":"${ref}"}'><span class="rk">Go to</span><strong>${refLabel(ref)}</strong><span class="rt">${esc(vtext(ref,"kjv"))}</span></button>`);}
       else if(!pr.v)out.push(`<a class="sres" href="${hashFor(b,pr.c)}"><span class="rk">Go to</span><strong>${chapLabel(b,pr.c)}</strong><span class="rt">${esc(CHAPTERS[CK(b,pr.c)].title)}</span></a>`);});
     if(pr.b&&!BOOKS[pr.b].chs.includes(pr.c))out.push(`<div class="sres"><span class="rk">Coming soon</span><strong>${chapLabel(pr.b,pr.c)}</strong></div>`);}
   const ql=q.toLowerCase();if(ql.length<2)return out.join("");
