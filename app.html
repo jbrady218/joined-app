@@ -2080,6 +2080,62 @@ Object.assign(TERMS,{lehifamily:{name:"Lehi’s family",forms:[],books:["1ne"],m
 ["lehi","sariah","laman","lemuel","sam","nephi","zoram","ishmael"].forEach(k=>{if(TERMS[k])TERMS[k].tabX=LF_TAB;});
 const LF_BAR=()=>`<button class="lang-flag" data-term="lehifamily" style="width:100%;text-align:left;cursor:pointer;color:inherit;font:inherit;font-family:var(--sans)">🌳 <b>Lehi’s family tree.</b> Tap to see who married whom and which peoples came from them.</button>`;
 Object.assign(INLINE_AT,{"1ne.7:6":LF_BAR,"1ne.16:7":LF_BAR,"1ne.18:7":LF_BAR,"2ne.5:6":LF_BAR,"jacob.1:13":LF_BAR});
+// ---------- How the plates fit together (1 Nephi 9; Words of Mormon; Mormon 6; Ether 1) ----------
+const PL_REC={
+ brass:{n:"Plates of brass",c:"#9a6a2a",d:"Laban's record, brought from Jerusalem: the five books of Moses, a history of the Jews down to Zedekiah, prophecies including Jeremiah's, and Lehi's genealogy (1 Nephi 5:10–16). It also held prophets not in our Bible, like Zenos (Jacob 5). It was not abridged as a book, but it is quoted throughout, especially Isaiah in 1 and 2 Nephi.",r:["1ne.5:11","mosiah.1:3"],books:["1ne","2ne","jacob"]},
+ small:{n:"Small plates of Nephi",c:"#c08a1e",d:"Made about thirty years after leaving Jerusalem for “the ministry and the prophecies, the more plain and precious parts” (1 Nephi 19:3; 2 Nephi 5:30–31). Nephi passed them to Jacob, and they went from father to son until Amaleki, with no children, gave them to King Benjamin (Omni 1:25). Mormon included them whole, without abridging, “for a wise purpose” (Words of Mormon 1:6–7).",r:["1ne.9:3","2ne.5:30","omni.1:25","wom.1:7"],books:["1ne","2ne","jacob","enos","jarom","omni"]},
+ large:{n:"Large plates of Nephi",c:"#2f5d8a",d:"The full history of the people: the reigns of kings, wars and contentions (1 Nephi 9:2–4; 19:1–4). Kings and then record keepers added to them for almost a thousand years. Mormon abridged them into the books of Mosiah through 4 Nephi.",r:["1ne.9:4","jacob.1:3"],books:["mosiah","alma","hel","3ne","4ne"]},
+ mormon:{n:"Plates of Mormon",c:"#14365c",d:"The gold plates Mormon made for his abridgment, about AD 385, adding his own account of the Nephites' last wars (Mormon 1–7) and a note explaining the small plates (Words of Mormon). Before the last battle he hid the other records in the hill Cumorah and gave these to his son Moroni (Mormon 6:6).",r:["wom.1:3"],books:["wom","mosiah","alma","hel","3ne","4ne","mormon"]},
+ ether:{n:"Plates of Ether",c:"#6c4f8f",d:"Twenty-four gold plates found by King Limhi's people among the ruins of the Jaredites (Mosiah 8:8–9). King Mosiah translated them (Mosiah 28:11–19), and Moroni later abridged them as the book of Ether.",r:["mosiah.8:9","mosiah.28:11"],books:["ether"]},
+ moroni:{n:"Moroni's writing",c:"#3e7a52",d:"Moroni finished his father's record (Mormon 8–9), abridged the Jaredite record (Ether), wrote his own book (Moroni) and, by Joseph Smith's account, the title page. His last words were written about AD 421 (Moroni 10:1).",r:[],books:["mormon","ether","moroni"]}};
+const PL_BOOKS=[
+ ["1ne","1 Nephi",["small"],"Nephi's small plates, about 600–570 BC. Includes Isaiah 48–49 from the plates of brass."],
+ ["2ne","2 Nephi",["small"],"Nephi's small plates. Includes Isaiah 2–14 and 29 from the plates of brass."],
+ ["jacob","Jacob",["small"],"Jacob, Nephi's brother, on the small plates. Includes Zenos's allegory from the plates of brass."],
+ ["enos","Enos",["small"],"Jacob's son, on the small plates."],
+ ["jarom","Jarom",["small"],"Enos's son, on the small plates."],
+ ["omni","Omni",["small"],"Five keepers in one short book, ending with Amaleki giving the plates to King Benjamin, about 130 BC."],
+ ["wom","Words of Mormon",["mormon"],"Mormon's own note, about AD 385, explaining why he added the small plates. It bridges Omni and Mosiah."],
+ ["mosiah","Mosiah",["large"],"Mormon's abridgment of the large plates, from King Benjamin on."],
+ ["alma","Alma",["large"],"Mormon's abridgment of the large plates."],
+ ["hel","Helaman",["large"],"Mormon's abridgment of the large plates."],
+ ["3ne","3 Nephi",["large"],"Mormon's abridgment of the large plates, including Christ's visit."],
+ ["4ne","4 Nephi",["large"],"Mormon's abridgment of nearly three hundred years of the large plates."],
+ ["mormon","Mormon",["mormon","moroni"],"Chapters 1–7 are Mormon's own account. Chapters 8–9 were written by his son Moroni."],
+ ["ether","Ether",["ether"],"Moroni's abridgment of the twenty-four Jaredite plates."],
+ ["moroni","Moroni",["moroni"],"Moroni's own book, written while he wandered alone."]];
+let PL_SEL=null;
+function plRender(){
+ const sel=PL_SEL&&PL_SEL.t==="rec"?PL_REC[PL_SEL.k]:null;
+ const recBtn=k=>{const r=PL_REC[k],on=PL_SEL&&PL_SEL.t==="rec"&&PL_SEL.k===k;return `<button data-plrec="${k}" style="padding:8px 10px;border-radius:10px;border:2px solid ${r.c};background:${on?r.c:"var(--paper)"};color:${on?"#fff":"var(--ink)"};font:600 13.5px var(--sans);cursor:pointer;text-align:left">${esc(r.n)}</button>`;};
+ const bookRow=([k,n,src,d])=>{const hi=!PL_SEL||(PL_SEL.t==="rec"&&PL_REC[PL_SEL.k].books.includes(k))||(PL_SEL.t==="book"&&PL_SEL.k===k);
+  const bar=src.map(s=>`<span style="flex:1;background:${PL_REC[s].c}"></span>`).join("");
+  const open=PL_SEL&&PL_SEL.t==="book"&&PL_SEL.k===k;
+  return `<button data-plbook="${k}" style="display:flex;align-items:center;gap:10px;width:100%;padding:7px 0;border:0;background:none;cursor:pointer;color:var(--ink);opacity:${hi?1:.3};text-align:left"><span style="display:flex;width:8px;height:26px;border-radius:4px;overflow:hidden;flex-direction:column">${bar}</span><span style="font:600 15px var(--serif,Georgia)">${esc(n)}</span></button>`+
+   (open?`<div class="lang-flag" style="margin:2px 0 8px"><b>${esc(n)}.</b> ${esc(d)}${BOOKS[k]?`<div class="row" style="margin-top:6px"><a class="chip" href="#${k}-1">Read ${esc(n)}</a></div>`:""}</div>`:"");};
+ let info="";
+ if(sel)info=`<div class="lang-flag" style="margin:10px 0 0"><b>${esc(sel.n)}.</b> ${esc(sel.d)}${sel.r.length?`<div class="row" style="margin-top:6px">${sel.r.map(r=>`<button class="chip" data-goto='{"type":"verse","ref":"${r}"}'>${refLabel(r)}</button>`).join("")}</div>`:""}</div>`;
+ 
+ return `<div class="sec"><h3>The records</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">${Object.keys(PL_REC).map(recBtn).join("")}</div>${info}</div>
+ <div class="sec"><h3>The books we have</h3><p class="muted" style="font-size:12.5px;margin:-2px 0 4px">The color shows which record each book comes from.${PL_SEL?` <button class="linkbtn" data-plclear style="font-size:12.5px">Show all</button>`:""}</p>${PL_BOOKS.map(bookRow).join("")}</div>`;}
+function plChart(){
+ return `<div class="sec"><p>The Book of Mormon was put together from several sets of plates. Tap a record to see which books came from it, or tap a book to see where it came from.</p></div>
+ <div id="plwrap">${plRender()}</div>
+ <div class="sec"><h3>What we don't have</h3>
+  <p><b>The book of Lehi.</b> Mormon's abridgment of the large plates from Lehi to King Benjamin. Joseph Smith translated it first, but the 116 manuscript pages were lost in 1828. The Lord had Joseph translate the small plates instead, which cover the same period (D&C 10:38–45).</p>
+  <p><b>The sealed portion.</b> Part of the plates was sealed and not translated. It holds the brother of Jared's great vision (Ether 4:4–7; 2 Nephi 27:7–11).</p>
+  <p><b>The rest of the large plates</b> and the other records Mormon hid in the hill Cumorah (Mormon 6:6).</p></div>
+ <div class="sec"><h3>To Joseph Smith</h3><p>Moroni buried the plates of Mormon. On September 22, 1827, he delivered them to Joseph Smith, who translated them by the gift and power of God. The Book of Mormon was published in March 1830.</p></div>`;}
+document.addEventListener("click",e=>{
+ const r=e.target.closest("[data-plrec]"),b=e.target.closest("[data-plbook]"),c=e.target.closest("[data-plclear]");
+ if(!r&&!b&&!c)return;const k=r?r.dataset.plrec:b?b.dataset.plbook:null;
+ PL_SEL=c?null:(r?(PL_SEL&&PL_SEL.t==="rec"&&PL_SEL.k===k?null:{t:"rec",k}):(PL_SEL&&PL_SEL.t==="book"&&PL_SEL.k===k?null:{t:"book",k}));
+ const w=document.getElementById("plwrap");if(w)w.innerHTML=plRender();});
+Object.assign(TERMS,{plateschart:{name:"How the plates fit together",forms:[],books:["1ne"],more:[],resp:"",say:"",plain:"The sets of plates behind the Book of Mormon, and which books come from each.",bg:"",chart:plChart}});
+const PL_TAB={name:"The plates",html:()=>{PL_SEL=null;return plChart();}};
+["brassplates","plates"].forEach(k=>{if(TERMS[k])TERMS[k].tabX=PL_TAB;});
+const PL_BAR=()=>`<button class="lang-flag" data-term="plateschart" style="width:100%;text-align:left;cursor:pointer;color:inherit;font:inherit;font-family:var(--sans)">📜 <b>How the plates fit together.</b> Tap to see each record and which books came from it.</button>`;
+Object.assign(INLINE_AT,{"1ne.9:2":PL_BAR,"1ne.19:1":PL_BAR,"2ne.5:30":PL_BAR,"jacob.1:1":PL_BAR,"omni.1:25":PL_BAR,"wom.1:3":PL_BAR,"mosiah.1:3":PL_BAR,"mosiah.28:11":PL_BAR});
 </script>
 <script>// Books in the library. Refs everywhere use the form "dan.3:18".
 const BOOKS={
