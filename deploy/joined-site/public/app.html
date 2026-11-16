@@ -2185,6 +2185,45 @@ document.addEventListener("click",e=>{const b=e.target.closest("[data-rk]");if(!
 Object.assign(TERMS,{keeperschart:{name:"Who kept the records",forms:[],books:["omni"],more:[],resp:"",say:"",plain:"The chain of record keepers from Nephi to Moroni.",bg:"",chart:rkChart}});
 const RK_BAR=()=>`<button class="lang-flag" data-term="keeperschart" style="width:100%;text-align:left;cursor:pointer;color:inherit;font:inherit;font-family:var(--sans)">🔗 <b>Who kept the records.</b> Tap to follow the plates from Nephi to Moroni.</button>`;
 Object.assign(INLINE_AT,{"jacob.7:27":RK_BAR,"enos.1:1":RK_BAR,"jarom.1:1":RK_BAR,"omni.1:1":RK_BAR,"wom.1:1":RK_BAR,"mosiah.28:20":RK_BAR,"alma.37:1":RK_BAR,"alma.63:1":RK_BAR});
+// ---------- The Mosiah flashbacks (Mosiah 7–25) ----------
+const MF_LANES={z:["Zarahemla","#2f5d8a"],n:["Zeniff, Noah and Limhi","#a4502f"],a:["Alma's people","#3e7a52"]};
+const MF=[
+ {k:"benjamin",ch:"1–6",bo:1,yr:124,date:"about 124 BC",lane:"z",t:"King Benjamin's address",d:"In Zarahemla, King Benjamin gives his great sermon and makes his son Mosiah king.",r:["mosiah.2:17","mosiah.6:3"]},
+ {k:"ammon",ch:"7–8",bo:2,yr:121,date:"about 121 BC",lane:"z",t:"Ammon finds King Limhi",d:"After three years of peace, King Mosiah lets sixteen strong men, led by a man named Ammon, search for the group that went back to the land of Nephi long before. They find King Limhi and his people in bondage. Limhi tells their story and shows the 24 gold plates his searchers found.",r:["mosiah.7:1","mosiah.7:2","mosiah.8:9"]},
+ {k:"zeniff",jump:"about 80 years",ch:"9–10",bo:3,yr:200,date:"about 200 BC",lane:"n",t:"Zeniff goes back",d:"Here the book jumps back about 80 years, to the record of Zeniff. Over-zealous to inherit the land of their fathers, Zeniff leads a group from Zarahemla back to the land of Nephi. The Lamanite king lets them settle, planning to bring them into bondage.",r:["mosiah.9:1","mosiah.9:3"]},
+ {k:"noah",ch:"11–17",bo:4,yr:160,date:"about 160–148 BC",lane:"n",t:"King Noah and Abinadi",d:"Zeniff's son Noah rules in wickedness, supported by heavy taxes and corrupt priests. The prophet Abinadi calls them to repent and is burned to death. One priest, Alma, believes him.",r:["mosiah.11:2","mosiah.17:2"]},
+ {k:"mormon",ch:"18",bo:5,yr:147,date:"about 147 BC",lane:"a",t:"The waters of Mormon",d:"Alma teaches in secret and baptizes about 204 people at the waters of Mormon, then about 450 flee from Noah's army into the wilderness.",r:["mosiah.18:16","mosiah.18:35"]},
+ {k:"fall",ch:"19–20",bo:6,yr:145.5,date:"about 145 BC",lane:"n",t:"Noah falls, Limhi rules",d:"The Lamanites attack. Noah flees, and his own men put him to death by fire. His son Limhi becomes king under Lamanite rule. Noah's priests hide in the wilderness and kidnap 24 Lamanite daughters, starting a war.",r:["mosiah.19:20","mosiah.20:5"]},
+ {k:"limhi",ch:"21–22",bo:7,yr:144.8,date:"about 145–121 BC",lane:"n",t:"Limhi's bondage and escape",d:"Limhi's people suffer heavy bondage. Searchers sent to find Zarahemla find a land covered with bones instead. Then Ammon arrives, which is where Mosiah 7 left off. Following Gideon's plan, they pay the guards a last tribute of wine and slip away while they sleep, and reach Zarahemla.",r:["mosiah.21:25","mosiah.22:7","mosiah.22:13"]},
+ {k:"helam",jump:"about 25 years, to Alma’s people",ch:"23–24",bo:8,yr:145,date:"about 145–120 BC",lane:"a",t:"Alma's people in Helam",d:"The book jumps back again, to Alma's people. They build the city of Helam, but Lamanites and Amulon, one of Noah's old priests, put them in bondage. The Lord makes their burdens light, then leads them away while their guards sleep, to Zarahemla.",r:["mosiah.23:19","mosiah.24:15","mosiah.24:21"]},
+ {k:"reunion",ch:"25",bo:9,yr:120,date:"about 120 BC",lane:"z",t:"Everyone together",d:"All three groups are now in Zarahemla. King Mosiah reads the records of Zeniff and of Alma to the people, which is how chapters 9–24 came to be in his record. Alma baptizes Limhi and his people and organizes the Church.",r:["mosiah.25:5","mosiah.25:6","mosiah.25:18"]},
+ {k:"after",ch:"26–29",bo:10,yr:119,date:"about 120–91 BC",lane:"z",t:"A new generation",d:"Alma's son and the sons of Mosiah fight the Church until an angel stops them. The sons of Mosiah leave to preach to the Lamanites, and the people choose judges instead of kings.",r:["mosiah.27:11","mosiah.29:44"]}];
+let MF_MODE="book";
+function mfList(){
+ const list=MF.slice().sort(MF_MODE==="book"?(a,b)=>a.bo-b.bo:(a,b)=>a.yr<b.yr?1:a.yr>b.yr?-1:a.bo-b.bo);
+ let out="",prev=null;
+ list.forEach(e=>{const L=MF_LANES[e.lane];
+  if(MF_MODE==="book"&&e.jump)out+=`<div style="margin:2px 0 6px 18px;font:600 12px var(--sans);color:#a4502f">↩ The book jumps back ${e.jump}</div>`;
+  out+=`<button data-mf="${e.k}" style="display:flex;gap:10px;align-items:stretch;width:100%;padding:0;margin:0 0 6px;border:0;background:none;cursor:pointer;text-align:left;color:var(--ink)">
+   <span style="width:6px;border-radius:3px;background:${L[1]}"></span>
+   <span style="flex:1;padding:6px 0"><span style="display:block;font:600 12px var(--sans);color:var(--muted)">Mosiah ${e.ch} · ${e.date}</span><span style="display:block;font:600 15.5px var(--serif,Georgia)">${esc(e.t)}</span></span></button>`;
+  prev=e;});
+ return out;}
+function mfChart(){
+ return `<div class="sec"><p>Mosiah tells three groups' stories, and it doesn't tell them in order. Chapters 9–24 are older records that Limhi and Alma brought to Zarahemla. Switch between the order in the book and the order things happened, and tap any event.</p>
+  <div style="display:flex;flex-wrap:wrap;gap:8px 14px;font-size:12.5px;color:var(--muted);margin-top:6px">${Object.values(MF_LANES).map(([n,c])=>`<span><span style="display:inline-block;width:10px;height:10px;background:${c};border-radius:3px"></span> ${n}</span>`).join("")}</div></div>
+  <div class="sec"><div class="seg" role="group" style="display:inline-flex"><button data-mfmode="book" aria-pressed="${MF_MODE==="book"}">Order in the book</button><button data-mfmode="time" aria-pressed="${MF_MODE==="time"}">Order it happened</button></div>
+  <div id="mflist" style="margin-top:12px">${mfList()}</div>
+  <p class="muted" style="font-size:12.5px">Dates are approximate, following the dates in the Church's edition of the Book of Mormon.</p></div>`;}
+document.addEventListener("click",e=>{
+ const m=e.target.closest("[data-mfmode]");if(m){MF_MODE=m.dataset.mfmode;document.querySelectorAll("[data-mfmode]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.mfmode===MF_MODE)));const l=document.getElementById("mflist");if(l)l.innerHTML=mfList();return;}
+ const b=e.target.closest("[data-mf]");if(!b)return;const ev=MF.find(x=>x.k===b.dataset.mf);
+ const was=b.nextElementSibling&&b.nextElementSibling.classList.contains("mf-info");document.querySelectorAll(".mf-info").forEach(x=>x.remove());if(was)return;
+ const el=document.createElement("div");el.className="lang-flag mf-info";el.style.margin="0 0 10px 16px";
+ el.innerHTML=`${esc(ev.d)}<div class="row" style="margin-top:6px">${ev.r.map(r=>`<button class="chip" data-goto='{"type":"verse","ref":"${r}"}'>${refLabel(r)}</button>`).join("")}</div>`;b.after(el);});
+Object.assign(TERMS,{mosiahflash:{name:"The Mosiah timeline",forms:[],books:["mosiah"],more:[],resp:"",say:"",plain:"How the stories in Mosiah 7–25 fit together in time.",bg:"",chart:mfChart}});
+const MF_BAR=()=>`<button class="lang-flag" data-term="mosiahflash" style="width:100%;text-align:left;cursor:pointer;color:inherit;font:inherit;font-family:var(--sans)">🕰️ <b>The Mosiah timeline.</b> Mosiah jumps back in time. Tap to see the stories in order.</button>`;
+Object.assign(INLINE_AT,{"mosiah.7:1":MF_BAR,"mosiah.9:1":MF_BAR,"mosiah.18:1":MF_BAR,"mosiah.21:1":MF_BAR,"mosiah.23:1":MF_BAR,"mosiah.25:1":MF_BAR});
 </script>
 <script>// Books in the library. Refs everywhere use the form "dan.3:18".
 const BOOKS={
