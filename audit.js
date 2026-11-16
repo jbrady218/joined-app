@@ -3,6 +3,7 @@
 const {chromium}=require('playwright');const fs=require('fs');
 (async()=>{const b=await chromium.launch();const p=await b.newPage();
 await p.setContent('<body>'+fs.readFileSync('daniel-study.html','utf8')+'</body>');await p.waitForTimeout(300);
+for(const f of fs.readdirSync('texts')){const id=f.replace(/\.json$/,'');await p.evaluate(([id,j])=>{TEXTS[id]=JSON.parse(j);},[id,fs.readFileSync('texts/'+f,'utf8')]);}
 const rows=await p.evaluate(()=>{const o=[];BOOK_ORDER.forEach(b=>BOOKS[b].chs.forEach(c=>{TEXTS[b][Object.keys(TEXTS[b])[0]][c].forEach((v,i)=>{termsAt(b,c,i+1,v).forEach(k=>o.push(`${b}.${c}:${i+1}|${k}|${TERMS[k].plain}`));});}));return o;});
 await b.close();
 const rev=fs.existsSync('reviewed.json')?new Set(JSON.parse(fs.readFileSync('reviewed.json'))):null;

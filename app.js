@@ -24,8 +24,15 @@ const chapLabel=(b,c)=>`${bname(b)} ${c}`;
 const unit=b=>BOOKS[b].unit||"Chapter";
 const isBible=b=>!!BOOKS[b].bible;
 const verOf=b=>isBible(b)?(mode==="both"?"kjv":mode):"std";
-const vtext=(ref,ver)=>{const p=PR(ref);const V=TEXTS[p.b][ver]?ver:Object.keys(TEXTS[p.b])[0];return TEXTS[p.b][V][p.c][p.v-1];};
-const vcount=(b,c)=>TEXTS[b][Object.keys(TEXTS[b])[0]][c].length;
+const TEXT_SRC="https://raw.githubusercontent.com/jbrady218/joined-app/main/texts/",TEXT_LOAD={};
+function ensureText(b){if(TEXTS[b])return Promise.resolve(true);if(TEXT_LOAD[b])return TEXT_LOAD[b];
+  const key="/__text_"+b+"_v1",net=()=>fetch(TEXT_SRC+b+".json",{cache:"no-store"}).then(r=>r.ok?r.json():null).catch(()=>null);
+  return TEXT_LOAD[b]=(async()=>{let j=null;try{const r=await (await caches.open("joined")).match(key);if(r)j=await r.json();}catch(e){}
+    const save=x=>{try{caches.open("joined").then(c=>c.put(key,new Response(JSON.stringify(x))));}catch(e){}};
+    if(j)net().then(x=>{if(x&&x.kjv){save(x);TEXTS[b]=x;}});else{j=await net();if(j&&j.kjv)save(j);else j=null;}
+    if(j){TEXTS[b]=j;return true;}TEXT_LOAD[b]=null;return false;})();}
+const vtext=(ref,ver)=>{const p=PR(ref);if(!TEXTS[p.b])return "";const V=TEXTS[p.b][ver]?ver:Object.keys(TEXTS[p.b])[0];return TEXTS[p.b][V][p.c][p.v-1];};
+const vcount=(b,c)=>!TEXTS[b]?0:TEXTS[b][Object.keys(TEXTS[b])[0]][c].length;
 const vid=ref=>"v-"+ref.replace(/[.:]/g,"-");
 const hashFor=(b,c)=>`#${b}-${c}`;
 (function migrate(){const up=r=>/^\d+:\d+$/.test(r)?"dan."+r:r;let changed=false;
@@ -42,17 +49,16 @@ try{const m=localStorage.getItem(KEY+"-mode");if(m)mode=m;}catch(e){}
 const FORMS={},TREB={};
 BOOK_ORDER.forEach(b=>{const fm={};Object.entries(TERMS).forEach(([k,t])=>{if(t.books.includes(b))t.forms.forEach(f=>fm[f.toLowerCase()]=k);});FORMS[b]=fm;
   const fs=Object.keys(fm).sort((x,y)=>y.length-x.length).map(f=>f.replace(/[.*+?^${}()|[\]\\-]/g,"\\$&"));
-  TREB[b]=new RegExp("\\b("+fs.join("|")+")\\b","gi");});
+  TREB[b]=new RegExp(fs.length?"\\b("+fs.join("|")+")\\b":"(?!x)x","gi");});
 const termsIn=(b,txt)=>[...new Set((txt.match(TREB[b])||[]).map(m=>FORMS[b][m.toLowerCase()]))];
 const termsAt=(b,c,v,txt)=>termsIn(b,txt).map(k=>resolveTerm(b,c,v,k)).filter(Boolean);
-const termsInCh=(b,c)=>[...new Set(TEXTS[b][Object.keys(TEXTS[b])[0]][c].flatMap((t,i)=>termsAt(b,c,i+1,t)))];
+const termsInCh=(b,c)=>!TEXTS[b]?[]:[...new Set(TEXTS[b][Object.keys(TEXTS[b])[0]][c].flatMap((t,i)=>termsAt(b,c,i+1,t)))];
 const LET="abcdefghijklmnop";
 let SEEN=new Set();
 // The blue mark after a word: original language for the Bible, Webster's 1828 for Restoration scripture
 function markFor(b,c,v,t){
   if(b==="dan")return t.heb?((c===1||(c===2&&v<=4)||c>=8)?["H","Hebrew word"]:["A","Aramaic word"]):null;
-  if(b==="mat")return t.heb?["G","Greek word"]:null;
-  if(b==="hos"||b==="joel")return t.heb?["H","Hebrew word"]:null;
+  if(BOOKS[b]&&BOOKS[b].bible)return t.heb?(BOOKS[b].lang==="grk"?["G","Greek word"]:["H","Hebrew word"]):null;
   return t.w1828?["W","Webster's 1828 dictionary"]:null;}
 const HLC=[["gold","Yellow"],["orange","Orange"],["red","Red"],["rose","Pink"],["purple","Purple"],["blue","Blue"],["teal","Teal"],["green","Green"],["brown","Brown"],["gray","Gray"]];
 function linkTerms(txt,fn,b,c,v,ver){const ref=MR(b,c,v);const col=new Array(txt.length).fill("");
@@ -88,7 +94,8 @@ function recentHTML(){const it=recentItems();if(!it.length)return `<p class="mut
       return `<button class="ritem" data-goto='${esc(JSON.stringify(n.target))}'><span class="rk">Note · ${esc(ref)}</span><span class="rt">${esc((n.text||n.links.map(l=>l.title).join(", ")).slice(0,140))}</span></button>`;}
     if(x.kind==="mark")return `<button class="ritem" data-goto='{"type":"verse","ref":"${x.m.ref}"}'><span class="rk">Highlight · ${refLabel(x.m.ref)}</span><span class="rt"><mark class="mk mk-${x.m.color}">${esc(x.txt)}</mark></span></button>`;
     const vt=vtext(x.ref,"kjv");return `<button class="ritem" data-goto='{"type":"verse","ref":"${x.ref}"}'><span class="rk">Highlight · ${refLabel(x.ref)}</span><span class="rt"><mark class="mk mk-${x.col}">${esc(vt.slice(0,120))}${vt.length>120?"…":""}</mark></span></button>`;}).join("");}
-const BOOK_ALIASES={dan:["daniel","dan","dn"],hos:["hosea","hos","ho"],joel:["joel","jl"],mat:["matthew","matt","mat","mt"],"1ne":["1 nephi","1 ne","1ne","1nephi","1 nep"],dc:["d&c","doctrine and covenants","dc","d & c"],abr:["abraham","abr"]};
+const BOOK_ALIASES_BASE={dan:["daniel","dan","dn"],hos:["hosea","hos","ho"],joel:["joel","jl"],mat:["matthew","matt","mat","mt"],"1ne":["1 nephi","1 ne","1ne","1nephi","1 nep"],dc:["d&c","doctrine and covenants","dc","d & c"],abr:["abraham","abr"]};
+const BOOK_ALIASES=Object.assign({},BOOK_ALIASES_BASE,typeof MORE_ALIASES!=="undefined"?MORE_ALIASES:{});
 function parseRef(q){q=q.trim().toLowerCase().replace(/\.(?=\s|\d|$)/g,"");let b=null,rest=q;
   for(const [k,al] of Object.entries(BOOK_ALIASES))for(const a of al){if(q.startsWith(a+" ")||q===a||(q.startsWith(a)&&/\d/.test(q[a.length]||""))){if(!b||a.length>rest.len){b=k;rest=Object.assign(new String(q.slice(a.length).trim()),{len:a.length});}}}
   const m=String(rest).match(/^(\d{1,3})(?:\s*:\s*(\d{1,3}))?$/);if(!m)return null;return {b,c:+m[1],v:m[2]?+m[2]:0};}
@@ -115,7 +122,8 @@ const VOLUMES=[
  {id:"dc",n:"Doctrine and Covenants",books:"Doctrine and Covenants|Official Declarations"},
  {id:"pgp",n:"Pearl of Great Price",books:"Moses|Abraham|Joseph Smith—Matthew|Joseph Smith—History|Articles of Faith"}];
 // Which listed book is readable here, and how many chapters it has in all
-const READY={"Daniel":["dan",12],"Hosea":["hos",14],"Joel":["joel",3],"Matthew":["mat",28],"1 Nephi":["1ne",22],"Doctrine and Covenants":["dc",138],"Abraham":["abr",5]};
+const READY_BASE={"Daniel":["dan",12],"Hosea":["hos",14],"Joel":["joel",3],"Matthew":["mat",28],"1 Nephi":["1ne",22],"Doctrine and Covenants":["dc",138],"Abraham":["abr",5]};
+const READY=Object.assign({},READY_BASE,typeof MORE_READY!=="undefined"?MORE_READY:{});
 const ICO={topics:`<svg viewBox="0 0 24 24"><path d="M4 6h7v7H4zM13 6h7v4h-7zM13 12h7v7h-7zM4 15h7v4H4z"/></svg>`,teach:`<svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3z"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>`,lesson:`<svg viewBox="0 0 24 24"><path d="M4 5h16v11H4z"/><path d="M8 20h8M12 16v4M7 9h6M7 12h9"/></svg>`,book:`<svg viewBox="0 0 24 24"><path d="M5 4h10a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h10"/></svg>`};
 function homeFoot(){return `<footer class="h-foot"><div class="foot-row"><p><strong>Free for everyone.</strong> If this site helps your study, a small gift keeps it running.</p><button class="btn donate-btn" disabled title="Connect a Ko-fi, Buy Me a Coffee or PayPal link here">Donate</button></div>
     <button class="linkbtn" data-tour style="align-self:flex-start">How to use Joined</button>
@@ -192,6 +200,8 @@ function route(){let h=location.hash;if(/^#import=/.test(h)){takeSharedLink();re
   if(PENDING&&view==="read"){panelView=PENDING;PENDING=null;}
   document.body.classList.toggle("on-home",view!=="read");renderTop();
   if(view!=="read"){({home:renderHome,family:()=>{FAM_OFF=0;renderFamily();},books:renderBooks,topics:renderTopics,prepare:renderPrepare,volume:()=>renderVolume(volId),buildpick:renderBuildPick,buildgroup:()=>renderBuildGroup(buildGroup),build:()=>{LADD=null;LEDIT=null;renderBuild(buildKey,buildLesson);}})[view]();$("#panel").classList.remove("open");}
+  else if(!TEXTS[bk]){$("#panel").classList.remove("open");$("#reader").innerHTML=`<div class="page"><p class="muted" style="padding:48px 0;text-align:center">Loading ${esc(bname(bk))}…</p></div>`;
+    const want=bk;ensureText(bk).then(ok=>{if(view!=="read"||bk!==want)return;if(ok)route();else $("#reader").innerHTML=`<div class="page"><p class="muted" style="padding:48px 0;text-align:center">Couldn’t load ${esc(bname(bk))}. Check your connection and try again.</p></div>`;});}
   else{renderReader();renderPanel();}
   if(typeof SWIPE_DIR!=="undefined"&&SWIPE_DIR&&view==="read"){const r=$("#reader");r.classList.remove("sw-l","sw-r");void r.offsetWidth;r.classList.add(SWIPE_DIR>0?"sw-r":"sw-l");SWIPE_DIR=0;}
   renderLBar();const vEl=view==="read"&&panelView.type==="verse"&&document.getElementById(vid(panelView.ref));if(vEl)vEl.scrollIntoView({block:"center"});else window.scrollTo(0,0);}
@@ -325,9 +335,9 @@ function renderTop(){
 function renderReader(){
   const C=CHAPTERS[CK(bk,ch)],B=BOOKS[bk],bib=isBible(bk),md=bib?mode:"std",ver=verOf(bk);const fns=[];SEEN=new Set();
   const verLabel=bib?(mode==="kjv"?"KING JAMES VERSION":mode==="web"?"WORLD ENGLISH BIBLE":"KJV · WEB"):"";
-  const hint=bk==="dan"?`or a blue <sup class="ol">H</sup> for the original Hebrew or Aramaic`:(bk==="hos"||bk==="joel")?`or a blue <sup class="ol">H</sup> for the original Hebrew`:bk==="mat"?`or a blue <sup class="ol">G</sup> for the original Greek`:`or a blue <sup class="ol">W</sup> to see what a word meant in Joseph Smith's day (Webster's 1828 dictionary)`;
+  const hint=bk!=="dan"&&B.bible?(B.lang==="grk"?`or a blue <sup class="ol">G</sup> for the original Greek`:`or a blue <sup class="ol">H</sup> for the original Hebrew`):bk==="dan"?`or a blue <sup class="ol">H</sup> for the original Hebrew or Aramaic`:(bk==="hos"||bk==="joel")?`or a blue <sup class="ol">H</sup> for the original Hebrew`:bk==="mat"?`or a blue <sup class="ol">G</sup> for the original Greek`:`or a blue <sup class="ol">W</sup> to see what a word meant in Joseph Smith's day (Webster's 1828 dictionary)`;
   let h=`<div class="page"><div class="runhead"><span>${esc(bname(bk).toUpperCase())} ${ch}</span><span>${verLabel}</span></div>
-  ${ch===B.chs[0]?`<h1 class="book">${B.title}</h1>`:""}<div class="chap-row"><h2 class="chap">${unit(bk).toUpperCase()} ${ch}</h2><button class="hist" data-history aria-label="History and background for ${esc(chapLabel(bk,ch))}" title="History and background">${SCROLL}</button></div><p class="summary">${esc(C.sum)}</p>${CAN_SAVE?"":`<p class="warn">This browser view is blocking saved data, so highlights and notes will disappear when you leave. Open the page in Safari or Chrome to keep them.</p>`}<p class="hint">Tap any verse to highlight it, write a note or link a talk. Tap a footnoted word for its meaning, ${hint}. Words in blue meant something different than they do today. Swipe left or right to change chapters.</p>
+  ${ch===B.chs[0]?`<h1 class="book">${B.title}</h1>`:""}<div class="chap-row"><h2 class="chap">${unit(bk).toUpperCase()} ${ch}</h2><button class="hist" data-history aria-label="History and background for ${esc(chapLabel(bk,ch))}" title="History and background">${SCROLL}</button></div>${C.sum?`<p class="summary">${esc(C.sum)}</p>`:""}${CAN_SAVE?"":`<p class="warn">This browser view is blocking saved data, so highlights and notes will disappear when you leave. Open the page in Safari or Chrome to keep them.</p>`}<p class="hint">Tap any verse to highlight it, write a note or link a talk. Tap a footnoted word for its meaning, ${hint}. Words in blue meant something different than they do today. Swipe left or right to change chapters.</p>
   <div class="cols${md==="both"?"":" two"}">`;
   for(let v=1;v<=vcount(bk,ch);v++){
     const ref=MR(bk,ch,v),hl=S.hl[ref],n=notesFor({type:"verse",ref}).length,lb=libRefs(ref).length;
@@ -377,13 +387,13 @@ function renderPanel(){if(view==="books"){renderBooks();return;}
   } else if(P.type==="history"){
     const C=CHAPTERS[CK(bk,ch)];const names=termsInCh(bk,ch);const T=talksForChapter(bk,ch);
     h=`<div class="p-head"><h2 class="p-title">${SCROLL} ${esc(chapLabel(bk,ch))}</h2><button class="btn p-close" data-close>Close</button></div>`+tabs("history",[
-      ["History","History",`<div class="sec"><span class="chip ex">${esc(C.year)}</span></div><div class="sec">${C.bg.map(p=>`<p>${esc(p)}</p>`).join("")}</div>
+      ["History","History",C.pending?`<div class="sec"><p class="muted">The history and background for this chapter are coming soon.</p></div>`:`<div class="sec"><span class="chip ex">${esc(C.year)}</span></div><div class="sec">${C.bg.map(p=>`<p>${esc(p)}</p>`).join("")}</div>`+`
         <div class="sec"><div class="links"><a href="${glUrl(bk,ch)}" target="_blank" rel="noopener">Read ${esc(chapLabel(bk,ch))} in Gospel Library ↗</a></div></div>`],
       ...(CH_MAPS[CK(bk,ch)]?[["Map","Map",`<div class="sec">${mapSVG(CH_MAPS[CK(bk,ch)])}</div>`]]:[]),
       ["People","People",`<div class="sec"><p class="muted" style="font-size:13px">People, places and words in this chapter.</p><div class="row">${names.map(k=>`<button class="chip" data-term="${k}">${esc(TERMS[k].name)}</button>`).join("")}</div></div>`],
       ["Talks",`Talks <span class="tc">${T.length}</span>`,`<div class="sec">${T.map(x=>talkCard(x,true)).join("")||`<p class="muted">No talks listed yet.</p>`}${talkLinks(chapLabel(bk,ch))}</div>`]]);
   } else if(P.type==="term"){
-    const t=TERMS[P.key];const occ=[];t.books.forEach(b=>BOOKS[b].chs.forEach(c=>{const vs=TEXTS[b][Object.keys(TEXTS[b])[0]][c];vs.forEach((v,vi)=>{if(termsAt(b,c,vi+1,v).includes(P.key))occ.push(MR(b,c,vi+1));});}));
+    const t=TERMS[P.key];const occ=[];t.books.forEach(b=>TEXTS[b]&&BOOKS[b].chs.forEach(c=>{const vs=TEXTS[b][Object.keys(TEXTS[b])[0]][c];vs.forEach((v,vi)=>{if(termsAt(b,c,vi+1,v).includes(P.key))occ.push(MR(b,c,vi+1));});}));
     const nN=notesFor({type:"term",key:P.key}).length;
     h=`<div class="p-head"><h2 class="p-title">${esc(t.name)}</h2><button class="btn p-close" data-close>Close</button></div>
     ${t.say?`<div class="pron"><button class="play" data-say="${P.key}" aria-label="Say it out loud"><svg viewBox="0 0 10 10"><path d="M2 1l7 4-7 4z"/></svg></button><div class="resp">${esc(t.resp)}<em>${t.respLabel||"Tap to hear it"}</em></div></div>`:""}`+tabs("term",[
@@ -408,7 +418,7 @@ function renderPanel(){if(view==="books"){renderBooks();return;}
         ${B.nephi&&B.nephi[c]?`<a class="talk" href="https://www.churchofjesuschrist.org/study/scriptures/bofm/3-ne/${B.nephi[c]}?lang=eng" target="_blank" rel="noopener"><strong>Compare with 3 Nephi ${B.nephi[c]}</strong><span>The risen Savior taught this sermon again at the temple in Bountiful, with some meaningful differences.</span></a>`:""}
         <div class="links"><a href="https://www.biblegateway.com/passage/?search=${q}&version=NIV;ESV;NLT" target="_blank" rel="noopener">NIV, ESV and NLT side by side (Bible Gateway) ↗</a>
         <a href="https://biblehub.com/${B.bh}/${c}-${v}.htm" target="_blank" rel="noopener">Every translation of this verse (Bible Hub) ↗</a>
-        <a href="https://biblehub.com/interlinear/${B.bh}/${c}-${v}.htm" target="_blank" rel="noopener">Word-by-word ${p.b==="mat"?"Greek":p.b==="dan"?"Hebrew/Aramaic":"Hebrew"} interlinear ↗</a></div></div>`]]:[]),
+        <a href="https://biblehub.com/interlinear/${B.bh}/${c}-${v}.htm" target="_blank" rel="noopener">Word-by-word ${BOOKS[p.b].lang==="grk"?"Greek":p.b==="dan"?"Hebrew/Aramaic":"Hebrew"} interlinear ↗</a></div></div>`]]:[]),
       ["Books",`Books${L.length?` <span class="tc">${L.length}</span>`:""}`,`<div class="sec">${L.length?L.slice(0,8).map(({b,r})=>`<div class="lib-snip"><b>${esc(b.title)}${b.sample?" · example":""}</b>${refLine(b,r)}${r.v2?` <span class="muted">(${bname(r.b||"dan")} ${r.c}:${r.v}–${r.v2})</span>`:""}</div>`).join(""):`<p class="muted" style="font-size:13px">None yet. Note where a book you own talks about this verse.</p>`}</div>
         <div class="sec"><h3>Add a book reference</h3>${manualForm(P.ref)}<p style="margin-top:10px"><a href="#books" class="m-link">Scan a book you own, or see all your books →</a></p></div>`]]);
   } else if(P.type==="library"){
@@ -483,7 +493,7 @@ document.addEventListener("click",e=>{
 });
 // ---- My books: references only. The file is read on this device, the verse locations are kept, and the text is thrown away. ----
 const REF=/(?:\b(Daniel|Dan\.?|Dn\.?|Matthew|Matt\.?|Mt\.?|1\s?Nephi|1\s?Ne\.?|Abraham|Abr\.?)|(D&C|D\.\s?&\s?C\.|Doctrine and Covenants))\s+(\d{1,3})\s*:\s*(\d{1,3})(?:\s*[–—-]\s*(\d{1,3}))?/g;
-const refBook=s=>{s=s.toLowerCase().replace(/[.\s]/g,"");return s.startsWith("d")&&(s.includes("&")||s.startsWith("doc"))?"dc":s.startsWith("dan")||s==="dn"?"dan":s.startsWith("ho")?"hos":s.startsWith("joe")||s==="jl"?"joel":s.startsWith("m")?"mat":s.startsWith("1n")?"1ne":s.startsWith("ab")?"abr":null;};
+const refBook=s=>{const q=s.toLowerCase().replace(/\./g,"").trim();for(const [k,al] of Object.entries(BOOK_ALIASES))if(al.includes(q))return k;s=s.toLowerCase().replace(/[.\s]/g,"");return s.startsWith("d")&&(s.includes("&")||s.startsWith("doc"))?"dc":s.startsWith("dan")||s==="dn"?"dan":s.startsWith("ho")?"hos":s.startsWith("joe")||s==="jl"?"joel":s.startsWith("m")?"mat":s.startsWith("1n")?"1ne":s.startsWith("ab")?"abr":null;};
 function findRefs(sections){const out=[];sections.forEach(s=>{const txt=s.text.replace(/\s+/g," ");let m;REF.lastIndex=0;
   while((m=REF.exec(txt))&&out.length<800){const b=refBook(m[1]||m[2]);const c=+m[3],v=+m[4],v2=m[5]?+m[5]:0;if(!b||v<1)continue;
     if(out.some(r=>r.b===b&&r.c===c&&r.v===v&&r.page===s.page&&r.chap===s.chap))continue;
