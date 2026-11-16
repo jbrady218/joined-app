@@ -17,7 +17,8 @@ body='''
 __GLOSS3__
 __HISTORY__
 __NTP__
-__RECHK__</script>
+__RECHK__
+__ALMA__</script>
 <script>__BOOKS__
 __CH2__
 __BMORE__</script>
@@ -29,7 +30,7 @@ __IMPORTER__</script>
 <script>__ACCOUNT__</script>
 <script>__APP__</script>
 '''
-for k,f in [('__TEXTS__','texts.json'),('__GLOSS__','gloss.js'),('__GLOSS2__','gloss2.js'),('__GLOSS3__','gloss3.js'),('__HISTORY__','history.js'),('__NTP__','nt_people.js'),('__RECHK__','recheck.js'),('__BOOKS__','books.js'),('__CH2__','chapters2.js'),('__BMORE__','books_more.js'),('__MAPS__','maps.js'),('__FAMDATA__','family_data.js'),('__FAMILY__','family.js'),('__LESSON__','lesson.js'),('__IMPORTER__','importer.js'),('__ACCOUNT__','account.js'),('__APP__','app.js')]:
+for k,f in [('__TEXTS__','texts.json'),('__GLOSS__','gloss.js'),('__GLOSS2__','gloss2.js'),('__GLOSS3__','gloss3.js'),('__HISTORY__','history.js'),('__NTP__','nt_people.js'),('__RECHK__','recheck.js'),('__ALMA__','alma.js'),('__BOOKS__','books.js'),('__CH2__','chapters2.js'),('__BMORE__','books_more.js'),('__MAPS__','maps.js'),('__FAMDATA__','family_data.js'),('__FAMILY__','family.js'),('__LESSON__','lesson.js'),('__IMPORTER__','importer.js'),('__ACCOUNT__','account.js'),('__APP__','app.js')]:
     body=body.replace(k,open(f).read(),1)
 body=body.replace('__ICON__','data:image/png;base64,'+b64('logo/icon128sq.png')).replace('__MARK__','data:image/png;base64,'+b64('logo/mark.png'))
 open('daniel-study.html','w').write(head+body)

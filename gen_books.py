@@ -81,7 +81,8 @@ BOM=[("2ne","2 Nephi","2-ne","Lehi's last blessings, Nephi's psalm and the doctr
 ("jarom","Jarom","jarom","A short record of prophets, peace and war",["jarom"]),
 ("omni","Omni","omni","Five record keepers and the people of Zarahemla",["omni"]),
 ("wom","Words of Mormon","w-of-m","Mormon joins the small plates to his record",["words of mormon","w of m","wofm","wom"]),
-("mosiah","Mosiah","mosiah","King Benjamin, Abinadi and the people of Alma",["mosiah","mos"])]
+("mosiah","Mosiah","mosiah","King Benjamin, Abinadi and the people of Alma",["mosiah","mos"]),
+("alma","Alma","alma","Alma and Amulek, the sons of Mosiah, Captain Moroni and a father's counsel",["alma","al"])]
 for (i,n,gl,blurb,al) in BOM:
     bb=BOMD[n];std={str(c['chapter']):[v['text'] for v in c['verses']] for c in bb['chapters']}
     json.dump({"std":std},open(f'texts/{i}.json','w'),ensure_ascii=False,separators=(',',':'))
