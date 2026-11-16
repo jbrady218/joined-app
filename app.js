@@ -53,7 +53,7 @@ BOOK_ORDER.forEach(b=>{const fm={};Object.entries(TERMS).forEach(([k,t])=>{if(t.
 const termsIn=(b,txt)=>[...new Set((txt.match(TREB[b])||[]).map(m=>FORMS[b][m.toLowerCase()]))];
 const termsAt=(b,c,v,txt)=>termsIn(b,txt).map(k=>resolveTerm(b,c,v,k)).filter(Boolean);
 const termsInCh=(b,c)=>!TEXTS[b]?[]:[...new Set(TEXTS[b][Object.keys(TEXTS[b])[0]][c].flatMap((t,i)=>termsAt(b,c,i+1,t)))];
-const LET="abcdefghijklmnop";
+const LET="abcdefghijklmnopqrstuvwxyz";
 let SEEN=new Set();
 // The blue mark after a word: original language for the Bible, Webster's 1828 for Restoration scripture
 function markFor(b,c,v,t){
