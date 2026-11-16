@@ -278,3 +278,43 @@ document.addEventListener("click",e=>{
 Object.assign(TERMS,{mosiahflash:{name:"The Mosiah timeline",forms:[],books:["mosiah"],more:[],resp:"",say:"",plain:"How the stories in Mosiah 7–25 fit together in time.",bg:"",chart:mfChart}});
 const MF_BAR=()=>`<button class="lang-flag" data-term="mosiahflash" style="width:100%;text-align:left;cursor:pointer;color:inherit;font:inherit;font-family:var(--sans)">🕰️ <b>The Mosiah timeline.</b> Mosiah jumps back in time. Tap to see the stories in order.</button>`;
 Object.assign(INLINE_AT,{"mosiah.7:1":MF_BAR,"mosiah.9:1":MF_BAR,"mosiah.18:1":MF_BAR,"mosiah.21:1":MF_BAR,"mosiah.23:1":MF_BAR,"mosiah.25:1":MF_BAR});
+// ---------- Kings and judges ----------
+const KJ=[
+ {s:"Kings",items:[
+  {k:"nephi",n:"Nephi",y:"about 588–545 BC",end:"",term:"nephi",d:"The people wanted Nephi as their king. He did not want them to have a king, but he “did for them according to that which was in my power” (2 Nephi 5:18). He was a king in all but name to them.",r:["2ne.5:18"]},
+  {k:"nephis",n:"“Second Nephi, third Nephi…”",y:"about 545–200 BC",end:"",d:"Before he died, Nephi anointed a king. To honor him, the people called each king after him: second Nephi, third Nephi, and so on. Their own names are not given (Jacob 1:9–11).",r:["jacob.1:9","jacob.1:11"]},
+  {k:"mosiah1",n:"Mosiah",y:"date not given",end:"",d:"Warned by the Lord, he led the righteous out of the land of Nephi to Zarahemla. The people there joined his, and he became king over both (Omni 1:12–19).",r:["omni.1:12","omni.1:19"]},
+  {k:"benjamin",n:"Benjamin",y:"until about 124 BC",end:"",d:"Mosiah's son. A holy man who fought off the Lamanites, worked with his own hands and established peace, then gave his great address before passing the kingdom to his son (Words of Mormon 1:13–18; Mosiah 2–6).",r:["wom.1:13","mosiah.2:14","mosiah.6:3"]},
+  {k:"mosiah2",n:"Mosiah",y:"124–91 BC",end:"",term:"mosiah_k",d:"Benjamin's son, the last king. When his sons refused the kingdom, he warned of what a wicked king could do and had the people choose judges by their own voice. He died in the 33rd year of his reign, 509 years after Lehi left Jerusalem (Mosiah 29).",r:["mosiah.29:16","mosiah.29:25","mosiah.29:46"]}]},
+ {s:"Chief judges",note:"The reign of the judges began in 91 BC. Book of Mormon years after this are counted from it.",items:[
+  {k:"alma",n:"Alma the Younger",y:"91–83 BC",end:"resigned",term:"alma2",d:"The first chief judge, and also high priest. In the ninth year he gave up the judgment-seat to preach full-time (Mosiah 29:42; Alma 4:20).",r:["mosiah.29:42","alma.4:20"]},
+  {k:"nephihah",n:"Nephihah",y:"83–68 BC",end:"died",term:"nephihah_j",d:"Chosen by Alma and the voice of the people. He “filled the judgment-seat with perfect uprightness before God” (Alma 50:37).",r:["alma.4:17","alma.50:37"]},
+  {k:"pahoran",n:"Pahoran",y:"68–52 BC",end:"died",term:"pahoran",d:"Nephihah's son. He held to the law against the king-men and answered Moroni's angry letter with meekness (Alma 51; 61).",r:["alma.50:39","alma.61:9"]},
+  {k:"pahoran2",n:"Pahoran",y:"52 BC",end:"murdered",d:"Pahoran's son, chosen over his brothers Paanchi and Pacumeni. Kishkumen murdered him on the judgment-seat. Kishkumen’s secret band was soon led by a man named Gadianton (Helaman 1:1–12; 2:4).",r:[]},
+  {k:"pacumeni",n:"Pacumeni",y:"52–51 BC",end:"killed",d:"Pahoran's brother. He was killed when the Lamanite commander Coriantumr captured Zarahemla (Helaman 1:13–21).",r:[]},
+  {k:"helaman",n:"Helaman",y:"50–39 BC",end:"died",term:"helaman_son",d:"Son of Helaman, keeper of the records. A plot to kill him was stopped by his servant, and Gadianton's band fled (Helaman 2).",r:["alma.63:11"]},
+  {k:"nephi",n:"Nephi",y:"39–30 BC",end:"resigned",d:"Helaman's son. Like Alma, he gave up the judgment-seat to preach, with his brother Lehi (Helaman 5:1–4).",r:[]},
+  {k:"cezoram",n:"Cezoram",y:"30–26 BC",end:"murdered",d:"Murdered “by an unknown hand” on the judgment-seat (Helaman 6:15).",r:[]},
+  {k:"cezoram2",n:"Cezoram's son",y:"26 BC",end:"murdered",d:"Appointed in his father's place and murdered the same year (Helaman 6:15).",r:[]},
+  {k:"seezoram",n:"Seezoram",y:"about 23 BC",end:"murdered",d:"Stabbed by his brother Seantum. Nephi revealed the murder and the murderer by the spirit of prophecy (Helaman 8:27; 9).",r:[]},
+  {k:"lachoneus",n:"Lachoneus",y:"about 1 BC–AD 26",end:"",d:"Chief judge and governor when the sign of Christ's birth was given. He gathered the people into one place to withstand the Gadianton robbers (3 Nephi 1:1; 3).",r:[]},
+  {k:"lachoneus2",n:"Lachoneus",y:"about AD 26–30",end:"murdered",d:"His son. In the thirtieth year after the sign, the chief judge was murdered (3 Nephi 6:19; 7:1).",r:[]}]},
+ {s:"The government falls",items:[
+  {k:"tribes",n:"Tribes",y:"AD 30",end:"",d:"After the chief judge was murdered, the people split into tribes by family and friends, and the government was destroyed. A secret combination made a man named Jacob their king (3 Nephi 7:1–12). The great destruction came about four years later, and then Christ appeared (3 Nephi 8–11).",r:[]}]}];
+const KJ_END={died:["#6b5a3a","died in office"],resigned:["#3e7a52","gave up the seat to preach"],murdered:["#a4302f","murdered"],killed:["#a4302f","killed in war"]};
+function kjChart(){
+ const all=[].concat(...KJ.map(g=>g.items));
+ return `<div class="sec"><p>The Nephites were ruled first by kings, then by judges chosen by the voice of the people. Tap anyone.</p>
+ <div style="display:flex;flex-wrap:wrap;gap:8px 14px;font-size:12.5px;color:var(--muted)">${Object.values(KJ_END).filter((x,i,a)=>a.findIndex(y=>y[1]===x[1])===i).map(([c,t])=>`<span><span style="display:inline-block;width:10px;height:10px;background:${c};border-radius:50%"></span> ${t}</span>`).join("")}</div></div>`+
+ KJ.map(g=>`<div class="sec"><h3>${g.s}</h3>${g.note?`<p class="muted" style="font-size:12.5px;margin:-2px 0 6px">${g.note}</p>`:""}
+  <div style="border-left:3px solid var(--line);margin-left:6px;padding-left:12px">${g.items.map(x=>{const E=KJ_END[x.end];return `<button data-kj="${g.s}|${x.k}" style="position:relative;display:block;width:100%;padding:6px 0;border:0;background:none;cursor:pointer;text-align:left;color:var(--ink)">
+   <span style="position:absolute;left:-19px;top:13px;width:11px;height:11px;border-radius:50%;background:${E?E[0]:"var(--gold,#b08a2e)"};border:2px solid var(--paper)"></span>
+   <span style="display:block;font:600 12px var(--sans);color:var(--muted)">${esc(x.y)}${E?` · ${E[1]}`:""}</span><span style="display:block;font:600 15.5px var(--serif,Georgia)">${esc(x.n)}</span></button>`;}).join("")}</div></div>`).join("")+
+ `<div class="sec"><p class="muted" style="font-size:12.5px">In the land of Nephi, Zeniff's colony had its own kings: Zeniff, Noah and Limhi (Mosiah 9–22). Dates are approximate, following the Church's edition.</p></div>`;}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-kj]");if(!b)return;const [s,k]=b.dataset.kj.split("|");const x=KJ.find(g=>g.s===s).items.find(i=>i.k===k);
+ const was=b.nextElementSibling&&b.nextElementSibling.classList.contains("kj-info");document.querySelectorAll(".kj-info").forEach(z=>z.remove());if(was)return;
+ const el=document.createElement("div");el.className="lang-flag kj-info";el.style.margin="0 0 8px";
+ el.innerHTML=`${esc(x.d)}${x.r.length||(x.term&&TERMS[x.term])?`<div class="row" style="margin-top:6px">${x.r.map(r=>`<button class="chip" data-goto='{"type":"verse","ref":"${r}"}'>${refLabel(r)}</button>`).join("")}${x.term&&TERMS[x.term]?`<button class="chip" data-term="${x.term}">More about ${esc(x.n)}</button>`:""}</div>`:""}`;b.after(el);});
+Object.assign(TERMS,{kingsjudges:{name:"Kings and judges",forms:[],books:["mosiah"],more:[],resp:"",say:"",plain:"The Nephite rulers, from Nephi to the fall of the government in AD 30.",bg:"",chart:kjChart}});
+const KJ_BAR=()=>`<button class="lang-flag" data-term="kingsjudges" style="width:100%;text-align:left;cursor:pointer;color:inherit;font:inherit;font-family:var(--sans)">👑 <b>Kings and judges.</b> Tap to see every Nephite ruler in order.</button>`;
+Object.assign(INLINE_AT,{"2ne.5:18":KJ_BAR,"jacob.1:9":KJ_BAR,"omni.1:19":KJ_BAR,"mosiah.29:1":KJ_BAR,"mosiah.29:44":KJ_BAR,"alma.4:16":KJ_BAR,"alma.50:39":KJ_BAR});

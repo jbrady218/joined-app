@@ -1,3 +1,6 @@
-<script>/* keeps the saved copy of Joined fresh for the next open */
-setTimeout(function(){try{if(!window.caches)return;fetch('https://raw.githubusercontent.com/jbrady218/joined-app/main/app.html',{cache:'no-store'}).then(function(r){return r.ok?r.text():null}).then(function(h){if(h&&h.indexOf('<title>Joined</title>')>=0&&h.indexOf('route();')>=0)caches.open('joined').then(function(c){c.put('/__joined_app',new Response(h,{headers:{'content-type':'text/html'}}))})}).catch(function(){})}catch(e){}},4000);
+<script>/* keeps the saved copy of Joined (and its opening animation) fresh for the next open */
+setTimeout(function(){try{if(!window.caches)return;var R='https://raw.githubusercontent.com/jbrady218/joined-app/main/';
+fetch(R+'app.html',{cache:'no-store'}).then(function(r){return r.ok?r.text():null}).then(function(h){if(h&&h.indexOf('<title>Joined</title>')>=0&&h.indexOf('route();')>=0)caches.open('joined').then(function(c){c.put('/__joined_app',new Response(h,{headers:{'content-type':'text/html'}}))})}).catch(function(){});
+fetch(R+'splash.html',{cache:'no-store'}).then(function(r){return r.ok?r.text():null}).then(function(h){if(h&&h.indexOf('<!--joined-splash-')===0)caches.open('joined').then(function(c){c.put('/__joined_splash',new Response(h,{headers:{'content-type':'text/html'}}))})}).catch(function(){});
+}catch(e){}},4000);
 </script>
