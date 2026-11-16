@@ -2036,6 +2036,50 @@ document.addEventListener("click",e=>{
 Object.assign(TERMS,{olivetree_j5:{name:"The allegory of the olive tree",forms:["tame olive tree","wild olive tree","olive tree","Lord of the vineyard"],books:["jacob"],only:["jacob.5","jacob.6"],more:[],resp:"",say:"",
  plain:"Zenos's allegory of the house of Israel as an olive tree that the Lord tends, scatters, grafts and gathers (Jacob 5).",bg:"Jacob quotes it to show that the Lord “remembereth the house of Israel, both roots and branches” (Jacob 6:4).",chart:olChart}});
 Object.assign(INLINE_AT,{"jacob.5:3":()=>`<button class="lang-flag" data-term="olivetree_j5" style="width:100%;text-align:left;cursor:pointer;color:inherit;font:inherit;font-family:var(--sans)">🫒 <b>See the allegory step by step.</b> Tap to watch the vineyard change and see what each symbol means.</button>`});
+// ---------- Lehi's family (1 Nephi 7, 16, 18; 2 Nephi 1–5; Jacob 1:13) ----------
+const LF={
+ lehi:{n:"Lehi",side:"p",term:"lehi",d:"A prophet in Jerusalem about 600 BC, descended from Joseph of Egypt through Manasseh (Alma 10:3). He led his family into the wilderness and, before he died, blessed each of his children and grandchildren (2 Nephi 1–4).",r:["1ne.1:5","2ne.4:12"]},
+ sariah:{n:"Sariah",side:"p",term:"sariah",d:"Lehi's wife. When her sons came back safely with the plates she said, “Now I know of a surety that the Lord hath commanded my husband” (1 Nephi 5:8). She bore Jacob and Joseph in the wilderness.",r:["1ne.5:8","1ne.18:7"]},
+ laman:{n:"Laman",side:"l",term:"laman",d:"Lehi's oldest son. He married a daughter of Ishmael and often rebelled. His descendants were the Lamanites. Lehi promised that if his grandchildren were cursed, the cursing would be answered upon their parents' heads (2 Nephi 4:6).",r:["1ne.2:5","2ne.4:6"]},
+ lemuel:{n:"Lemuel",side:"l",term:"lemuel",d:"Lehi's second son. Lehi pleaded with him to be “like unto this valley, firm and steadfast” (1 Nephi 2:10). He married a daughter of Ishmael and followed Laman. His descendants were the Lemuelites.",r:["1ne.2:10","2ne.4:8"]},
+ sam:{n:"Sam",side:"n",term:"sam",d:"Lehi's third son. He believed Nephi (1 Nephi 2:17) and married a daughter of Ishmael. Lehi blessed him: “thy seed shall be numbered with his seed” (2 Nephi 4:11), so there were no “Samites.”",r:["1ne.2:17","2ne.4:11"]},
+ nephi:{n:"Nephi",side:"n",term:"nephi",d:"Lehi's fourth son, the record keeper and leader of those who believed. He married a daughter of Ishmael. His followers were called Nephites.",r:["1ne.1:1","1ne.16:7"]},
+ jacob:{n:"Jacob",side:"n",d:"Born in the wilderness, Lehi's “first-born in the days of my tribulation” (2 Nephi 2:1). He was consecrated a priest and teacher and kept the small plates after Nephi. His descendants were the Jacobites.",r:["1ne.18:7","2ne.2:1"]},
+ joseph:{n:"Joseph",side:"n",d:"Lehi's “last-born,” also born in the wilderness (2 Nephi 3:1). Lehi blessed him with the prophecies of Joseph of Egypt. His descendants were the Josephites.",r:["2ne.3:1","2ne.5:26"]},
+ sisters:{n:"Daughters",side:"n",d:"Lehi also had daughters. Nephi says “my sisters” went with him when the family divided (2 Nephi 5:6). Their names and number are not given.",r:["2ne.5:6"]},
+ ishmael:{n:"Ishmael",side:"p",term:"ishmael",d:"A man of Jerusalem whose whole family came into the wilderness with Lehi's (1 Nephi 7:2–5). He died and was buried at Nahom (1 Nephi 16:34).",r:["1ne.7:5","1ne.16:34"]},
+ iwife:{n:"Ishmael's wife",side:"p",d:"Her name is not given. When Laman and Lemuel tied Nephi up to leave him in the wilderness, she was one of those who pleaded for his life (1 Nephi 7:19).",r:["1ne.7:19"]},
+ isons:{n:"Two sons",side:"l",d:"Ishmael's two sons came with their own families. They joined Laman and Lemuel in rebelling (1 Nephi 7:6). Their descendants were the Ishmaelites.",r:["1ne.7:6"]},
+ idau:{n:"Five daughters",side:"m",d:"Ishmael had five daughters: two joined Laman and Lemuel's rebellion and three stayed with Nephi (1 Nephi 7:6). They became the wives of Laman, Lemuel, Sam and Nephi, and the eldest married Zoram (1 Nephi 16:7).",r:["1ne.7:6","1ne.16:7"]},
+ zoram:{n:"Zoram",side:"n",term:"zoram",d:"Laban's servant, who came with Nephi after Nephi swore to him that he would be free (1 Nephi 4:31–37). He married Ishmael's eldest daughter. Lehi called him “a true friend unto my son, Nephi, forever” (2 Nephi 1:30). His descendants were the Zoramites.",r:["1ne.4:35","2ne.1:30"]}};
+const LF_PEOPLES=[["Nephites","n","nephi"],["Jacobites","n","jacob"],["Josephites","n","joseph"],["Zoramites","n","zoram"],["Lamanites","l","laman"],["Lemuelites","l","lemuel"],["Ishmaelites","l","isons"]];
+function lfChip(k){const p=LF[k],c=p.side==="n"?"#2f5d8a":p.side==="l"?"#a4502f":p.side==="m"?"#7a5c8f":"#6b5a3a";
+ return `<button data-lf="${k}" style="flex:1 1 auto;min-width:72px;padding:8px 10px;border-radius:10px;border:1.5px solid ${c};background:var(--paper);color:var(--ink);font:600 14px var(--sans);cursor:pointer;text-align:center">${esc(p.n)}</button>`;}
+function lfGroup(title,ks,note){return `<div class="sec" data-lfgroup><h3>${title}</h3>${note?`<p class="muted" style="font-size:12.5px;margin:-2px 0 6px">${note}</p>`:""}<div style="display:flex;flex-wrap:wrap;gap:8px">${ks.map(lfChip).join("")}</div></div>`;}
+function lfChart(){
+ return `<div class="sec"><p>Who came with Lehi, who married whom, and which peoples came from them. Tap anyone.</p>
+  <div style="display:flex;flex-wrap:wrap;gap:10px 16px;font-size:12.5px;color:var(--muted)"><span><span style="display:inline-block;width:10px;height:10px;border:2px solid #2f5d8a;border-radius:3px"></span> went with Nephi</span><span><span style="display:inline-block;width:10px;height:10px;border:2px solid #a4502f;border-radius:3px"></span> went with Laman</span><span><span style="display:inline-block;width:10px;height:10px;border:2px solid #7a5c8f;border-radius:3px"></span> some each way</span></div></div>`+
+  lfGroup("Lehi and Sariah",["lehi","sariah"])+
+  lfGroup("Their children",["laman","lemuel","sam","nephi","jacob","joseph","sisters"],"Oldest to youngest. Jacob and Joseph were born in the wilderness.")+
+  lfGroup("Ishmael's family",["ishmael","iwife","isons","idau"])+
+  lfGroup("Laban's servant",["zoram"])+
+  `<div class="sec"><h3>Who married whom</h3><div style="display:grid;grid-template-columns:auto 1fr;gap:6px 10px;font-size:14px">
+   ${[["Laman","a daughter of Ishmael"],["Lemuel","a daughter of Ishmael"],["Sam","a daughter of Ishmael"],["Nephi","a daughter of Ishmael"],["Zoram","the eldest daughter of Ishmael"]].map(([a,b])=>`<b>${a}</b><span>⚭ ${b}</span>`).join("")}</div>
+   <p class="muted" style="font-size:12.5px;margin-top:6px">1 Nephi 16:7. A later account (Erastus Snow, 1882) says Ishmael's sons had married Lehi's daughters; scripture does not say.</p></div>`+
+  `<div class="sec"><h3>The seven peoples</h3><p class="muted" style="font-size:12.5px;margin:-2px 0 6px">Jacob 1:13; Mormon 1:8. Sam's children were counted with Nephi's.</p>
+   <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+   <div>${LF_PEOPLES.filter(x=>x[1]==="n").map(x=>`<button data-lf="${x[2]}" style="display:block;width:100%;margin-bottom:6px;padding:7px;border-radius:8px;border:0;background:#2f5d8a;color:#fff;font:600 13.5px var(--sans);cursor:pointer">${x[0]}</button>`).join("")}<p style="font-size:12.5px;text-align:center;margin:2px 0 0">“Nephites”</p></div>
+   <div>${LF_PEOPLES.filter(x=>x[1]==="l").map(x=>`<button data-lf="${x[2]}" style="display:block;width:100%;margin-bottom:6px;padding:7px;border-radius:8px;border:0;background:#a4502f;color:#fff;font:600 13.5px var(--sans);cursor:pointer">${x[0]}</button>`).join("")}<p style="font-size:12.5px;text-align:center;margin:2px 0 0">“Lamanites”</p></div></div>
+   <p style="font-size:13px;margin-top:8px">Over time the names became about belief more than birth: those friendly to Nephi were Nephites, and those who sought to destroy them were Lamanites (Jacob 1:14).</p></div>`;}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-lf]");if(!b)return;const p=LF[b.dataset.lf];if(!p)return;
+ document.querySelectorAll(".lf-info").forEach(x=>x.remove());const g=b.closest("[data-lfgroup]")||b.closest(".sec");const el=document.createElement("div");el.className="lang-flag lf-info";el.style.margin="10px 0 0";
+ el.innerHTML=`<b>${esc(p.n)}.</b> ${esc(p.d)}<div class="row" style="margin-top:6px">${p.r.map(r=>`<button class="chip" data-goto='{"type":"verse","ref":"${r}"}'>${refLabel(r)}</button>`).join("")}${p.term&&TERMS[p.term]?`<button class="chip" data-term="${p.term}">More about ${esc(p.n)}</button>`:""}</div>`;
+ g.appendChild(el);});
+const LF_TAB={name:"Family",html:lfChart};
+Object.assign(TERMS,{lehifamily:{name:"Lehi’s family",forms:[],books:["1ne"],more:[],resp:"",say:"",plain:"The families of Lehi, Ishmael and Zoram, and the peoples that came from them.",bg:"",chart:lfChart}});
+["lehi","sariah","laman","lemuel","sam","nephi","zoram","ishmael"].forEach(k=>{if(TERMS[k])TERMS[k].tabX=LF_TAB;});
+const LF_BAR=()=>`<button class="lang-flag" data-term="lehifamily" style="width:100%;text-align:left;cursor:pointer;color:inherit;font:inherit;font-family:var(--sans)">🌳 <b>Lehi’s family tree.</b> Tap to see who married whom and which peoples came from them.</button>`;
+Object.assign(INLINE_AT,{"1ne.7:6":LF_BAR,"1ne.16:7":LF_BAR,"1ne.18:7":LF_BAR,"2ne.5:6":LF_BAR,"jacob.1:13":LF_BAR});
 </script>
 <script>// Books in the library. Refs everywhere use the form "dan.3:18".
 const BOOKS={
@@ -3572,6 +3616,7 @@ function renderPanel(){if(view==="books"){renderBooks();return;}
       ...(t.chart?[["Chart","Chart",t.chart()]]:[]),
       ["Definition","Definition",`<div class="sec"><p>${esc(t.plain)}</p></div>${t.bg?`<div class="sec"><h3>Background</h3><p>${esc(t.bg)}</p></div>`:""}`],
       ...(t.deep?[[t.deep.tab,t.deep.tab,deepHTML(t.deep)]]:[]),
+      ...(t.tabX?[[t.tabX.name,t.tabX.name,t.tabX.html()]]:[]),
       ...(t.heb?[["Original","Original",`<div class="orig"><span class="heb" ${t.script==="grk"?'dir="ltr" lang="el"':'dir="rtl" lang="he"'}>${t.heb}</span><span><i>${esc(t.tr)}</i> · ${esc(t.lang)}</span>${t.strong?`<span class="chip">Strong's ${t.strong}</span>`:""}</div>${DEFS[P.key]?`<p class="def"><strong>Definition:</strong> ${esc(DEFS[P.key])}</p>`:""}`]]:[]),
       ...(t.w1828?[["1828","1828",`<div class="sec"><p class="w1828">“${esc(t.w1828)}”</p><p class="muted" style="font-size:12.5px">Noah Webster, <i>An American Dictionary of the English Language</i> (1828). This is how the word was used in Joseph Smith's day.</p></div>`]]:[]),
       ...(TERM_MAPS[P.key]?[["Map","Map",`<div class="sec">${mapSVG(TERM_MAPS[P.key])}</div>`]]:[]),

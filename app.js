@@ -402,6 +402,7 @@ function renderPanel(){if(view==="books"){renderBooks();return;}
       ...(t.chart?[["Chart","Chart",t.chart()]]:[]),
       ["Definition","Definition",`<div class="sec"><p>${esc(t.plain)}</p></div>${t.bg?`<div class="sec"><h3>Background</h3><p>${esc(t.bg)}</p></div>`:""}`],
       ...(t.deep?[[t.deep.tab,t.deep.tab,deepHTML(t.deep)]]:[]),
+      ...(t.tabX?[[t.tabX.name,t.tabX.name,t.tabX.html()]]:[]),
       ...(t.heb?[["Original","Original",`<div class="orig"><span class="heb" ${t.script==="grk"?'dir="ltr" lang="el"':'dir="rtl" lang="he"'}>${t.heb}</span><span><i>${esc(t.tr)}</i> · ${esc(t.lang)}</span>${t.strong?`<span class="chip">Strong's ${t.strong}</span>`:""}</div>${DEFS[P.key]?`<p class="def"><strong>Definition:</strong> ${esc(DEFS[P.key])}</p>`:""}`]]:[]),
       ...(t.w1828?[["1828","1828",`<div class="sec"><p class="w1828">“${esc(t.w1828)}”</p><p class="muted" style="font-size:12.5px">Noah Webster, <i>An American Dictionary of the English Language</i> (1828). This is how the word was used in Joseph Smith's day.</p></div>`]]:[]),
       ...(TERM_MAPS[P.key]?[["Map","Map",`<div class="sec">${mapSVG(TERM_MAPS[P.key])}</div>`]]:[]),
