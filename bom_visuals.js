@@ -179,6 +179,7 @@ function plChart(){
   <p><b>The book of Lehi.</b> Mormon's abridgment of the large plates from Lehi to King Benjamin. Joseph Smith translated it first, but the 116 manuscript pages were lost in 1828. The Lord had Joseph translate the small plates instead, which cover the same period (D&C 10:38–45).</p>
   <p><b>The sealed portion.</b> Part of the plates was sealed and not translated. It holds the brother of Jared's great vision (Ether 4:4–7; 2 Nephi 27:7–11).</p>
   <p><b>The rest of the large plates</b> and the other records Mormon hid in the hill Cumorah (Mormon 6:6).</p></div>
+ <div class="sec"><button class="lang-flag" data-term="keeperschart" style="width:100%;text-align:left;cursor:pointer;color:inherit;font:inherit;font-family:var(--sans)">🔗 <b>Who kept the records.</b> Follow the plates from Nephi to Moroni.</button></div>
  <div class="sec"><h3>To Joseph Smith</h3><p>Moroni buried the plates of Mormon. On September 22, 1827, he delivered them to Joseph Smith, who translated them by the gift and power of God. The Book of Mormon was published in March 1830.</p></div>`;}
 document.addEventListener("click",e=>{
  const r=e.target.closest("[data-plrec]"),b=e.target.closest("[data-plbook]"),c=e.target.closest("[data-plclear]");
@@ -190,3 +191,51 @@ const PL_TAB={name:"The plates",html:()=>{PL_SEL=null;return plChart();}};
 ["brassplates","plates"].forEach(k=>{if(TERMS[k])TERMS[k].tabX=PL_TAB;});
 const PL_BAR=()=>`<button class="lang-flag" data-term="plateschart" style="width:100%;text-align:left;cursor:pointer;color:inherit;font:inherit;font-family:var(--sans)">📜 <b>How the plates fit together.</b> Tap to see each record and which books came from it.</button>`;
 Object.assign(INLINE_AT,{"1ne.9:2":PL_BAR,"1ne.19:1":PL_BAR,"2ne.5:30":PL_BAR,"jacob.1:1":PL_BAR,"omni.1:25":PL_BAR,"wom.1:3":PL_BAR,"mosiah.1:3":PL_BAR,"mosiah.28:11":PL_BAR});
+// ---------- Who kept the records (Nephi to Moroni) ----------
+const RK={
+ nephi:{n:"Nephi",rel:"",term:"nephi",d:"Made both the large and small plates. About 55 years after Lehi left Jerusalem he gave the small plates to his brother Jacob, and the large plates went to the kings who followed him.",r:["1ne.9:2","jacob.1:1"]},
+ jacob:{n:"Jacob",rel:"Nephi's brother",d:"Wrote the ministry he was called to and Zenos's allegory, then gave the plates to his son Enos (Jacob 7:27).",r:["jacob.1:2","jacob.7:27"]},
+ enos:{n:"Enos",rel:"son",d:"Wrote of praying all day and into the night until his sins were forgiven (Enos 1:4–8).",r:["enos.1:4"]},
+ jarom:{n:"Jarom",rel:"son",d:"Wrote a short record “that our genealogy may be kept,” then delivered the plates to his son Omni (Jarom 1:1, 15).",r:["jarom.1:1","jarom.1:15"]},
+ omni:{n:"Omni",rel:"son",d:"A soldier who admitted, “I of myself am a wicked man” (Omni 1:2). After about 282 years from Lehi, he gave the plates to his son Amaron.",r:["omni.1:2","omni.1:3"]},
+ amaron:{n:"Amaron",rel:"son",d:"Recorded the destruction of the more wicked Nephites, then gave the plates to his brother Chemish (Omni 1:4–8).",r:["omni.1:5","omni.1:8"]},
+ chemish:{n:"Chemish",rel:"brother",d:"Wrote a single verse, in the same book as his brother (Omni 1:9).",r:["omni.1:9"]},
+ abinadom:{n:"Abinadom",rel:"son",d:"Saw much war. He said, “I know of no revelation save that which has been written” (Omni 1:10–11).",r:["omni.1:11"]},
+ amaleki:{n:"Amaleki",rel:"son",d:"Told how the first Mosiah led the righteous to Zarahemla. Having no children, he gave the small plates to King Benjamin (Omni 1:12–25).",r:["omni.1:12","omni.1:25"]},
+ kings:{n:"Nephite kings",rel:"",d:"The large plates were kept by the kings, generation after generation (Jarom 1:14; Omni 1:11). Their names are mostly not given until the first Mosiah, who led his people to Zarahemla.",r:["omni.1:11"]},
+ benjamin:{n:"King Benjamin",rel:"",d:"Now held both sets of plates, with the plates of brass. He gave them all to his son Mosiah, with the sword of Laban and the Liahona (Mosiah 1:16).",r:["mosiah.1:16"]},
+ mosiah:{n:"King Mosiah",rel:"son",term:"mosiah_k",d:"Translated the Jaredite plates. Before he died he gave all the records and the interpreters to Alma the Younger (Mosiah 28:11–20).",r:["mosiah.28:20"]},
+ alma:{n:"Alma the Younger",rel:"(not related)",term:"alma2",d:"Kept the records as high priest, then entrusted them to his son Helaman (Alma 37:1).",r:["alma.37:1"]},
+ helaman:{n:"Helaman",rel:"son",term:"helaman",d:"Kept the records through the war years. When he died, his brother Shiblon took them (Alma 63:1).",r:["alma.63:1"]},
+ shiblon:{n:"Shiblon",rel:"brother",term:"shiblon",d:"Kept the records a few years and gave them to Helaman's son, also named Helaman (Alma 63:11).",r:["alma.63:11"]},
+ helaman2:{n:"Helaman",rel:"nephew",term:"helaman_son",d:"Helaman's son, chief judge. The book of Helaman is named for him. His eldest son Nephi followed him (Helaman 3:37).",r:["alma.63:13"]},
+ nephi2:{n:"Nephi",rel:"son",d:"Son of Helaman, who gave up the judgment-seat to preach and was given the sealing power (Helaman 5; 10). Before he departed he gave the records to his eldest son, Nephi (3 Nephi 1:2).",r:[]},
+ nephi3:{n:"Nephi",rel:"son",d:"Saw the sign of Christ's birth and was one of the twelve disciples the risen Christ chose (3 Nephi 1; 11:18–22; 19:4). The book of 3 Nephi is his record.",r:[]},
+ nephi4:{n:"Nephi",rel:"son",d:"Kept the record during the years of peace after Christ's visit. The book of 4 Nephi is named for him (4 Nephi 1:19).",r:[]},
+ amos:{n:"Amos",rel:"son",d:"Kept the record 84 years (4 Nephi 1:19–20).",r:[]},
+ amos2:{n:"Amos",rel:"son",d:"Kept the record as wickedness returned (4 Nephi 1:21–47).",r:[]},
+ ammaron:{n:"Ammaron",rel:"brother",d:"About AD 320, moved by the Holy Ghost, he hid all the sacred records. He told ten-year-old Mormon where to find them when he was about 24 (4 Nephi 1:48–49; Mormon 1:2–4).",r:[]},
+ mormon:{n:"Mormon",rel:"(chosen by Ammaron)",d:"Prophet and general. He made his abridgment on the plates of Mormon, hid the other records in the hill Cumorah, and gave his plates to his son Moroni (Mormon 6:6).",r:[]},
+ moroni:{n:"Moroni",rel:"son",d:"Finished his father's record, abridged Ether, wrote his own book and buried the plates, about AD 421 (Mormon 8:1; Moroni 10:1).",r:[]},
+ joseph:{n:"Joseph Smith",rel:"",d:"On September 22, 1827, the resurrected Moroni delivered the plates to Joseph Smith, who translated them by the gift and power of God.",r:[]}};
+const rkCol={small:"#c08a1e",large:"#2f5d8a",both:"#14365c",end:"#3e7a52"};
+function rkNode(k,col){const p=RK[k];return `${p.rel?`<div style="text-align:center;font-size:11.5px;color:var(--muted);line-height:1.2;margin:1px 0">↓ ${esc(p.rel)}</div>`:""}<button data-rk="${k}" style="display:block;width:100%;padding:7px 8px;border-radius:9px;border:2px solid ${col};background:var(--paper);color:var(--ink);font:600 13.5px var(--sans);cursor:pointer">${esc(p.n)}</button>`;}
+function rkChart(){
+ const small=["jacob","enos","jarom","omni","amaron","chemish","abinadom","amaleki"],after=["mosiah","alma","helaman","shiblon","helaman2","nephi2","nephi3","nephi4","amos","amos2","ammaron","mormon","moroni"];
+ return `<div class="sec"><p>The plates passed from hand to hand for about a thousand years. Tap anyone to see what they did.</p>
+ <div style="display:flex;flex-wrap:wrap;gap:8px 14px;font-size:12.5px;color:var(--muted)"><span><span style="display:inline-block;width:10px;height:10px;border:2px solid ${rkCol.small};border-radius:3px"></span> small plates</span><span><span style="display:inline-block;width:10px;height:10px;border:2px solid ${rkCol.large};border-radius:3px"></span> large plates</span><span><span style="display:inline-block;width:10px;height:10px;border:2px solid ${rkCol.both};border-radius:3px"></span> all the records</span></div></div>
+ <div class="sec" id="rkwrap">
+  <div style="max-width:240px;margin:0 auto">${rkNode("nephi",rkCol.both)}</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px">
+   <div>${small.map(k=>rkNode(k,rkCol.small)).join("")}</div>
+   <div><div style="text-align:center;font-size:11.5px;color:var(--muted);margin:1px 0">↓</div>${rkNode("kings",rkCol.large)}<div style="font-size:12px;color:var(--muted);text-align:center;padding:10px 4px">Kept by the kings for about 470 years</div></div></div>
+  <div style="text-align:center;font-size:11.5px;color:var(--muted);margin:4px 0">↓ both sets join</div>
+  <div style="max-width:240px;margin:0 auto">${rkNode("benjamin",rkCol.both)}${after.map(k=>rkNode(k,rkCol.both)).join("")}<div style="text-align:center;font-size:11.5px;color:var(--muted);margin:1px 0">↓ about 1,400 years later</div>${rkNode("joseph",rkCol.end)}</div></div>`;}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-rk]");if(!b)return;const p=RK[b.dataset.rk];
+ const was=b.nextElementSibling&&b.nextElementSibling.classList.contains("rk-info");document.querySelectorAll(".rk-info").forEach(x=>x.remove());if(was)return;
+ const el=document.createElement("div");el.className="lang-flag rk-info";el.style.margin="4px 0 6px";el.style.textAlign="left";
+ el.innerHTML=`${esc(p.d)}${p.r.length||(p.term&&TERMS[p.term])?`<div class="row" style="margin-top:6px">${p.r.map(r=>`<button class="chip" data-goto='{"type":"verse","ref":"${r}"}'>${refLabel(r)}</button>`).join("")}${p.term&&TERMS[p.term]?`<button class="chip" data-term="${p.term}">More about ${esc(p.n)}</button>`:""}</div>`:""}`;
+ b.after(el);});
+Object.assign(TERMS,{keeperschart:{name:"Who kept the records",forms:[],books:["omni"],more:[],resp:"",say:"",plain:"The chain of record keepers from Nephi to Moroni.",bg:"",chart:rkChart}});
+const RK_BAR=()=>`<button class="lang-flag" data-term="keeperschart" style="width:100%;text-align:left;cursor:pointer;color:inherit;font:inherit;font-family:var(--sans)">🔗 <b>Who kept the records.</b> Tap to follow the plates from Nephi to Moroni.</button>`;
+Object.assign(INLINE_AT,{"jacob.7:27":RK_BAR,"enos.1:1":RK_BAR,"jarom.1:1":RK_BAR,"omni.1:1":RK_BAR,"wom.1:1":RK_BAR,"mosiah.28:20":RK_BAR,"alma.37:1":RK_BAR,"alma.63:1":RK_BAR});
