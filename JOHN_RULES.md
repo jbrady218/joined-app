@@ -19,3 +19,4 @@
 17. PLANNED (John, Nov 16): when the rest of the Book of Mormon is added, show 3 Nephi side by side with the Bible chapters it parallels (Matthew 5–7, Isaiah 54, Malachi 3–4, etc.), and do the same for the Isaiah chapters in 1–2 Nephi. Keep the helps that make Isaiah easier to understand. Explain where the Book of Mormon wording differs and what scholars say about its Hebrew-like features, accurately and with sources.
 18. On hold to save usage: talks on every chapter. D&C/PGP helps only if usage allows.
 19. Family Come, Follow Me readings run through Dec 27, 2026. The 2027 New Testament readings need adding before then.
+20. John asked (Nov 16): no major Joined work until his weekly usage resets Thursday, Nov 19 at 11 pm. Small fixes only; remind him if he asks for something big before then.
