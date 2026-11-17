@@ -4,11 +4,12 @@
 const FB_CONFIG={apiKey:"AIzaSyCGDINpgQLFSART1qmikrGBm_1nYh2ixug",authDomain:"joined-3adda.firebaseapp.com",projectId:"joined-3adda",
  storageBucket:"joined-3adda.firebasestorage.app",messagingSenderId:"946780758467",appId:"1:946780758467:web:43c76646d126d83bd25d76"};
 const FBV="10.12.2",FB_CDN=n=>[`https://cdn.jsdelivr.net/npm/firebase@${FBV}/${n}`,`https://unpkg.com/firebase@${FBV}/${n}`];
+const ACC_KEY="dsc-v1"; // app.js loads after this file, so its KEY is not ready yet here
 let ACC={user:null,ready:false,err:"",busy:false},fbAuth=null,fbDb=null,pushT=null;
 async function fbLoad(){if(fbAuth)return true;
   try{for(const n of ["firebase-app-compat.js","firebase-auth-compat.js","firebase-firestore-compat.js"])await loadAny(FB_CDN(n));
     if(!firebase.apps.length)firebase.initializeApp(FB_CONFIG);fbAuth=firebase.auth();fbDb=firebase.firestore();
-    fbAuth.onAuthStateChanged(u=>{ACC.user=u;ACC.ready=true;try{u?localStorage.setItem(KEY+"-signedin","1"):localStorage.removeItem(KEY+"-signedin");}catch(e){}
+    fbAuth.onAuthStateChanged(u=>{ACC.user=u;ACC.ready=true;try{u?localStorage.setItem(ACC_KEY+"-signedin","1"):localStorage.removeItem(ACC_KEY+"-signedin");}catch(e){}
       if(u&&ACC.welcome)closeAcct(); // already signed in from before: go straight to the app
       renderAcct();if(u)pullAndMerge();});
     try{const r=await fbAuth.getRedirectResult();if(r&&r.user)closeAcct();}catch(e){}
@@ -70,7 +71,7 @@ document.addEventListener("click",async e=>{const b=e.target.closest("[data-acct
   if("acct" in d)openAcct();
   else if(d.actab){ACC.tab=d.actab;ACC.err="";renderAcct();}
   else if(d.acage!==undefined){S.famAge=+d.acage;save();renderAcct();}
-  else if("acguest" in d){try{localStorage.setItem(KEY+"-guest","1");}catch(x){}closeAcct();}
+  else if("acguest" in d){try{localStorage.setItem(ACC_KEY+"-guest","1");}catch(x){}closeAcct();}
   else if("acclose" in d)closeAcct();
   else if("acsignout" in d){try{await fbAuth.signOut();}catch(x){}closeAcct();toast("Signed out. Your data stays saved in your account.");}
   else if("acgoogle" in d){if(!await fbLoad())return renderAcct();const p=new firebase.auth.GoogleAuthProvider();
@@ -81,8 +82,8 @@ document.addEventListener("submit",async e=>{const f=e.target.closest("[data-acf
   const mode=(e.submitter&&e.submitter.dataset.acmode)||"in",em=$("#ace").value.trim(),pw=$("#acp").value;if(!await fbLoad())return renderAcct();
   try{if(mode==="up"){const r=await fbAuth.createUserWithEmailAndPassword(em,pw),nm=(($("#acn")||{}).value||"").trim();if(nm&&r.user){await r.user.updateProfile({displayName:nm});ACC.user=fbAuth.currentUser;renderAcct();}}else await fbAuth.signInWithEmailAndPassword(em,pw);closeAcct();toast(mode==="up"?"Account created":"Signed in");}catch(x){acFail(x);}});
 // Already signed in from a past visit? Load quietly so syncing picks up where it left off.
-let HAS_AUTH=false;try{HAS_AUTH=localStorage.getItem(KEY+"-signedin")==="1"||Object.keys(localStorage).some(k=>k.startsWith("firebase:authUser:"));if(HAS_AUTH)setTimeout(fbLoad,0);}catch(e){}
+let HAS_AUTH=false;try{HAS_AUTH=localStorage.getItem(ACC_KEY+"-signedin")==="1"||Object.keys(localStorage).some(k=>k.startsWith("firebase:authUser:"));if(HAS_AUTH)setTimeout(fbLoad,0);}catch(e){}
 // First visit on the public site: show the welcome screen before anything else.
 const PUBLIC_SITE=/(^|\.)joined-3adda\.(web\.app|firebaseapp\.com)$/.test(location.hostname);
-let GUEST=false;try{GUEST=localStorage.getItem(KEY+"-guest")==="1";}catch(e){}
+let GUEST=false;try{GUEST=localStorage.getItem(ACC_KEY+"-guest")==="1";}catch(e){}
 if(PUBLIC_SITE&&!HAS_AUTH&&!GUEST)setTimeout(()=>{document.body.classList.add("welcoming");openAcct(true);},0);
