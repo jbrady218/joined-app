@@ -174,9 +174,10 @@ function renderVolume(id){const V=VOLUMES.find(x=>x.id===id)||VOLUMES[0];const l
   $("#reader").innerHTML=`<div class="home4"><a class="back" href="#home">← Home</a>
   <section class="volhead"><span class="cv-rule" aria-hidden="true"></span><h1>${V.n}</h1><span class="cv-rule" aria-hidden="true"></span></section>
   <section class="hsect"><h2 class="h4-h">Ready to study</h2>${ready.map(name=>{const [b,total]=READY[name],B=BOOKS[b];
-    return `<div class="vbook"><div class="vb-head"><strong>${name}</strong><em>${esc(B.blurb)}</em></div>
+    if(total===1&&B.chs.includes(1))return `<a class="vbook vb-one" href="${hashFor(b,1)}"><div class="vb-head"><strong>${name}</strong><em>${esc(B.blurb)}</em></div><span class="vb-chev" aria-hidden="true">›</span></a>`;
+    return `<details class="vbook"><summary class="vb-head"><strong>${name}</strong><em>${esc(B.blurb)}</em><span class="vb-count">${total} ${unit(b).toLowerCase()}s</span><span class="vb-chev" aria-hidden="true">›</span></summary>
       <div class="vb-grid">${Array.from({length:total},(_,i)=>i+1).map(c=>B.chs.includes(c)?`<a href="${hashFor(b,c)}" aria-label="${esc(chapLabel(b,c))}">${c}</a>`:`<span aria-label="${esc(chapLabel(b,c))}, coming soon">${c}</span>`).join("")}</div>
-      <p class="vb-note">${B.chs.length>=total?`All ${total} ${unit(b).toLowerCase()}s are ready.`:`${unit(b)}s ${B.chs[0]}–${B.chs[B.chs.length-1]} are ready. The rest are coming soon.`}</p></div>`;}).join("")}</section>
+      <p class="vb-note">${B.chs.length>=total?`All ${total} ${unit(b).toLowerCase()}s are ready.`:`${unit(b)}s ${B.chs[0]}–${B.chs[B.chs.length-1]} are ready. The rest are coming soon.`}</p></details>`;}).join("")}</section>
   ${later.length?`<section class="hsect"><h2 class="h4-h">Coming soon</h2><div class="vb-later">${later.map(n=>`<span>${esc(n)}</span>`).join("")}</div></section>`:""}
   ${homeFoot()}</div>`;}
 function renderTopics(){

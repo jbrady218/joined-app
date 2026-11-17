@@ -694,4 +694,15 @@ body.touring{overflow:hidden}
 .verse.hl-gold,.verse.hl-orange,.verse.hl-red,.verse.hl-rose,.verse.hl-purple,.verse.hl-blue,.verse.hl-teal,.verse.hl-green,.verse.hl-brown,.verse.hl-gray{background:none!important}
 .verse.hl-gold .vt{background:var(--hl-gold)}.verse.hl-orange .vt{background:var(--hl-orange)}.verse.hl-red .vt{background:var(--hl-red)}.verse.hl-rose .vt{background:var(--hl-rose)}.verse.hl-purple .vt{background:var(--hl-purple)}.verse.hl-blue .vt{background:var(--hl-blue)}.verse.hl-teal .vt{background:var(--hl-teal)}.verse.hl-green .vt{background:var(--hl-green)}.verse.hl-brown .vt{background:var(--hl-brown)}.verse.hl-gray .vt{background:var(--hl-gray)}
 .verse.hl-gold .vt,.verse.hl-orange .vt,.verse.hl-red .vt,.verse.hl-rose .vt,.verse.hl-purple .vt,.verse.hl-blue .vt,.verse.hl-teal .vt,.verse.hl-green .vt,.verse.hl-brown .vt,.verse.hl-gray .vt{border-radius:2px;padding:1px 0;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.vbook>summary{list-style:none;cursor:pointer;position:relative;padding-right:28px}.vbook>summary::-webkit-details-marker{display:none}
+.vb-chev{position:absolute;right:4px;top:50%;transform:translateY(-50%);font-size:24px;color:var(--muted);transition:transform .2s}
+details.vbook[open] .vb-chev{transform:translateY(-50%) rotate(90deg)}details.vbook[open]>summary{margin-bottom:12px}
+.vb-count{display:block;font:600 11.5px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+a.vbook.vb-one{display:block;position:relative;padding-right:28px;text-decoration:none;color:inherit}
+details.vbook,a.vbook.vb-one{padding:12px 16px;gap:0;margin-bottom:-4px}
+details.vbook>summary.vb-head,a.vb-one .vb-head{display:grid;grid-template-columns:1fr auto;align-items:baseline;column-gap:10px;padding-right:22px}
+details.vbook>summary strong,a.vb-one strong{font-size:19px}
+details.vbook>summary em,a.vb-one em{grid-column:1/-1;font-size:13.5px;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+details.vbook>summary .vb-count{grid-column:2;grid-row:1;margin:0}
+details.vbook[open]>summary em{white-space:normal}
 </style>
