@@ -7,7 +7,7 @@ TERMS.pilate.books=NTB("mat","mark","luke","john","acts","1tim");
 TERMS.caiaphas.books=NTB("mat","luke","john","acts");
 Object.assign(TERMS,{
 paul:G({name:"Paul",forms:["Paul"],resp:"PAWL",say:"pawl",heb:"Παῦλος",tr:"Paulos",strong:"G3972",books:NTB("acts","rom","1cor","2cor","gal","eph","phil","col","1thes","2thes","1tim","2tim","titus","phlm","2pet"),
- plain:"The Apostle Paul, first known by his Hebrew name Saul. Once a persecutor of Christians, he became the Church’s great missionary to the Gentiles and wrote most of the New Testament’s letters.",bg:""}),
+ plain:"The Apostle Paul, first known by his Hebrew name Saul. Once a persecutor of Christians, he became the Church’s great missionary to the Gentiles and wrote most of the New Testament’s letters.",bg:"Paul is a Roman name meaning “small.” He was not renamed when he was converted: Acts 13:9 simply says “Saul, (who also is called Paul).” Like many Jews of his day, he likely had a Hebrew name and a Roman one all along."}),
 nicodemus:G({name:"Nicodemus",forms:["Nicodemus"],resp:"nick-oh-DEE-mus",say:"nick oh dee mus",heb:"Νικόδημος",tr:"Nikodēmos",strong:"G3530",books:NTB("john"),
  plain:"A Pharisee and “a ruler of the Jews” who came to Jesus by night and was taught that a man must be born again (John 3).",bg:""}),
 zacchaeus:G({name:"Zacchaeus",forms:["Zacchaeus"],resp:"zak-KEE-us",say:"zak kee us",heb:"Ζακχαῖος",tr:"Zakchaios",strong:"G2195",books:NTB("luke"),
@@ -23,7 +23,12 @@ martha:G({name:"Martha",forms:["Martha"],resp:"MAR-thuh",say:"mar thuh",heb:"Μ�
 thomas:G({name:"Thomas",forms:["Thomas"],resp:"TOM-us",say:"tom us",heb:"Θωμᾶς",tr:"Thōmas",strong:"G2381",books:NTB("mat","mark","luke","john","acts"),
  plain:"One of the Twelve Apostles, also called Didymus, which means “twin.”",bg:""}),
 magdalene:G({name:"Mary Magdalene",forms:["Mary Magdalene"],resp:"MAG-duh-leen",say:"mag duh leen",heb:"Μαγδαληνή",tr:"Magdalēnē",strong:"G3094",books:NTB("mat","mark","luke","john"),
- plain:"A disciple from the town of Magdala who followed Jesus, stood by the cross and was the first to see Him risen.",bg:""})
+ plain:"A disciple from the town of Magdala who followed Jesus, stood by the cross and was the first to see Him risen.",bg:""}),
+onesimus:G({name:"Onesimus",forms:["Onesimus"],resp:"oh-NES-ih-mus",say:"oh nes ih mus",heb:"Ὀνήσιμος",tr:"Onēsimos",strong:"G3682",books:NTB("col","phlm"),
+ plain:"A slave of Philemon who ran away, met Paul, and became a Christian. Paul sent him back with the letter to Philemon. His name means “useful.”",
+ bg:"Paul plays on the name: “Which in time past was to thee unprofitable, but now profitable to thee and to me” (Philemon 1:11)."}),
+tabitha:G({name:"Tabitha (Dorcas)",forms:["Tabitha","Dorcas"],resp:"TAB-ih-thuh, DOR-kus",say:"tab ih thuh, dor kus",heb:"Ταβιθά / Δορκάς",tr:"Tabitha / Dorkas",strong:"G5000",books:NTB("acts"),
+ plain:"A disciple in Joppa known for good works and making clothes for widows. Peter raised her from the dead (Acts 9:36–41). Both names mean “gazelle”: Tabitha in Aramaic, Dorcas in Greek.",bg:""}),
 });
 const DEEP_NT={
 peter:{tab:"Bio",secs:[

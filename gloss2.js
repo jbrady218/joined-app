@@ -49,7 +49,7 @@ teleios:G({name:"perfect",forms:["perfect"],resp:"TEL-ay-os",say:"tell ay oss",h
  plain:"Complete, finished, fully grown.",
  bg:"At the temple in Bountiful, the risen Savior included Himself: “I would that ye should be perfect even as I, or your Father who is in heaven is perfect” (3 Nephi 12:48)."}),
 solomon:G({name:"Solomon",forms:["Solomon"],resp:"SOL-uh-mun",say:"sol uh mun",respLabel:"Tap to hear it",heb:"Σολομών",tr:"Solomōn",strong:"G4672",
- plain:"King of Israel, son of David, famous for his wealth and wisdom (1 Kings 3–10).",
+ plain:"King of Israel, son of David, famous for his wealth and wisdom (1 Kings 3–10). His name comes from the Hebrew shalom, “peace.”",
  bg:"Jesus says even Solomon in his royal robes was not dressed as beautifully as a wild lily (6:29)."}),
 // ---- 1 Nephi 1–4 ----
 lehi:R("1ne",{name:"Lehi",forms:["Lehi"],resp:"LEE-hy",say:"lee high",
