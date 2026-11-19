@@ -107,6 +107,7 @@ function doSearch(q){q=q.trim();const out=[];if(!q)return "";
       else if(!pr.v)out.push(`<a class="sres" href="${hashFor(b,pr.c)}"><span class="rk">Go to</span><strong>${chapLabel(b,pr.c)}</strong><span class="rt">${esc(CHAPTERS[CK(b,pr.c)].title)}</span></a>`);});
     if(pr.b&&!BOOKS[pr.b].chs.includes(pr.c))out.push(`<div class="sres"><span class="rk">Coming soon</span><strong>${chapLabel(pr.b,pr.c)}</strong></div>`);}
   const ql=q.toLowerCase();if(ql.length<2)return out.join("");
+  if(!pr&&ql.length>=3)out.unshift(`<button class="sres sask" data-ask><span class="rk">Ask · find by meaning</span><strong>“${esc(q)}”</strong><span class="rt">Describe a verse, story, talk or something you highlighted, in your own words.</span></button>`);
   Object.entries(TERMS).filter(([k,t])=>t.name.toLowerCase().includes(ql)||t.forms.some(f=>f.toLowerCase().includes(ql))||(t.tr||"").toLowerCase().includes(ql)).slice(0,6)
     .forEach(([k,t])=>out.push(`<button class="sres" data-term="${k}"><span class="rk">Word or name · ${bname(t.books[0])}</span><strong>${esc(t.name)}</strong><span class="rt">${esc(t.plain.split(/(?<=\.)\s/)[0])}</span></button>`));
   if(ql.length>=3){let n=0;BOOK_ORDER.forEach(b=>BOOKS[b].chs.forEach(c=>{for(let v=1;v<=vcount(b,c);v++){if(n>=30)return;const ref=MR(b,c,v);
@@ -115,6 +116,32 @@ function doSearch(q){q=q.trim();const out=[];if(!q)return "";
         out.push(`<button class="sres" data-goto='{"type":"verse","ref":"${ref}"}'><span class="rk">${refLabel(ref)}</span><span class="rt">${a?"…":""}${esc(hit.slice(a,i))}<b>${esc(hit.slice(i,i+ql.length))}</b>${esc(hit.slice(i+ql.length,z))}${z<hit.length?"…":""}</span></button>`);}}}));
     S.notes.filter(x=>(x.text||"").toLowerCase().includes(ql)).slice(0,5).forEach(x=>out.push(`<button class="sres" data-goto='${esc(JSON.stringify(x.target))}'><span class="rk">Your note</span><span class="rt">${esc(x.text.slice(0,140))}</span></button>`));}
   return out.length?out.join(""):`<p class="muted" style="padding:8px 2px">Nothing found for “${esc(q)}”.</p>`;}
+// "Ask" search (AI). The server function suggests references and picks from your highlights and the talk list;
+// the app shows the real verse text from its own copy. Signed-in only, with daily and monthly limits on the server.
+const ASK_URL="https://us-central1-joined-3adda.cloudfunctions.net/askSearch";
+async function askAI(q){const el=$("#hres");q=q.trim();if(q.length<3)return;el.hidden=false;
+  const msg=t=>{el.innerHTML=`<p class="muted" style="padding:8px 2px">${t}</p>`;};
+  const u=typeof fbAuth!=="undefined"&&fbAuth&&fbAuth.currentUser;
+  if(!u){msg("Ask is for signed-in accounts. Sign in from the Account page, then try again.");return;}
+  msg("Looking…");
+  const hrefs=[...new Set([...Object.keys(S.hl).sort((a,b)=>((S.hlt||{})[b]||0)-((S.hlt||{})[a]||0)),...(S.marks||[]).map(m=>m.ref)])].filter(r=>BOOKS[PR(r).b]).slice(0,200);
+  await Promise.all([...new Set(hrefs.map(r=>PR(r).b))].map(ensureText));
+  const hl=hrefs.map(r=>refLabel(r)+": "+(vtext(r,verOf(PR(r).b))||"").slice(0,180));
+  const talks=TALKS.map(t=>`${t.t} (${t.sp}, ${t.d})`);
+  let j;try{const r=await fetch(ASK_URL,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+await u.getIdToken()},body:JSON.stringify({q,hl,talks})});
+    j=await r.json();if(!r.ok){const e=j&&j.error;
+      msg(e==="daily"?"You've used today's Ask searches. They reset tomorrow.":e==="monthly"?"Ask is resting until next month. Regular search still works.":e==="signin"?"Please sign in again, then try Ask.":"Ask isn't available right now. Please try again later.");return;}}
+  catch(e){msg("Ask needs an internet connection.");return;}
+  const out=[],why=w=>w?`<span class="rt sawhy">${esc(w)}</span>`:"";
+  (j.highlights||[]).forEach(h=>{const r=hrefs[h.i];if(!r)return;out.push(`<button class="sres" data-goto='{"type":"verse","ref":"${r}"}'><span class="rk">Your highlight · ${refLabel(r)}</span><span class="rt">${esc(vtext(r,verOf(PR(r).b))||"")}</span>${why(h.why)}</button>`);});
+  for(const v of (j.verses||[])){const lab=`${v.book} ${v.chapter}:${v.verse}`,p=parseRef(lab);
+    if(p&&p.b&&BOOKS[p.b]&&BOOKS[p.b].chs.includes(p.c)&&await ensureText(p.b)&&p.v&&p.v<=vcount(p.b,p.c)){const r=MR(p.b,p.c,p.v);
+      if(hrefs.includes(r)&&(j.highlights||[]).some(h=>hrefs[h.i]===r))continue;
+      out.push(`<button class="sres" data-goto='{"type":"verse","ref":"${r}"}'><span class="rk">${refLabel(r)}</span><span class="rt">${esc(vtext(r,verOf(p.b)))}</span>${why(v.why)}</button>`);}
+    else out.push(`<div class="sres"><span class="rk">${esc(lab)} · not in Joined yet</span>${why(v.why)}</div>`);}
+  (j.talks||[]).forEach(t=>{const T=TALKS[t.i];if(!T)return;out.push(`<a class="sres" href="${T.u}" target="_blank" rel="noopener"><span class="rk">Talk · ${esc(T.sp)} · ${esc(T.d)}</span><strong>${esc(T.t)}</strong>${why(t.why)}</a>`);});
+  if(j.note)out.push(`<p class="muted" style="padding:4px 2px">${esc(j.note)}</p>`);
+  el.innerHTML=out.length?`<p class="muted" style="padding:4px 2px">Ask results for “${esc(q)}”</p>`+out.join(""):`<p class="muted" style="padding:8px 2px">Nothing found for that. Try describing it another way.</p>`;}
 const TOPICS=[["Faith in Jesus Christ","Trusting Him enough to act"],["Repentance","Turning back to God"],["The Atonement of Jesus Christ","His power to save and heal"],["Hope","An anchor to the soul"],["Prayer","Talking with Heavenly Father"],["Charity","The pure love of Christ"],["Forgiveness","Receiving it and giving it"],["Grace","Help beyond our own strength"],["Covenants","Promises that bind us to God"],["The Holy Ghost","Comfort, warning and witness"],["Personal Revelation","Hearing Him for yourself"],["Obedience","Choosing His way"],["Trials and Adversity","When the furnace is hot"],["Peace","Peace in a troubled world"],["Gratitude","Seeing His hand"],["Service","Ministering as He did"],["Temples","His holy house"],["Families","Eternal relationships"],["Scripture Study","Feasting on the word"],["Testimony","Knowing for yourself"]];
 const VOLUMES=[
  {id:"ot",n:"Old Testament",books:"Genesis|Exodus|Leviticus|Numbers|Deuteronomy|Joshua|Judges|Ruth|1 Samuel|2 Samuel|1 Kings|2 Kings|1 Chronicles|2 Chronicles|Ezra|Nehemiah|Esther|Job|Psalms|Proverbs|Ecclesiastes|Song of Solomon|Isaiah|Jeremiah|Lamentations|Ezekiel|Daniel|Hosea|Joel|Amos|Obadiah|Jonah|Micah|Nahum|Habakkuk|Zephaniah|Haggai|Zechariah|Malachi"},
@@ -162,8 +189,9 @@ function tryIt(k){const T={term:["dan",1,{type:"term",key:"babylon"},null],orig:
   if(!T)return;if(T[3])TAB[T[3][0]]=T[3][1];else TAB.term="Definition";PENDING=T[2];const h=hashFor(T[0],T[1]);if(location.hash===h)route();else location.hash=h;}
 function toggleSearch(force){const el=$("#hsearch");const show=force!==undefined?force:el.hidden;el.hidden=!show;if(show){const q=$("#hq");q.value="";$("#hres").hidden=true;q.focus();}}
 document.addEventListener("input",e=>{if(e.target.id==="hq"){const h=doSearch(e.target.value);$("#hres").innerHTML=h;$("#hres").hidden=!h;}});
-document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#hsearch").hidden)toggleSearch(false);});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#hsearch").hidden)toggleSearch(false);if(e.key==="Enter"&&e.target.id==="hq"&&!parseRef(e.target.value)&&e.target.value.trim().split(/\s+/).length>=3)askAI(e.target.value);});
 document.addEventListener("click",e=>{const b=e.target.closest("[data-try],[data-search]");
+  if(e.target.closest("[data-ask]")){askAI($("#hq").value);return;}
   if(e.target.closest("#hres .sres"))setTimeout(()=>toggleSearch(false),0);
   if(!b)return;const d=b.dataset;
   if(d.try)tryIt(d.try);
