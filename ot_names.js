@@ -1,0 +1,43 @@
+// Old Testament name meanings: STARTER DATA, not wired into the app yet (John, Nov 19).
+// Plan: show these in the Genesis / early OT reader when those books are added.
+// Only meanings the text itself explains, or that scholars widely agree on. "note" says where they disagree.
+const OT_NAMES = {
+  Adam:{m:"man, humankind",ref:"Gen 2:7",note:"Sounds like adamah, 'ground': the man was formed from the ground."},
+  Eve:{m:"living, life",ref:"Gen 3:20",note:"Hebrew Chavah; 'the mother of all living.'"},
+  Cain:{m:"gotten, acquired",ref:"Gen 4:1",note:"A sound-play on Eve's words 'I have gotten a man.'"},
+  Abel:{m:"breath, vapor",ref:"Gen 4:2",note:"Hebrew Hevel, the word for 'vanity' in Ecclesiastes. His life was short."},
+  Seth:{m:"appointed, granted",ref:"Gen 4:25"},
+  Enoch:{m:"dedicated",ref:"Gen 5:18"},
+  Noah:{m:"rest, comfort",ref:"Gen 5:29",note:"Hebrew letters N-Ch. Reversed (Ch-N) they spell chen, 'grace, favor.' Gen 6:8: 'Noah found grace in the eyes of the LORD.' Many commentators see this as deliberate wordplay."},
+  Babel:{m:"sounds like 'confused'",ref:"Gen 11:9",note:"A pun on balal, 'to confuse.' In Babylonian it meant 'gate of god.'"},
+  Abram:{m:"exalted father",ref:"Gen 11:26"},
+  Abraham:{m:"father of a multitude",ref:"Gen 17:5"},
+  Sarah:{m:"princess",ref:"Gen 17:15"},
+  Ishmael:{m:"God hears",ref:"Gen 16:11"},
+  Isaac:{m:"he laughs",ref:"Gen 21:6",note:"Abraham and Sarah both laughed at the promise (17:17; 18:12)."},
+  Esau:{m:"hairy",ref:"Gen 25:25",note:"Also called Edom, 'red' (25:30)."},
+  Jacob:{m:"heel-holder; he supplants",ref:"Gen 25:26",note:"Esau plays on it in 27:36."},
+  Israel:{m:"he strives with God / God strives",ref:"Gen 32:28",note:"Scholars disagree on the exact sense; the verse explains it as 'you have striven with God.'"},
+  Rachel:{m:"ewe (female sheep)",ref:"Gen 29:6"},
+  Reuben:{m:"see, a son",ref:"Gen 29:32"},
+  Simeon:{m:"heard",ref:"Gen 29:33"},
+  Levi:{m:"joined, attached",ref:"Gen 29:34",note:"'Now will my husband be joined unto me.'"},
+  Judah:{m:"praise",ref:"Gen 29:35"},
+  Dan:{m:"he judged",ref:"Gen 30:6"},
+  Naphtali:{m:"my wrestling",ref:"Gen 30:8"},
+  Gad:{m:"good fortune",ref:"Gen 30:11"},
+  Asher:{m:"happy",ref:"Gen 30:13"},
+  Issachar:{m:"reward, hire",ref:"Gen 30:18"},
+  Zebulun:{m:"dwelling, honor",ref:"Gen 30:20"},
+  Joseph:{m:"may he add",ref:"Gen 30:24"},
+  Benjamin:{m:"son of the right hand",ref:"Gen 35:18",note:"Rachel, dying, named him Ben-oni, 'son of my sorrow.'"},
+  Manasseh:{m:"making to forget",ref:"Gen 41:51"},
+  Ephraim:{m:"fruitful",ref:"Gen 41:52"},
+  Moses:{m:"drawn out",ref:"Ex 2:10",note:"The verse ties it to Hebrew mashah; it may also echo an Egyptian word for 'son.'"},
+  // Later OT
+  Samuel:{m:"heard by God / name of God",ref:"1 Sam 1:20",note:"Scholars disagree; Hannah links it to asking and being heard."},
+  David:{m:"beloved",ref:"1 Sam 16:13"},
+  Solomon:{m:"peace",ref:"1 Chr 22:9",note:"From shalom: 'I will give peace and quietness unto Israel in his days.'"},
+  Elijah:{m:"my God is the LORD (Jehovah)",ref:"1 Kgs 17:1"},
+};
+if (typeof module!=="undefined") module.exports = OT_NAMES;

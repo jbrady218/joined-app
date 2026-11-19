@@ -20,3 +20,4 @@
 18. On hold to save usage: talks on every chapter. D&C/PGP helps only if usage allows.
 19. Family Come, Follow Me readings run through Dec 27, 2026. The 2027 New Testament readings need adding before then.
 20. John asked (Nov 16): no major Joined work until his weekly usage resets Thursday, Nov 19 at 11 pm. Small fixes only; remind him if he asks for something big before then.
+21. PLANNED (John, Nov 19): Old Testament name meanings (Noah = rest, reversed = grace; Solomon = peace, etc.). Starter data in ot_names.js, not wired in yet. Add to the Genesis/early OT reader when those books are added.
