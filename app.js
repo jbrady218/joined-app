@@ -107,7 +107,7 @@ function doSearch(q){q=q.trim();const out=[];if(!q)return "";
       else if(!pr.v)out.push(`<a class="sres" href="${hashFor(b,pr.c)}"><span class="rk">Go to</span><strong>${chapLabel(b,pr.c)}</strong><span class="rt">${esc(CHAPTERS[CK(b,pr.c)].title)}</span></a>`);});
     if(pr.b&&!BOOKS[pr.b].chs.includes(pr.c))out.push(`<div class="sres"><span class="rk">Coming soon</span><strong>${chapLabel(pr.b,pr.c)}</strong></div>`);}
   const ql=q.toLowerCase();if(ql.length<2)return out.join("");
-  if(!pr&&ql.length>=3)out.unshift(`<button class="sres sask" data-ask><span class="rk">Ask · find by meaning</span><strong>“${esc(q)}”</strong><span class="rt">Describe a verse, story, talk or something you highlighted, in your own words.</span></button>`);
+  if(!pr&&ql.length>=3)out.unshift(`<button class="sres sask" data-ask><span class="rk">✨ Ask · search by meaning</span><strong>Find “${esc(q)}”</strong><span class="rt">Tap to find verses, your own highlights and talks about this, even if they use different words.</span></button>`);
   Object.entries(TERMS).filter(([k,t])=>t.name.toLowerCase().includes(ql)||t.forms.some(f=>f.toLowerCase().includes(ql))||(t.tr||"").toLowerCase().includes(ql)).slice(0,6)
     .forEach(([k,t])=>out.push(`<button class="sres" data-term="${k}"><span class="rk">Word or name · ${bname(t.books[0])}</span><strong>${esc(t.name)}</strong><span class="rt">${esc(t.plain.split(/(?<=\.)\s/)[0])}</span></button>`));
   if(ql.length>=3){let n=0;BOOK_ORDER.forEach(b=>BOOKS[b].chs.forEach(c=>{for(let v=1;v<=vcount(b,c);v++){if(n>=30)return;const ref=MR(b,c,v);
@@ -118,6 +118,8 @@ function doSearch(q){q=q.trim();const out=[];if(!q)return "";
   return out.length?out.join(""):`<p class="muted" style="padding:8px 2px">Nothing found for “${esc(q)}”.</p>`;}
 // "Ask" search (AI). The server function suggests references and picks from your highlights and the talk list;
 // the app shows the real verse text from its own copy. Signed-in only, with daily and monthly limits on the server.
+const ASK_EX=["A verse about trusting God even when He doesn't take the trial away","The verse I highlighted where Nephi went into Jerusalem not knowing what to do","A talk about feeling alone"];
+const askIntro=()=>`<div class="askintro"><strong>✨ New: Ask</strong><p>Can't remember the exact words? Describe what you're looking for in your own words, and Ask finds:</p><ul><li><b>Verses</b> that match the idea, shown with the real scripture text</li><li><b>Your own highlights</b>, like “that verse I marked about…”</li><li><b>Conference talks</b> on the topic</li></ul><p class="muted">Type it above and tap the ✨ Ask result, or try one:</p>${ASK_EX.map(x=>`<button class="sres sask" data-askex="${esc(x)}"><span class="rt">“${esc(x)}”</span></button>`).join("")}<p class="muted">For signed-in accounts. Uses AI; always check the verse in context.</p></div>`;
 const ASK_URL="https://us-central1-joined-3adda.cloudfunctions.net/askSearch";
 async function askAI(q){const el=$("#hres");q=q.trim();if(q.length<3)return;el.hidden=false;
   const msg=t=>{el.innerHTML=`<p class="muted" style="padding:8px 2px">${t}</p>`;};
@@ -187,11 +189,12 @@ function renderHome(){
 let PENDING=null;
 function tryIt(k){const T={term:["dan",1,{type:"term",key:"babylon"},null],orig:["mat",5,{type:"term",key:"teleios"},["term","Original"]],history:["dan",3,{type:"history"},["history","History"]],verse:["dan",1,{type:"verse",ref:"dan.1:8"},["verse","Talks"]]}[k];
   if(!T)return;if(T[3])TAB[T[3][0]]=T[3][1];else TAB.term="Definition";PENDING=T[2];const h=hashFor(T[0],T[1]);if(location.hash===h)route();else location.hash=h;}
-function toggleSearch(force){const el=$("#hsearch");const show=force!==undefined?force:el.hidden;el.hidden=!show;if(show){const q=$("#hq");q.value="";$("#hres").hidden=true;q.focus();}}
-document.addEventListener("input",e=>{if(e.target.id==="hq"){const h=doSearch(e.target.value);$("#hres").innerHTML=h;$("#hres").hidden=!h;}});
+function toggleSearch(force){const el=$("#hsearch");const show=force!==undefined?force:el.hidden;el.hidden=!show;if(show){const q=$("#hq");q.value="";$("#hres").innerHTML=askIntro();$("#hres").hidden=false;q.focus();}}
+document.addEventListener("input",e=>{if(e.target.id==="hq"){const h=e.target.value.trim()?doSearch(e.target.value):askIntro();$("#hres").innerHTML=h;$("#hres").hidden=!h;}});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#hsearch").hidden)toggleSearch(false);if(e.key==="Enter"&&e.target.id==="hq"&&!parseRef(e.target.value)&&e.target.value.trim().split(/\s+/).length>=3)askAI(e.target.value);});
 document.addEventListener("click",e=>{const b=e.target.closest("[data-try],[data-search]");
   if(e.target.closest("[data-ask]")){askAI($("#hq").value);return;}
+  const ax=e.target.closest("[data-askex]");if(ax){$("#hq").value=ax.dataset.askex;askAI(ax.dataset.askex);return;}
   if(e.target.closest("#hres .sres"))setTimeout(()=>toggleSearch(false),0);
   if(!b)return;const d=b.dataset;
   if(d.try)tryIt(d.try);
