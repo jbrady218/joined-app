@@ -107,7 +107,7 @@ function doSearch(q){q=q.trim();const out=[];if(!q)return "";
       else if(!pr.v)out.push(`<a class="sres" href="${hashFor(b,pr.c)}"><span class="rk">Go to</span><strong>${chapLabel(b,pr.c)}</strong><span class="rt">${esc(CHAPTERS[CK(b,pr.c)].title)}</span></a>`);});
     if(pr.b&&!BOOKS[pr.b].chs.includes(pr.c))out.push(`<div class="sres"><span class="rk">Coming soon</span><strong>${chapLabel(pr.b,pr.c)}</strong></div>`);}
   const ql=q.toLowerCase();if(ql.length<2)return out.join("");
-  if(!pr&&ql.length>=3)out.unshift(`<button class="sres sask" data-ask><span class="rk">✨ Ask · search by meaning</span><strong>Find “${esc(q)}”</strong><span class="rt">Tap to find verses, your own highlights and talks about this, even if they use different words.</span></button>`);
+  if(!pr&&ql.length>=3)out.unshift(`<button class="sres sask" data-ask><span class="rk">Search with AI</span><strong>“${esc(q)}”</strong><span class="rt">Finds verses, your highlights and talks that match what you describe.</span></button>`);
   Object.entries(TERMS).filter(([k,t])=>t.name.toLowerCase().includes(ql)||t.forms.some(f=>f.toLowerCase().includes(ql))||(t.tr||"").toLowerCase().includes(ql)).slice(0,6)
     .forEach(([k,t])=>out.push(`<button class="sres" data-term="${k}"><span class="rk">Word or name · ${bname(t.books[0])}</span><strong>${esc(t.name)}</strong><span class="rt">${esc(t.plain.split(/(?<=\.)\s/)[0])}</span></button>`));
   if(ql.length>=3){let n=0;BOOK_ORDER.forEach(b=>BOOKS[b].chs.forEach(c=>{for(let v=1;v<=vcount(b,c);v++){if(n>=30)return;const ref=MR(b,c,v);
@@ -119,7 +119,7 @@ function doSearch(q){q=q.trim();const out=[];if(!q)return "";
 // "Ask" search (AI). The server function suggests references and picks from your highlights and the talk list;
 // the app shows the real verse text from its own copy. Signed-in only, with daily and monthly limits on the server.
 const ASK_EX=["A verse about trusting God even when He doesn't take the trial away","The verse I highlighted where Nephi went into Jerusalem not knowing what to do","A talk about feeling alone"];
-const askIntro=()=>`<div class="askintro"><strong>✨ New: Ask</strong><p>Can't remember the exact words? Describe what you're looking for in your own words, and Ask finds:</p><ul><li><b>Verses</b> that match the idea, shown with the real scripture text</li><li><b>Your own highlights</b>, like “that verse I marked about…”</li><li><b>Conference talks</b> on the topic</li></ul><p class="muted">Type it above and tap the ✨ Ask result, or try one:</p>${ASK_EX.map(x=>`<button class="sres sask" data-askex="${esc(x)}"><span class="rt">“${esc(x)}”</span></button>`).join("")}<p class="muted">For signed-in accounts. Uses AI; always check the verse in context.</p></div>`;
+const askIntro=()=>`<div class="askintro"><strong>Can't find a verse? Describe it.</strong><p>Type what you remember (a story, an idea, a feeling) and Joined's AI finds matching verses, your own highlights and Conference talks.</p><p class="muted">Try:</p>${ASK_EX.map(x=>`<button class="sres sask" data-askex="${esc(x)}"><span class="rt">“${esc(x)}”</span></button>`).join("")}<p class="muted">Signed-in accounts only.</p></div>`;
 const ASK_URL="https://us-central1-joined-3adda.cloudfunctions.net/askSearch";
 async function askAI(q){const el=$("#hres");q=q.trim();if(q.length<3)return;el.hidden=false;
   const msg=t=>{el.innerHTML=`<p class="muted" style="padding:8px 2px">${t}</p>`;};
