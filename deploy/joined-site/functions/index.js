@@ -27,3 +27,50 @@ exports.lessonPage=onRequest({cors:true,region:"us-central1",memory:"256MiB",tim
     const j=await r.json();res.set("Cache-Control","public, max-age=3600");
     res.json({title:(j.meta&&j.meta.title)||"",body:(j.content&&j.content.body)||""});}
   catch(e){res.status(502).json({error:"could not reach the Church site"});}});
+
+// "Ask" search: a signed-in person describes what they're looking for in their own words.
+// Claude suggests scripture references and picks from that person's own highlights and the app's talk list.
+// The app always shows the real verse text itself; Claude never writes quotes.
+// Limits: DAILY_PER_PERSON searches per person per day, MONTHLY_TOTAL searches for the whole app per month.
+// One-time setup: firebase functions:secrets:set ANTHROPIC_API_KEY
+const {defineSecret}=require("firebase-functions/params");
+const Anthropic=require("@anthropic-ai/sdk");
+const ANTHROPIC_API_KEY=defineSecret("ANTHROPIC_API_KEY");
+const DAILY_PER_PERSON=20,MONTHLY_TOTAL=10000;
+const ASK_SCHEMA={type:"object",additionalProperties:false,required:["verses","highlights","talks","note"],properties:{
+  verses:{type:"array",items:{type:"object",additionalProperties:false,required:["book","chapter","verse","why"],properties:{
+    book:{type:"string"},chapter:{type:"integer"},verse:{type:"integer"},why:{type:"string"}}}},
+  highlights:{type:"array",items:{type:"object",additionalProperties:false,required:["i","why"],properties:{i:{type:"integer"},why:{type:"string"}}}},
+  talks:{type:"array",items:{type:"object",additionalProperties:false,required:["i","why"],properties:{i:{type:"integer"},why:{type:"string"}}}},
+  note:{type:"string"}}};
+const ASK_SYSTEM=`You help members of The Church of Jesus Christ of Latter-day Saints find scriptures, talks, and their own highlighted verses by meaning.
+The person describes an idea, story, or feeling in their own words. Return:
+- verses: up to 6 of the most fitting verses from the KJV Bible, Book of Mormon, Doctrine and Covenants, or Pearl of Great Price. Use standard book names (e.g. "1 Nephi", "Matthew", "Doctrine and Covenants", "Daniel"). Only give references you are sure of. Never invent a reference.
+- highlights: indexes (i) from THEIR HIGHLIGHTS list that match. If they say they highlighted or saw something, look here first. Use [] if none fit.
+- talks: indexes (i) from the TALKS list that fit. Use [] if none fit.
+- why: one short plain sentence each, in your own words. Do not quote scripture text; the app shows the real text.
+- note: one short sentence, or "" if nothing to add.
+Be accurate and doctrinally careful. If the request is not about scripture, faith, or gospel study, return empty lists and a polite note.`;
+exports.askSearch=onRequest({cors:true,region:"us-central1",memory:"256MiB",timeoutSeconds:60,secrets:[ANTHROPIC_API_KEY]},async(req,res)=>{
+  if(req.method!=="POST"){res.status(405).json({error:"POST only"});return;}
+  let uid;try{uid=(await admin.auth().verifyIdToken(String(req.get("Authorization")||"").replace(/^Bearer /,""))).uid;}
+  catch(e){res.status(401).json({error:"signin"});return;}
+  const b=req.body||{},q=String(b.q||"").trim().slice(0,500);
+  if(q.length<3){res.status(400).json({error:"empty"});return;}
+  const hl=(Array.isArray(b.hl)?b.hl:[]).slice(0,200).map(x=>String(x).slice(0,220));
+  const talks=(Array.isArray(b.talks)?b.talks:[]).slice(0,400).map(x=>String(x).slice(0,160));
+  const db=admin.firestore(),now=new Date(),day=now.toISOString().slice(0,10),month=day.slice(0,7);
+  const uRef=db.doc("aiUsage/u_"+uid),mRef=db.doc("aiUsage/m_"+month);
+  try{await db.runTransaction(async t=>{const [u,m]=await Promise.all([t.get(uRef),t.get(mRef)]);
+    const un=u.exists&&u.data().day===day?u.data().n:0,mn=m.exists?m.data().n:0;
+    if(un>=DAILY_PER_PERSON)throw new Error("daily");if(mn>=MONTHLY_TOTAL)throw new Error("monthly");
+    t.set(uRef,{day,n:un+1});t.set(mRef,{n:mn+1},{merge:true});});}
+  catch(e){const m=e.message;res.status(429).json({error:m==="daily"||m==="monthly"?m:"busy"});return;}
+  const user=`THEIR HIGHLIGHTS:\n${hl.map((x,i)=>i+". "+x).join("\n")||"(none)"}\n\nTALKS:\n${talks.map((x,i)=>i+". "+x).join("\n")||"(none)"}\n\nWHAT THEY'RE LOOKING FOR:\n${q}`;
+  try{const client=new Anthropic({apiKey:ANTHROPIC_API_KEY.value()});
+    const r=await client.messages.create({model:"claude-haiku-5-5",max_tokens:4000,system:ASK_SYSTEM,
+      output_config:{effort:"low",format:{type:"json_schema",schema:ASK_SCHEMA}},messages:[{role:"user",content:user}]});
+    const txt=(r.content.find(c=>c.type==="text")||{}).text;
+    if(r.stop_reason==="refusal"||!txt){res.json({verses:[],highlights:[],talks:[],note:"Sorry, I couldn't help with that one."});return;}
+    res.json(JSON.parse(txt));}
+  catch(e){console.error("askSearch",e&&e.message);res.status(502).json({error:"ai"});}});

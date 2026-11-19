@@ -1,0 +1,43 @@
+# Deploys the Firebase server code (deploy/joined-site/functions) whenever it changes on main,
+# so John never has to run Terminal for it. Can also be run by hand from the Actions tab.
+# Needs GitHub secret FIREBASE_SERVICE_ACCOUNT (a Google service account key, JSON).
+# Optional GitHub secret ANTHROPIC_API_KEY: copied into Firebase only when run by hand with "Update the AI key" checked.
+name: Deploy Firebase functions
+on:
+  push:
+    branches: [main]
+    paths: ["deploy/joined-site/functions/**"]
+  workflow_dispatch:
+    inputs:
+      set_key:
+        description: "Update the AI key in Firebase from the ANTHROPIC_API_KEY GitHub secret"
+        type: boolean
+        default: false
+concurrency: deploy-functions
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      HAS_SA: ${{ secrets.FIREBASE_SERVICE_ACCOUNT != '' }}
+    steps:
+      - name: Stop if not set up yet
+        if: env.HAS_SA != 'true'
+        run: echo "FIREBASE_SERVICE_ACCOUNT secret is not set yet; skipping deploy."
+      - uses: actions/checkout@v4
+        if: env.HAS_SA == 'true'
+      - uses: actions/setup-node@v4
+        if: env.HAS_SA == 'true'
+        with: {node-version: "22"}
+      - uses: google-github-actions/auth@v2
+        if: env.HAS_SA == 'true'
+        with: {credentials_json: "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}"}
+      - name: Install
+        if: env.HAS_SA == 'true'
+        run: npm install -g firebase-tools && cd deploy/joined-site/functions && npm install --no-audit --no-fund
+      - name: Update AI key
+        if: env.HAS_SA == 'true' && github.event_name == 'workflow_dispatch' && inputs.set_key
+        env: {KEY: "${{ secrets.ANTHROPIC_API_KEY }}"}
+        run: cd deploy/joined-site && printf '%s' "$KEY" | firebase functions:secrets:set ANTHROPIC_API_KEY --data-file=- --project joined-3adda --non-interactive --force
+      - name: Deploy functions
+        if: env.HAS_SA == 'true'
+        run: cd deploy/joined-site && firebase deploy --only functions --project joined-3adda --non-interactive --force
