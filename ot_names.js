@@ -1,4 +1,4 @@
-// Old Testament name meanings: STARTER DATA, not wired into the app yet (John, Nov 19).
+// Scripture name meanings (OT, NT, Book of Mormon): STARTER DATA, not wired into the app yet (John, Nov 19).
 // Plan: show these in the Genesis / early OT reader when those books are added.
 // Only meanings the text itself explains, or that scholars widely agree on. "note" says where they disagree.
 const OT_NAMES = {
@@ -39,5 +39,24 @@ const OT_NAMES = {
   David:{m:"beloved",ref:"1 Sam 16:13"},
   Solomon:{m:"peace",ref:"1 Chr 22:9",note:"From shalom: 'I will give peace and quietness unto Israel in his days.'"},
   Elijah:{m:"my God is the LORD (Jehovah)",ref:"1 Kgs 17:1"},
+  // ---- New Testament ----
+  Jesus:{m:"the LORD saves",ref:"Matt 1:21",note:"Greek form of Yeshua (Joshua): 'for he shall save his people.'"},
+  Emmanuel:{m:"God with us",ref:"Matt 1:23"},
+  Peter:{m:"rock",ref:"Matt 16:18",note:"Petros; Aramaic Cephas (John 1:42). 'Thou art Peter, and upon this rock...'"},
+  Thomas:{m:"twin",ref:"John 11:16",note:"Didymus is the Greek for the same word."},
+  Barnabas:{m:"son of consolation",ref:"Acts 4:36",note:"A name the apostles gave him."},
+  Tabitha:{m:"gazelle",ref:"Acts 9:36",note:"Dorcas is the Greek for the same word."},
+  Paul:{m:"small",ref:"Acts 13:9",note:"Not a conversion rename: 'Saul, (who also is called Paul).' He likely had a Hebrew and a Roman name all along."},
+  Onesimus:{m:"useful",ref:"Philem 1:11",note:"Paul's wordplay: 'in time past... unprofitable, but now profitable.'"},
+  // ---- Book of Mormon: meanings the text itself gives ----
+  Deseret:{m:"honey bee",ref:"Ether 2:3"},
+  Irreantum:{m:"many waters",ref:"1 Ne 17:5"},
+  Liahona:{m:"compass",ref:"Alma 37:38"},
+  Rabbanah:{m:"powerful or great king",ref:"Alma 18:13"},
+  // ---- Book of Mormon: proposed by scholars, not certain ----
+  Jershon:{m:"place of inheritance (proposed)",ref:"Alma 27:22",note:"Possibly from Hebrew yarash, 'inherit'; the land was given 'for an inheritance.' A scholarly proposal."},
+  Mosiah:{m:"savior, deliverer (proposed)",ref:"Omni 1:12",note:"Possibly Hebrew moshia. A scholarly proposal."},
+  Alma:{m:"(attested name)",ref:"Mosiah 17:2",note:"Found as a man's name in a Bar Kokhba-era Jewish document from near the Dead Sea."},
 };
+// Extra (not a name): Alma 36 is a chiasm with Christ at the center (vv. 17-18).
 if (typeof module!=="undefined") module.exports = OT_NAMES;
