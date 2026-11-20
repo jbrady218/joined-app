@@ -322,6 +322,8 @@ body.has-lbar{padding-bottom:72px}body.has-lbar .toast{bottom:84px}.lb-in{max-wi
 .ac-form .row{display:flex;gap:8px}.ac-form .row .btn{flex:1}.ac-form .lnk{justify-self:start;font-size:13px}
 .ac-err{color:#b3261e;background:#fbe9e7;border-radius:8px;padding:8px 10px;font-size:13px!important}
 .ac-in .row{display:flex;gap:8px;margin-top:12px}
+.ac-name{display:grid;gap:6px;margin:12px 0 4px}.ac-name label{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--gold)}
+.ac-name .nrow{display:flex;gap:8px}.ac-name input{flex:1;min-width:0;font:inherit;font-size:15px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg)}
 .mp{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:start}.mp>span{min-width:0}
 .mvsel{font:inherit;font-size:11.5px;color:var(--muted);border:1px solid transparent;background:transparent;border-radius:6px;padding:2px 4px;max-width:120px;cursor:pointer}
 .mp:hover .mvsel,.mvsel:focus{border-color:var(--line);background:var(--surface)}
@@ -5219,13 +5221,14 @@ function welcomeHTML(){const up=ACC.tab!=="in",ai=S.famAge??1;
    <button class="lnk wl-skip" data-acguest>Continue without an account</button><p class="wl-fine">Free for everyone. Your profile keeps your notes, highlights, lessons and family reading days on every device.</p></div>`;}
 function acctHTML(){const u=ACC.user;if(!u&&ACC.welcome)return welcomeHTML();
   if(u)return `<div class="ac-in" role="dialog" aria-label="Your account"><div class="eyebrow">Signed in</div><h2>${esc(u.displayName||u.email||"Your account")}</h2>${u.displayName&&u.email?`<p class="muted">${esc(u.email)}</p>`:""}
+    <form class="ac-name" data-acname><label for="acnm">${u.displayName?"Your name":"Add your name"}</label><div class="nrow"><input id="acnm" type="text" value="${esc(u.displayName||"")}" placeholder="First and last name" autocomplete="name" maxlength="60"><button class="btn primary" type="submit">Save</button></div></form>
     <p>${ACC.busy?"Syncing…":"Your notes, highlights, books and lessons are saved to your account and show up on any device where you sign in."}</p>${ACC.err?`<p class="ac-err">${esc(ACC.err)}</p>`:""}
     <div class="row"><button class="btn" data-acsignout>Sign out</button><button class="btn primary" data-acclose>Done</button></div></div>`;
   return `<div class="ac-in" role="dialog" aria-label="Sign in"><button class="ac-x" data-acclose aria-label="Close">×</button><div class="eyebrow">Joined</div><h2>Sign in to save everywhere</h2>
     <p class="muted">Keep your notes, highlights and lessons on your phone and computer. Anything you've already saved on this device comes with you.</p>
     <button class="btn ac-g" data-acgoogle><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#4285F4" d="M45 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h11.8c-.5 2.7-2 5-4.4 6.6v5.5h7.1C42.7 36.7 45 31.1 45 24.5z"/><path fill="#34A853" d="M24 46c5.9 0 10.9-2 14.5-5.4l-7.1-5.5c-2 1.3-4.5 2.1-7.4 2.1-5.7 0-10.5-3.8-12.2-9H4.5v5.7C8.1 41.1 15.5 46 24 46z"/><path fill="#FBBC05" d="M11.8 28.2c-.4-1.3-.7-2.7-.7-4.2s.3-2.9.7-4.2v-5.7H4.5C3 17.1 2 20.4 2 24s1 6.9 2.5 9.9l7.3-5.7z"/><path fill="#EA4335" d="M24 10.8c3.2 0 6.1 1.1 8.4 3.3l6.3-6.3C34.9 4.2 29.9 2 24 2 15.5 2 8.1 6.9 4.5 14.1l7.3 5.7c1.7-5.2 6.5-9 12.2-9z"/></svg>Continue with Google</button>
     <div class="ac-or"><span>or use email</span></div>
-    <form class="ac-form" data-acform><input id="ace" type="email" placeholder="Email" autocomplete="email" required><input id="acp" type="password" placeholder="Password (6 or more characters)" autocomplete="current-password" minlength="6" required>
+    <form class="ac-form" data-acform><input id="acn" type="text" placeholder="Your name (for a new account)" autocomplete="name" maxlength="60"><input id="ace" type="email" placeholder="Email" autocomplete="email" required><input id="acp" type="password" placeholder="Password (6 or more characters)" autocomplete="current-password" minlength="6" required>
     <div class="row"><button class="btn primary" type="submit" data-acmode="in">Sign in</button><button class="btn" type="submit" data-acmode="up">Create account</button></div>
     <button type="button" class="lnk" data-acforgot>Forgot password?</button></form>${ACC.err?`<p class="ac-err">${esc(ACC.err)}</p>`:""}</div>`;}
 async function openAcct(welcome){let o=$("#acct");if(!o){o=document.createElement("div");o.id="acct";document.body.appendChild(o);}ACC.welcome=!!welcome;o.className=welcome?"welcome":"map-overlay";ACC.err="";o.innerHTML=acctHTML();
@@ -5251,6 +5254,10 @@ document.addEventListener("click",async e=>{const b=e.target.closest("[data-acct
 document.addEventListener("submit",async e=>{const f=e.target.closest("[data-acform]");if(!f)return;e.preventDefault();
   const mode=(e.submitter&&e.submitter.dataset.acmode)||"in",em=$("#ace").value.trim(),pw=$("#acp").value;if(!await fbLoad())return renderAcct();
   try{if(mode==="up"){const r=await fbAuth.createUserWithEmailAndPassword(em,pw),nm=(($("#acn")||{}).value||"").trim();if(nm&&r.user){await r.user.updateProfile({displayName:nm});ACC.user=fbAuth.currentUser;renderAcct();}}else await fbAuth.signInWithEmailAndPassword(em,pw);closeAcct();toast(mode==="up"?"Account created":"Signed in");}catch(x){acFail(x);}});
+document.addEventListener("submit",async e=>{const f=e.target.closest("[data-acname]");if(!f)return;e.preventDefault();
+  const nm=(($("#acnm")||{}).value||"").trim().slice(0,60);
+  try{if(!await fbLoad()||!fbAuth.currentUser)return;await fbAuth.currentUser.updateProfile({displayName:nm||null});ACC.user=fbAuth.currentUser;ACC.err="";renderAcct();toast(nm?"Name saved":"Name removed");}
+  catch(x){ACC.err="Couldn't save your name. Check your connection and try again.";renderAcct();}});
 // Already signed in from a past visit? Load quietly so syncing picks up where it left off.
 let HAS_AUTH=false;try{HAS_AUTH=localStorage.getItem(ACC_KEY+"-signedin")==="1"||Object.keys(localStorage).some(k=>k.startsWith("firebase:authUser:"));if(HAS_AUTH)setTimeout(fbLoad,0);}catch(e){}
 // First visit on the public site: show the welcome screen before anything else.
