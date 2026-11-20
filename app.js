@@ -200,13 +200,13 @@ function renderHome(){
 let PENDING=null;
 function tryIt(k){const T={term:["dan",1,{type:"term",key:"babylon"},null],orig:["mat",5,{type:"term",key:"teleios"},["term","Original"]],history:["dan",3,{type:"history"},["history","History"]],verse:["dan",1,{type:"verse",ref:"dan.1:8"},["verse","Talks"]]}[k];
   if(!T)return;if(T[3])TAB[T[3][0]]=T[3][1];else TAB.term="Definition";PENDING=T[2];const h=hashFor(T[0],T[1]);if(location.hash===h)route();else location.hash=h;}
-function toggleSearch(force){const el=$("#hsearch");const show=force!==undefined?force:el.hidden;el.hidden=!show;const tp=document.querySelector("header.top");if(tp)tp.classList.toggle("searching",show);if(show){const q=$("#hq");q.value="";$("#hres").innerHTML=askIntro();$("#hres").hidden=false;q.focus();}}
+function toggleSearch(force){const el=$("#hsearch");const show=force!==undefined?force:el.hidden;el.hidden=!show;document.body.classList.toggle("sheet-open",show);if(show){const q=$("#hq");q.value="";$("#hres").innerHTML=askIntro();$("#hres").hidden=false;q.focus();}}
 document.addEventListener("input",e=>{if(e.target.id==="hq"){const h=e.target.value.trim()?doSearch(e.target.value):askIntro();$("#hres").innerHTML=h;$("#hres").hidden=!h;}});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#hsearch").hidden)toggleSearch(false);if(e.key==="Enter"&&e.target.id==="hq"){e.target.blur();if(!parseRef(e.target.value)&&e.target.value.trim().split(/\s+/).length>=3)askAI(e.target.value);}});
 document.addEventListener("click",e=>{const b=e.target.closest("[data-try],[data-search]");
   if(e.target.closest("[data-seek]")){const v=$("#hq").value;if(v.trim().length>=3)askAI(v);else{$("#hq").placeholder="Describe what you're looking for";$("#hq").focus();}return;}
   const ax=e.target.closest("[data-askex]");if(ax){$("#hq").value=ax.dataset.askex;askAI(ax.dataset.askex);return;}
-  if(e.target.closest("#hres .sres"))setTimeout(()=>toggleSearch(false),0);
+  if(e.target.closest("#hres .sres, #hres button.skr"))setTimeout(()=>toggleSearch(false),0);
   if(!b)return;const d=b.dataset;
   if(d.try)tryIt(d.try);
   else if("search" in d)toggleSearch();
@@ -251,7 +251,8 @@ function route(){let h=location.hash;if(/^#import=/.test(h)){takeSharedLink();re
   renderLBar();const vEl=view==="read"&&panelView.type==="verse"&&document.getElementById(vid(panelView.ref));if(vEl)vEl.scrollIntoView({block:"center"});else window.scrollTo(0,0);}
 window.addEventListener("hashchange",route);
 document.addEventListener("click",e=>{const a=e.target.closest("a[data-open]");if(a){setTimeout(()=>open({type:a.dataset.open}),0);}
-  const hb=e.target.closest("[data-home]");if(hb){location.hash="#home";}});
+  const hb=e.target.closest("[data-home]");if(hb){location.hash="#home";}
+  const cb=e.target.closest("[data-cont]");if(cb){let l=LAST;try{l=localStorage.getItem(KEY+"-last")||LAST;}catch(x){}const [b,c]=(CHAPTERS[l]?l:"dan.1").split(".");location.hash=hashFor(b,+c);}});
 const GC="https://www.churchofjesuschrist.org/study/general-conference/";
 // 1996 to today; First Presidency, Quorum of the Twelve and Relief Society General Presidency only. Each checked against the talk's footnotes.
 const TALKS=[
@@ -375,7 +376,16 @@ function renderTop(){
   document.body.classList.toggle("not-bible",!isBible(bk));
   document.querySelectorAll("[data-mode]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.mode===mode)));
   const nc=$("#ncount");if(nc)nc.textContent=S.notes.length;
+  const tab=({home:"home",read:"cont",family:"fam"})[view]||"";document.querySelectorAll(".nv[data-tab]").forEach(b=>b.classList.toggle("on",b.dataset.tab===tab));
+  setBars(true);
 }
+// Bars slide away while you read downward and return when you scroll up; a double-tap on empty space toggles them.
+function setBars(show){document.body.classList.toggle("bars-off",!show);}
+let BAR_Y=0;window.addEventListener("scroll",()=>{if(view!=="read"||document.body.classList.contains("sheet-open"))return;const y=window.scrollY,d=y-BAR_Y;if(Math.abs(d)<10)return;BAR_Y=y;if(d>0&&y>160)setBars(false);else if(d<0)setBars(true);},{passive:true});
+let TAP={t:0,x:0,y:0};const NO_TAP="button,a,input,textarea,select,.verse,#panel,.selbar,#hsearch,#acct,#tourwrap,.bnav,.chpop,header.top,.lbar,#lbar";
+document.addEventListener("touchend",e=>{if(view!=="read"||e.target.closest(NO_TAP)||!e.changedTouches[0])return;const t=e.changedTouches[0],now=Date.now();
+  if(now-TAP.t<320&&Math.abs(t.clientX-TAP.x)<30&&Math.abs(t.clientY-TAP.y)<30){setBars(document.body.classList.contains("bars-off"));TAP.t=0;TAP.last=now;}else TAP={last:TAP.last,t:now,x:t.clientX,y:t.clientY};},{passive:true});
+document.addEventListener("dblclick",e=>{if(view!=="read"||e.target.closest(NO_TAP)||Date.now()-(TAP.last||0)<700)return;setBars(document.body.classList.contains("bars-off"));});
 function renderReader(){
   const C=CHAPTERS[CK(bk,ch)],B=BOOKS[bk],bib=isBible(bk),md=bib?mode:"std",ver=verOf(bk);const fns=[];SEEN=new Set();
   const verLabel=bib?(mode==="kjv"?"KING JAMES VERSION":mode==="web"?"WORLD ENGLISH BIBLE":"KJV · WEB"):"";
@@ -655,8 +665,14 @@ const TOUR=[
  {t:"Tap any verse",p:["Tap a verse to open its tools: highlight it in one of ten colors, write a note, and compare translations.","The <b>Talks</b> tab shows conference talks by prophets and apostles that quote that exact verse, so you can see how they apply it.","To highlight just a few words, press and drag over them, then pick a color."],
   m:`<div class="mk-page"><p class="mk-sel"><b>18</b> But if not, be it known unto thee, O king, that <span class="mk-hl">we will not serve thy gods</span>…</p></div>
      <div class="mk-card"><div class="mk-title">Daniel 3:18</div><div class="mk-sw">${HLC.slice(0,6).map(([k])=>`<span class="sw ${k}"></span>`).join("")}</div><div class="mk-tabs"><span>Notes</span><span class="on mk-hitab">Talks 1</span><span>Compare</span><span>Books</span></div><div class="mk-talk mk-hitbox"><b>Worship</b><span>Elder D. Todd Christofferson · April 2025</span></div></div>`},
- {t:"Find your way around",p:["<b>Library:</b> tap a book cover on the home page to see every book and chapter.","<b>Resume:</b> jump back to where you left off.","<b>Search:</b> the button at the top finds a verse (like 1 Nephi 3:7), a name, or a word.","<b>Chapters:</b> swipe left or right on the text, use the arrows at the top, or tap the book name to pick any chapter."],
-  m:`<div class="mk-shelf">${["OLD TESTAMENT","NEW TESTAMENT","BOOK OF MORMON"].map(n=>`<span class="mk-cover">${n}</span>`).join("")}</div><div class="mk-row"><span class="mk-eye">RESUME</span><b>Matthew 6</b></div><div class="mk-search">⌕ 1 Nephi 3:7</div>`}];
+ {t:"Names have meanings",p:["Many names in the scriptures mean something. <b>Noah</b> means “rest,” <b>Solomon</b> means “peace,” and <b>Levi</b> means “joined.”","Tap a name to see what it means, with the verse that explains it. Genesis through Deuteronomy have this for the people and places in them."],
+  m:`<div class="mk-page"><p><b>8</b> But <span class="mk-hit">Noah</span> found grace in the eyes of the LORD.</p></div>
+     <div class="mk-card"><div class="mk-title">Noah</div><div class="mk-tabs"><span class="on">Definition</span><span>Verses</span><span>Notes</span></div><p>The prophet who built the ark. The name means “rest” or “comfort.” Its Hebrew letters, reversed, spell “grace.”</p></div>`},
+ {t:"Seek: find it by meaning",p:["Tap the gold <b>Joined</b> button in the middle of the bottom bar.","Describe what you're looking for the way you'd tell a friend, like “the verse I highlighted where Nephi went into Jerusalem not knowing what to do.” Seek finds matching verses, your own highlights and Conference talks, and always shows the real scripture text.","You get 20 free Seek searches. Typing a verse (1 Nephi 3:7), a name or a word works for free, always."],
+  m:`<div class="mk-seekq">“the verse I highlighted where Nephi went into Jerusalem…”</div>
+     <div class="mk-card"><div class="mk-skmeta"><span class="mk-skk">YOUR HIGHLIGHT</span><b>1 Nephi 4:6</b></div><p>And I was led by the Spirit, not knowing beforehand the things which I should do.</p><p class="mk-skwhy">Why it fits: Nephi went in not knowing what to do.</p></div>`},
+ {t:"Find your way around",p:["<b>Home:</b> your library of books and today's reading.","<b>Continue:</b> jump back to where you left off.","<b>Seek:</b> the big middle button.","<b>Come, Follow Me:</b> today's family lesson, by age.","<b>Account:</b> sign in to keep your notes, highlights and name on every device.","While you read, the bars slide away as you scroll down and return when you scroll up. Double-tap empty space to hide or show them. Swipe left or right to change chapters."],
+  m:`<div class="mk-bar">${["Home","Continue","","Come, Follow Me","Sign in"].map(n=>n?`<span>${n}</span>`:`<span class="mk-orb"><img src="${LOGO_MARK}" alt=""></span>`).join("")}</div>`}];
 let tourI=0;
 function tourHTML(){const s=TOUR[tourI],last=tourI===TOUR.length-1;
   return `<div class="tour" role="dialog" aria-modal="true" aria-labelledby="tour-t"><div class="tour-in">
