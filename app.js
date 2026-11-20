@@ -171,7 +171,7 @@ function homeFoot(){return `<footer class="h-foot"><div class="foot-row"><p><str
     <details><summary>Add this site to your Home Screen</summary><p><strong>iPhone or iPad (Safari):</strong> tap Share, then <i>Add to Home Screen</i>. <strong>Android (Chrome):</strong> tap ⋮, then <i>Add to Home screen</i>. <strong>Computer:</strong> click the install icon in the address bar.</p></details>
     <p class="muted">Not an official publication of The Church of Jesus Christ of Latter-day Saints.</p></footer>`;}
 const studyLinks=()=>`<section class="hsect"><h2 class="h4-h">Study and prepare</h2><div class="links3">
-    <a class="link3" href="#topics"><span class="vol-ico">${ICO.topics}</span><div><strong>Study by topic</strong><span>Faith, repentance, hope and more: key scriptures, quotes and talks</span></div><span class="arr">→</span></a>
+    <a class="link3" href="#words"><span class="vol-ico wd-ico" aria-hidden="true">אΑ</span><div><strong>Original words</strong><span>The Hebrew, Aramaic and Greek behind the English, and what names mean</span></div><span class="arr">→</span></a>
     <a class="link3" href="#prepare"><span class="vol-ico">${ICO.teach}</span><div><strong>Prepare to teach or speak</strong><span>Help building a talk or a lesson</span></div><span class="arr">→</span></a>
     <a class="link3" href="#books"><span class="vol-ico">${ICO.lesson}</span><div><strong>Your books</strong><span>Add books you own, and each verse shows where they talk about it</span></div><span class="arr">→</span></a></div></section>`;
 function renderHome(){
@@ -203,13 +203,44 @@ function renderStudy(){const all=recentItems(200);
   $("#reader").innerHTML=`<div class="home4"><h1 class="h4-h study-h">Study</h1>${famButton()}${studyLinks()}
   <section class="hsect"><div class="h-head"><h2 class="h4-h">Your highlights and notes</h2><span class="muted" style="font-size:13px">${all.length?all.length+" saved":""}</span></div><div class="recent">${recentHTML(200)}</div></section></div>`;
   ensureFor(recentRefs(200),()=>{if(view==="study")renderStudy();});}
+// ---- Original words: a hub for the Hebrew, Aramaic and Greek behind the English, and for name meanings ----
+const WORD_KEYS=new Set(["ot2_selah","ot2_hallelujah","ot1_purim","exo_passover","exo_manna","lev_urim","lev_scapegoat","lev_jubile","lev_atonement","ot2_vanity","ot2_preacher","ot3_sheol","ot3_sonofman"]);
+const wdLang=t=>{const l=t.lang||"";return /Aramaic/i.test(l)?"Aramaic":/Greek/i.test(l)&&!/Hebrew/i.test(l)?"Greek":/Hebrew|Babylon|Persian|Egypt/i.test(l)?"Hebrew":/Greek/i.test(l)?"Greek":"Hebrew";};
+const wdIsWord=([k,t])=>!!t.diff||WORD_KEYS.has(k)||/^[a-z]/.test(t.name||"");
+let WD={q:"",kind:"words",lang:"all",n:60};
+function wdList(){const q=WD.q.trim().toLowerCase();
+  const all=Object.entries(TERMS).filter(([k,t])=>t.heb&&t.name&&t.name.trim());
+  const rows=all.filter(x=>(WD.kind==="words")===wdIsWord(x)).filter(([k,t])=>WD.lang==="all"||wdLang(t)===WD.lang)
+    .filter(([k,t])=>!q||[t.name,t.tr,t.plain,t.heb,t.strong].some(f=>(f||"").toLowerCase().includes(q)))
+    .sort((a,b)=>(b[1].diff?1:0)-(a[1].diff?1:0)||a[1].name.toLowerCase().localeCompare(b[1].name.toLowerCase()));
+  const shown=rows.slice(0,WD.n);
+  return `<p class="wd-count muted">${rows.length} ${WD.kind==="words"?"word"+(rows.length===1?"":"s"):"name"+(rows.length===1?"":"s")}</p>`+shown.map(([k,t])=>{
+    const rtl=/[\u0590-\u05FF]/.test(t.heb),bs=[...new Set(t.books||[])].filter(b=>BOOKS[b]),sent=(t.plain||"").split(/(?<=[.?!])\s+/).slice(0,2).join(" ");
+    return `<button class="wd-card" data-wordgo="${k}"><span class="wd-top"><strong>${esc(t.name)}</strong><span class="wd-lang wd-${wdLang(t).toLowerCase()}">${wdLang(t)}</span>${t.diff?`<span class="wd-diff" title="Means something different in the original">meaning changed</span>`:""}</span>
+      <span class="wd-orig"><span class="wd-script" ${rtl?'dir="rtl"':""}>${esc(t.heb)}</span><span class="wd-tr">${esc(t.tr||"")}</span>${t.strong?`<span class="wd-str">${esc(t.strong)}</span>`:""}</span>
+      <span class="wd-def">${esc(sent.length>260?sent.slice(0,257)+"…":sent)}</span>
+      ${bs.length?`<span class="wd-in">${bs.slice(0,4).map(b=>esc(bname(b))).join(" · ")}${bs.length>4?" · +"+(bs.length-4):""}</span>`:""}</button>`;}).join("")
+    +(rows.length>shown.length?`<button class="btn wd-more" data-wmore>Show more (${rows.length-shown.length})</button>`:"")+(!rows.length?`<p class="sknote">Nothing matches. Try another word or clear the filters.</p>`:"");}
+function renderWords(){const ch=(k,v,l)=>`<button class="scr-tab" data-w${k}="${v}" aria-selected="${WD[k]===v}">${l}</button>`;
+  $("#reader").innerHTML=`<div class="home4 wdh"><h1 class="h4-h study-h">Original words</h1>
+  <p class="hlede">The Hebrew, Aramaic and Greek behind the English. Many words meant something richer in the original than they do today, and names often carry a meaning. Tap a card to see it in the scriptures.</p>
+  <div class="search wd-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input id="wq" type="search" value="${esc(WD.q)}" placeholder="Search a word, a name or its letters" autocomplete="off" aria-label="Search original words"></div>
+  <div class="scr-tabs" role="tablist" aria-label="Kind">${ch("kind","words","Words")}${ch("kind","names","Names")}</div>
+  <div class="scr-tabs wd-langs" role="tablist" aria-label="Language">${ch("lang","all","All")}${ch("lang","Hebrew","Hebrew")}${ch("lang","Aramaic","Aramaic")}${ch("lang","Greek","Greek")}</div>
+  <div id="wlist" class="wd-list">${wdList()}</div></div>`;}
+async function goTerm(k){const t=TERMS[k];if(!t)return;
+  for(const b of (t.books||[])){if(!BOOKS[b])continue;await ensureText(b);
+    for(const c of BOOKS[b].chs){let ks=[];try{ks=termsInCh(b,c);}catch(e){}if(ks.includes(k)){const h=hashFor(b,c),go=()=>setTimeout(()=>{if(view==="read")open({type:"term",key:k});},40);
+      if(location.hash===h){go();}else{const once=()=>{window.removeEventListener("hashchange",once);go();};window.addEventListener("hashchange",once);location.hash=h;}return;}}}
+  toast("Couldn't find it in the text yet.");}
 let PENDING=null;
 function tryIt(k){const T={term:["dan",1,{type:"term",key:"babylon"},null],orig:["mat",5,{type:"term",key:"teleios"},["term","Original"]],history:["dan",3,{type:"history"},["history","History"]],verse:["dan",1,{type:"verse",ref:"dan.1:8"},["verse","Talks"]]}[k];
   if(!T)return;if(T[3])TAB[T[3][0]]=T[3][1];else TAB.term="Definition";PENDING=T[2];const h=hashFor(T[0],T[1]);if(location.hash===h)route();else location.hash=h;}
 function hqFit(){const t=$("#hq");if(!t)return;t.style.height="auto";const cs=getComputedStyle(t),lh=parseFloat(cs.lineHeight)||24,pad=parseFloat(cs.paddingTop)+parseFloat(cs.paddingBottom),max=lh*4+pad;t.style.height=Math.min(t.scrollHeight,max)+"px";t.style.overflowY=t.scrollHeight>max?"auto":"hidden";}
 window.addEventListener("resize",()=>{if(!$("#hsearch").hidden)hqFit();});
 function toggleSearch(force){const el=$("#hsearch");const show=force!==undefined?force:el.hidden;el.hidden=!show;document.body.classList.toggle("sheet-open",show);if(show){const q=$("#hq");q.value="";hqFit();$("#hres").innerHTML=askIntro();$("#hres").hidden=false;q.focus();}}
-document.addEventListener("input",e=>{if(e.target.id==="hq"){hqFit();const h=e.target.value.trim()?doSearch(e.target.value):askIntro();$("#hres").innerHTML=h;$("#hres").hidden=!h;}});
+document.addEventListener("input",e=>{if(e.target.id==="wq"){WD.q=e.target.value;WD.n=60;$("#wlist").innerHTML=wdList();return;}
+  if(e.target.id==="hq"){hqFit();const h=e.target.value.trim()?doSearch(e.target.value):askIntro();$("#hres").innerHTML=h;$("#hres").hidden=!h;}});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#hsearch").hidden)toggleSearch(false);if(e.key==="Enter"&&e.target.id==="hq"&&!e.shiftKey){e.preventDefault();e.target.blur();if(!parseRef(e.target.value)&&e.target.value.trim().split(/\s+/).length>=3)askAI(e.target.value);}});
 document.addEventListener("click",e=>{const b=e.target.closest("[data-try],[data-search]");
   if(e.target.closest("[data-seek]")){const v=$("#hq").value;if(v.trim().length>=3)askAI(v);else{$("#hq").placeholder="Describe what you're looking for";$("#hq").focus();}return;}
@@ -261,10 +292,10 @@ function route(){let h=location.hash;if(/^#import=/.test(h)){takeSharedLink();re
   if(m&&BOOKS[m[1]]&&BOOKS[m[1]].chs.includes(+m[2])){view="read";const nb=m[1],n=+m[2];
     if(nb!==bk||n!==ch){const keep=panelView.type==="notes"||panelView.type==="library"||(panelView.type==="verse"&&PR(panelView.ref)&&PR(panelView.ref).b===nb&&PR(panelView.ref).c===n);bk=nb;ch=n;if(!keep)panelView={type:"guide"};}
     LAST=CK(bk,ch);try{localStorage.setItem(KEY+"-last",LAST);}catch(e){}}
-  else{const vm=h.match(/^#vol-(\w+)$/),bm=h.match(/^#build-([a-z0-9]+)-(\d+)(?:~(\w+))?$/),gm=h.match(/^#build~([\w-]+)$/);view=vm?"volume":bm&&BOOKS[bm[1]]&&BOOKS[bm[1]].chs.includes(+bm[2])?"build":h==="#build"?"buildpick":gm?"buildgroup":h==="#family"?"family":h==="#study"?"study":h==="#scriptures"?"scriptures":h==="#books"?"books":h==="#topics"?"topics":h==="#prepare"?"prepare":"home";if(vm)volId=vm[1];if(view==="build"){buildKey=CK(bm[1],+bm[2]);buildLesson=bm[3]||null;}if(gm)buildGroup=gm[1];else LB=null;}
+  else{const vm=h.match(/^#vol-(\w+)$/),bm=h.match(/^#build-([a-z0-9]+)-(\d+)(?:~(\w+))?$/),gm=h.match(/^#build~([\w-]+)$/);view=vm?"volume":bm&&BOOKS[bm[1]]&&BOOKS[bm[1]].chs.includes(+bm[2])?"build":h==="#build"?"buildpick":gm?"buildgroup":h==="#family"?"family":h==="#study"?"study":h==="#words"?"words":h==="#scriptures"?"scriptures":h==="#books"?"books":h==="#topics"?"topics":h==="#prepare"?"prepare":"home";if(vm)volId=vm[1];if(view==="build"){buildKey=CK(bm[1],+bm[2]);buildLesson=bm[3]||null;}if(gm)buildGroup=gm[1];else LB=null;}
   if(PENDING&&view==="read"){panelView=PENDING;PENDING=null;}
   document.body.classList.toggle("on-home",view!=="read");renderTop();
-  if(view!=="read"){({home:renderHome,scriptures:renderScriptures,study:renderStudy,family:()=>{FAM_OFF=0;renderFamily();},books:renderBooks,topics:renderTopics,prepare:renderPrepare,volume:()=>renderVolume(volId),buildpick:renderBuildPick,buildgroup:()=>renderBuildGroup(buildGroup),build:()=>{LADD=null;LEDIT=null;renderBuild(buildKey,buildLesson);}})[view]();$("#panel").classList.remove("open");}
+  if(view!=="read"){({home:renderHome,words:renderWords,scriptures:renderScriptures,study:renderStudy,family:()=>{FAM_OFF=0;renderFamily();},books:renderBooks,topics:renderTopics,prepare:renderPrepare,volume:()=>renderVolume(volId),buildpick:renderBuildPick,buildgroup:()=>renderBuildGroup(buildGroup),build:()=>{LADD=null;LEDIT=null;renderBuild(buildKey,buildLesson);}})[view]();$("#panel").classList.remove("open");}
   else if(!TEXTS[bk]){$("#panel").classList.remove("open");$("#reader").innerHTML=`<div class="page"><p class="muted" style="padding:48px 0;text-align:center">Loading ${esc(bname(bk))}…</p></div>`;
     const want=bk;ensureText(bk).then(ok=>{if(view!=="read"||bk!==want)return;if(ok)route();else $("#reader").innerHTML=`<div class="page"><p class="muted" style="padding:48px 0;text-align:center">Couldn’t load ${esc(bname(bk))}. Check your connection and try again.</p></div>`;});}
   else{renderReader();renderPanel();}
@@ -273,6 +304,10 @@ function route(){let h=location.hash;if(/^#import=/.test(h)){takeSharedLink();re
 window.addEventListener("hashchange",route);
 document.addEventListener("click",e=>{const a=e.target.closest("a[data-open]");if(a){setTimeout(()=>open({type:a.dataset.open}),0);}
   const hb=e.target.closest("[data-home]");if(hb){location.hash="#home";}
+  const wk=e.target.closest("[data-wkind]");if(wk){WD.kind=wk.dataset.wkind;WD.n=60;renderWords();return;}
+  const wl=e.target.closest("[data-wlang]");if(wl){WD.lang=wl.dataset.wlang;WD.n=60;renderWords();return;}
+  if(e.target.closest("[data-wmore]")){WD.n+=60;$("#wlist").innerHTML=wdList();return;}
+  const wg=e.target.closest("[data-wordgo]");if(wg){goTerm(wg.dataset.wordgo);return;}
   const sv=e.target.closest("[data-scrvol]");if(sv){SCR_VOL=sv.dataset.scrvol;try{localStorage.setItem(KEY+"-scrvol",SCR_VOL);}catch(x){}renderScriptures();return;}
   const cb=e.target.closest("[data-cont]");if(cb){let l=LAST;try{l=localStorage.getItem(KEY+"-last")||LAST;}catch(x){}const [b,c]=(CHAPTERS[l]?l:"dan.1").split(".");location.hash=hashFor(b,+c);}});
 const GC="https://www.churchofjesuschrist.org/study/general-conference/";
@@ -398,7 +433,7 @@ function renderTop(){
   document.body.classList.toggle("not-bible",!isBible(bk));
   document.querySelectorAll("[data-mode]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.mode===mode)));
   const nc=$("#ncount");if(nc)nc.textContent=S.notes.length;
-  const tab=({home:"",read:"cont",family:"study",study:"study",books:"study",topics:"study",prepare:"study",scriptures:"scr",volume:"scr"})[view]||"";document.querySelectorAll(".nv[data-tab]").forEach(b=>b.classList.toggle("on",b.dataset.tab===tab));
+  const tab=({home:"",read:"cont",family:"study",study:"study",words:"study",books:"study",topics:"study",prepare:"study",scriptures:"scr",volume:"scr"})[view]||"";document.querySelectorAll(".nv[data-tab]").forEach(b=>b.classList.toggle("on",b.dataset.tab===tab));
   setBars(true);
 }
 // Bars slide away while you read downward and return when you scroll up; a double-tap on empty space toggles them.
@@ -696,7 +731,7 @@ const TOUR=[
  {t:"Seek: find it by meaning",p:["Tap the gold <b>Joined</b> button in the middle of the bottom bar.","Describe what you're looking for the way you'd tell a friend, like “the verse I highlighted where Nephi went into Jerusalem not knowing what to do.” Seek finds matching verses, your own highlights and Conference talks, and always shows the real scripture text.","You get 20 free Seek searches. Typing a verse (1 Nephi 3:7), a name or a word works for free, always."],
   m:`<div class="mk-seekq">“the verse I highlighted where Nephi went into Jerusalem…”</div>
      <div class="mk-card"><div class="mk-skmeta"><span class="mk-skk">YOUR HIGHLIGHT</span><b>1 Nephi 4:6</b></div><p>And I was led by the Spirit, not knowing beforehand the things which I should do.</p><p class="mk-skwhy">Why it fits: Nephi went in not knowing what to do.</p></div>`},
- {t:"Find your way around",p:["<b>Scriptures:</b> all five volumes on one screen. Pick a volume, then a book, then a chapter.","<b>Continue:</b> jump back to where you left off.","<b>Seek:</b> the big middle button.","<b>Study:</b> your highlights and notes, study by topic, your books, help preparing a lesson or talk, and today's Come, Follow Me lesson.","<b>Account:</b> sign in to keep your notes, highlights and name on every device.","Tap the Joined logo at the top for the home page. While you read, the bars slide away as you scroll down and return when you scroll up. Double-tap empty space to hide or show them. Swipe left or right to change chapters."],
+ {t:"Find your way around",p:["<b>Scriptures:</b> all five volumes on one screen. Pick a volume, then a book, then a chapter.","<b>Continue:</b> jump back to where you left off.","<b>Seek:</b> the big middle button.","<b>Study:</b> your highlights and notes, the original Greek and Hebrew words, your books, help preparing a lesson or talk, and today's Come, Follow Me lesson.","<b>Account:</b> sign in to keep your notes, highlights and name on every device.","Tap the Joined logo at the top for the home page. While you read, the bars slide away as you scroll down and return when you scroll up. Double-tap empty space to hide or show them. Swipe left or right to change chapters."],
   m:`<div class="mk-bar">${["Scriptures","Continue","","Study","Sign in"].map(n=>n?`<span>${n}</span>`:`<span class="mk-orb"><img src="${LOGO_MARK}" alt=""></span>`).join("")}</div>`}];
 let tourI=0;
 function tourHTML(){const s=TOUR[tourI],last=tourI===TOUR.length-1;
