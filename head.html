@@ -417,7 +417,11 @@ mark.mk{color:inherit;border-radius:2px;padding:1px 0;box-decoration-break:clone
 .sresults[hidden]{display:none}
 .sresults{display:flex;flex-direction:column;gap:6px;max-height:420px;overflow:auto;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px}
 .search .seekbtn{background:linear-gradient(180deg,#ecc65f,#cf9d2b);color:#10284a;border:1px solid #b98a22;font-weight:700;display:inline-flex;align-items:center;gap:6px;flex:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 1px 3px rgba(0,0,0,.18)}
-.search .seekbtn svg{width:16px;height:16px;fill:rgba(16,40,74,.18);stroke:currentColor;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.search .seekbtn{padding-left:7px}.search .seekbtn .sk-mini{width:22px;height:22px;border-radius:6px}
+.sk-mini{width:26px;height:26px;border-radius:7px;display:block;flex:none}
+.top .notes-btn.seek-top{background:linear-gradient(180deg,#ecc65f,#cf9d2b);color:#10284a;border:1px solid #b98a22;font-weight:700;display:inline-flex;align-items:center;gap:8px;padding:6px 18px 6px 8px;box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 1px 3px rgba(0,0,0,.18)}
+.top .seek-top .sk-mini{width:28px;height:28px}
+.h4-seek{display:inline-flex;align-items:center;gap:8px}.h4-seek .sk-mini{width:22px;height:22px;border-radius:0}
 .sk-badge{display:grid;place-items:center;width:46px;height:46px;border-radius:50%;background:radial-gradient(circle at 30% 25%,#f6d982,#c9972a);color:#10284a;flex:none;box-shadow:0 2px 8px rgba(0,0,0,.3)}
 .sk-badge .skico{width:26px;height:26px;fill:rgba(16,40,74,.16);stroke:currentColor;stroke-width:1.8;stroke-linejoin:round;stroke-linecap:round}
 .sk-badge.sm{width:26px;height:26px;box-shadow:none}.sk-badge.sm .skico{width:16px;height:16px}
@@ -632,8 +636,6 @@ a.cover{text-decoration:none;min-height:0;aspect-ratio:2/3}
 .top .notes-btn{min-height:44px;padding-left:14px;padding-right:14px;font-size:14px}
 .top .brand-ico{width:38px;height:38px;border-radius:9px}
 .top .brand{font-size:21px}
-.top .notes-btn[data-search]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600;padding-left:20px;padding-right:20px}
-.top .notes-btn[data-search] svg{display:none}
 .hsearch{max-width:1180px;margin:10px auto 0}
 .hs-in{max-width:640px;margin-left:auto;display:flex;flex-direction:column;gap:8px}
 .hsearch .search{margin:0}.hsearch .search .btn{flex:none}
@@ -655,7 +657,7 @@ a.cover{text-decoration:none;min-height:0;aspect-ratio:2/3}
 .how-card .linkbtn{border:0;background:none;padding:0;text-align:left;cursor:pointer;font-size:14px}
 button.linkbtn{border:0;background:none;padding:0;cursor:pointer;font-family:var(--sans)}
 @media (max-width:900px){.how-grid{grid-template-columns:1fr 1fr}}
-@media (max-width:560px){.how-grid{grid-template-columns:1fr}.icon-btn span{display:none}.top .notes-btn[data-search] span{display:inline}.top .notes-btn[data-search]{font-size:15px}}
+@media (max-width:560px){.how-grid{grid-template-columns:1fr}.icon-btn span{display:none}.top .seek-top{font-size:15px}}
 .tourcard{display:flex;align-items:center;gap:16px;width:100%;text-align:left;padding:20px 22px;border-radius:16px;border:1px solid rgba(232,196,106,.5);background:var(--gold-soft);color:var(--fg);cursor:pointer}
 .tourcard:hover{border-color:var(--gold)}
 .tc-ico{flex:none;width:46px;height:46px;border-radius:50%;background:#e8c46a;color:#10284a;display:grid;place-items:center;font-family:var(--serif);font-size:24px;font-weight:700}
