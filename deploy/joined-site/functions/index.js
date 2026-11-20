@@ -38,6 +38,9 @@ const {defineSecret}=require("firebase-functions/params");
 const Anthropic=require("@anthropic-ai/sdk");
 const ANTHROPIC_API_KEY=defineSecret("ANTHROPIC_API_KEY");
 const FREE_SEEKS=20,MONTHLY_TOTAL=10000;
+// Accounts with unlimited Seek (owner). Stored as SHA-256 of the lowercase email so the address isn't public.
+const UNLIMITED=new Set(["1d569d08c75bde40719a229539f0d55434786f67e0cb93c87f2bd1d7882bc6c6"]);
+const sha=x=>require("crypto").createHash("sha256").update(String(x||"").trim().toLowerCase()).digest("hex");
 const ASK_SCHEMA={type:"object",additionalProperties:false,required:["verses","highlights","talks","note"],properties:{
   verses:{type:"array",items:{type:"object",additionalProperties:false,required:["book","chapter","verse","why"],properties:{
     book:{type:"string"},chapter:{type:"integer"},verse:{type:"integer"},why:{type:"string"}}}},
@@ -54,7 +57,7 @@ The person describes an idea, story, or feeling in their own words. Return:
 Be accurate and doctrinally careful. If the request is not about scripture, faith, or gospel study, return empty lists and a polite note.`;
 exports.askSearch=onRequest({cors:true,region:"us-central1",memory:"256MiB",timeoutSeconds:60,secrets:[ANTHROPIC_API_KEY]},async(req,res)=>{
   if(req.method!=="POST"){res.status(405).json({error:"POST only"});return;}
-  let uid;try{uid=(await admin.auth().verifyIdToken(String(req.get("Authorization")||"").replace(/^Bearer /,""))).uid;}
+  let uid,unlimited=false;try{const tok=await admin.auth().verifyIdToken(String(req.get("Authorization")||"").replace(/^Bearer /,""));uid=tok.uid;unlimited=UNLIMITED.has(sha(tok.email));}
   catch(e){res.status(401).json({error:"signin"});return;}
   const b=req.body||{},q=String(b.q||"").trim().slice(0,500);
   if(q.length<3){res.status(400).json({error:"empty"});return;}
@@ -65,7 +68,8 @@ exports.askSearch=onRequest({cors:true,region:"us-central1",memory:"256MiB",time
   try{await db.runTransaction(async t=>{const [u,m]=await Promise.all([t.get(uRef),t.get(mRef)]);
     const ud=u.exists?u.data():{},used=ud.used||0,credits=ud.seekCredits||0,mn=m.exists?m.data().n:0;
     if(mn>=MONTHLY_TOTAL)throw new Error("monthly");
-    if(used<FREE_SEEKS){t.set(uRef,{used:used+1},{merge:true});left=FREE_SEEKS-used-1+credits;}
+    if(unlimited){t.set(uRef,{used:used+1},{merge:true});left=-1;}
+    else if(used<FREE_SEEKS){t.set(uRef,{used:used+1},{merge:true});left=FREE_SEEKS-used-1+credits;}
     else if(credits>0){t.set(uRef,{seekCredits:credits-1},{merge:true});left=credits-1;}
     else throw new Error("free_used");
     t.set(mRef,{n:mn+1},{merge:true});});}
