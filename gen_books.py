@@ -13,6 +13,27 @@ L=[# id, name, osis, usfx, gl, bh, title, blurb, aliases
 ("lev","Leviticus","Lev","LEV","lev","leviticus","THE THIRD BOOK OF MOSES CALLED LEVITICUS","Sacrifices, priests, holiness and the Day of Atonement",["leviticus","lev","lv"]),
 ("num","Numbers","Num","NUM","num","numbers","THE FOURTH BOOK OF MOSES CALLED NUMBERS","Forty years in the wilderness, from Sinai to the edge of the promised land",["numbers","num","nm","nu"]),
 ("deu","Deuteronomy","Deut","DEU","deut","deuteronomy","THE FIFTH BOOK OF MOSES CALLED DEUTERONOMY","Moses' last sermons: remember the Lord, love Him and keep His covenant",["deuteronomy","deut","deu","dt"]),
+("josh","Joshua","Josh","JOS","josh","joshua","THE BOOK OF JOSHUA","Israel crosses the Jordan, takes the land and covenants to serve the Lord",["joshua","josh","jos"]),
+("judg","Judges","Judg","JDG","judg","judges","THE BOOK OF JUDGES","Cycles of sin and deliverance under Deborah, Gideon and Samson",["judges","judg","jdg"]),
+("ruth","Ruth","Ruth","RUT","ruth","ruth","THE BOOK OF RUTH","A faithful Moabite widow and her redeemer, Boaz",["ruth","rth"]),
+("1sam","1 Samuel","1Sam","1SA","1-sam","1_samuel","THE FIRST BOOK OF SAMUEL OTHERWISE CALLED THE FIRST BOOK OF THE KINGS","Samuel, King Saul and the young David",["1 samuel","1 sam","1sam","1 sa"]),
+("2sam","2 Samuel","2Sam","2SA","2-sam","2_samuel","THE SECOND BOOK OF SAMUEL OTHERWISE CALLED THE SECOND BOOK OF THE KINGS","David's reign, his great sin and its consequences",["2 samuel","2 sam","2sam","2 sa"]),
+("1kgs","1 Kings","1Kgs","1KI","1-kgs","1_kings","THE FIRST BOOK OF THE KINGS COMMONLY CALLED THE THIRD BOOK OF THE KINGS","Solomon's temple, a divided kingdom and the prophet Elijah",["1 kings","1 kgs","1kgs","1 ki"]),
+("2kgs","2 Kings","2Kgs","2KI","2-kgs","2_kings","THE SECOND BOOK OF THE KINGS COMMONLY CALLED THE FOURTH BOOK OF THE KINGS","Elisha, the fall of Israel and the last kings of Judah",["2 kings","2 kgs","2kgs","2 ki"]),
+("1chr","1 Chronicles","1Chr","1CH","1-chr","1_chronicles","THE FIRST BOOK OF THE CHRONICLES","Genealogies, David's kingdom and the plan for the temple",["1 chronicles","1 chr","1chr","1 ch"]),
+("2chr","2 Chronicles","2Chr","2CH","2-chr","2_chronicles","THE SECOND BOOK OF THE CHRONICLES","Solomon's temple and the kings of Judah to the exile",["2 chronicles","2 chr","2chr","2 ch"]),
+("ezra","Ezra","Ezra","EZR","ezra","ezra","EZRA","The return from Babylon and the rebuilding of the temple",["ezra","ezr"]),
+("neh","Nehemiah","Neh","NEH","neh","nehemiah","THE BOOK OF NEHEMIAH","Rebuilding Jerusalem's wall and renewing the covenant",["nehemiah","neh"]),
+("esth","Esther","Esth","EST","esth","esther","THE BOOK OF ESTHER","A queen who risked her life to save her people",["esther","esth","est"]),
+("job","Job","Job","JOB","job","job","THE BOOK OF JOB","Why the righteous suffer, and a Redeemer who lives",["job","jb"]),
+("ps","Psalms","Ps","PSA","ps","psalms","THE BOOK OF PSALMS","Songs of praise, sorrow and trust in God",["psalms","psalm","ps","psa","pslm"]),
+("prov","Proverbs","Prov","PRO","prov","proverbs","THE PROVERBS","Wisdom for daily life",["proverbs","prov","pr","prv"]),
+("eccl","Ecclesiastes","Eccl","ECC","eccl","ecclesiastes","ECCLESIASTES OR, THE PREACHER","The Preacher searches for what lasts",["ecclesiastes","eccl","eccles","ecc"]),
+("song","Song of Solomon","Song","SNG","song","songs","THE SONG OF SOLOMON","A poem of love and devotion",["song of solomon","song of songs","song","sos","songs"]),
+("isa","Isaiah","Isa","ISA","isa","isaiah","THE BOOK OF THE PROPHET ISAIAH","Prophecies of judgment, comfort and the coming Messiah",["isaiah","isa","is"]),
+("jer","Jeremiah","Jer","JER","jer","jeremiah","THE BOOK OF THE PROPHET JEREMIAH","A prophet's warnings before Jerusalem falls, and a new covenant",["jeremiah","jer"]),
+("lam","Lamentations","Lam","LAM","lam","lamentations","THE LAMENTATIONS OF JEREMIAH","Sorrow over the fall of Jerusalem",["lamentations","lam"]),
+("ezek","Ezekiel","Ezek","EZK","ezek","ezekiel","THE BOOK OF THE PROPHET EZEKIEL","Visions in exile: judgment, a restored Israel and a new temple",["ezekiel","ezek","eze"]),
 ("amos","Amos","Amos","AMO","amos","amos","AMOS","A shepherd prophet calls Israel to justice",["amos","am"]),
 ("obad","Obadiah","Obad","OBA","obad","obadiah","OBADIAH","Judgment on Edom and saviours on mount Zion",["obadiah","obad","ob"]),
 ("jonah","Jonah","Jonah","JON","jonah","jonah","JONAH","A runaway prophet, a great fish and a city that repents",["jonah","jon","jnh"]),
@@ -87,13 +108,19 @@ BOM=[("2ne","2 Nephi","2-ne","Lehi's last blessings, Nephi's psalm and the doctr
 ("omni","Omni","omni","Five record keepers and the people of Zarahemla",["omni"]),
 ("wom","Words of Mormon","w-of-m","Mormon joins the small plates to his record",["words of mormon","w of m","wofm","wom"]),
 ("mosiah","Mosiah","mosiah","King Benjamin, Abinadi and the people of Alma",["mosiah","mos"]),
-("alma","Alma","alma","Alma and Amulek, the sons of Mosiah, Captain Moroni and a father's counsel",["alma","al"])]
+("alma","Alma","alma","Alma and Amulek, the sons of Mosiah, Captain Moroni and a father's counsel",["alma","al"]),
+("hel","Helaman","hel","Righteous judges, the Gadianton robbers and Samuel the Lamanite's prophecy",["helaman","hel"]),
+("3ne","3 Nephi","3-ne","The sign of Christ's birth, His visit to the Nephites and His teachings",["3 nephi","3 ne","3ne","3nephi"]),
+("4ne","4 Nephi","4-ne","Two hundred years of peace, and then a falling away",["4 nephi","4 ne","4ne","4nephi"]),
+("morm","Mormon","morm","Mormon's last battles and his words to those who will read",["mormon","morm"]),
+("ether","Ether","ether","The Jaredites, the brother of Jared's faith and the end of a people",["ether","eth"]),
+("moro","Moroni","moro","Moroni's last words: the sacrament, charity, faith and his promise",["moroni","moro"])]
 for (i,n,gl,blurb,al) in BOM:
     bb=BOMD[n];std={str(c['chapter']):[v['text'] for v in c['verses']] for c in bb['chapters']}
     json.dump({"std":std},open(f'texts/{i}.json','w'),ensure_ascii=False,separators=(',',':'))
     books[i]={"name":n,"vol":"Book of Mormon","title":bb['full_title'].upper(),"gl":"bofm/"+gl,"chs":sorted(int(c) for c in std),"blurb":blurb,"lazy":True}
     aliases[i]=al;ready[n]=[i,len(std)]
-EARLY=["gen","exo","lev","num","deu"];OT_ORDER=EARLY+["dan","hos","joel"]+[b[0] for b in L if b[0] not in NT and b[0] not in EARLY];NT_ORDER=["mat"]+[b[0] for b in L if b[0] in NT]
+OT_ORDER=["gen","exo","lev","num","deu","josh","judg","ruth","1sam","2sam","1kgs","2kgs","1chr","2chr","ezra","neh","esth","job","ps","prov","eccl","song","isa","jer","lam","ezek","dan","hos","joel","amos","obad","jonah","mic","nahum","hab","zeph","hag","zech","mal"];NT_ORDER=["mat"]+[b[0] for b in L if b[0] in NT]
 js="// Generated by gen_books.py. Text for these books loads on demand from texts/<id>.json.\n"
 js+="Object.assign(BOOKS,"+json.dumps(books,ensure_ascii=False)+");\n"
 js+="BOOK_ORDER.splice(0,BOOK_ORDER.length,..."+json.dumps(OT_ORDER+NT_ORDER+["1ne"]+[b[0] for b in BOM]+["dc","abr"])+");\n"
