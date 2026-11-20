@@ -4388,7 +4388,7 @@ async function askAI(q){const el=$("#hres");q=q.trim();if(q.length<3)return;el.h
   const talks=TALKS.map(t=>`${t.t} (${t.sp}, ${t.d})`);
   let j;try{const r=await fetch(ASK_URL,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+await u.getIdToken()},body:JSON.stringify({q,hl,talks})});
     j=await r.json();if(!r.ok){const e=j&&j.error;
-      const why=e==="daily"?"You've used today's Seek searches. They reset tomorrow.":e==="monthly"?"Seek is paused until next month.":e==="signin"?"Please sign in again to use Seek.":"Seek isn't available right now.";
+      const why=e==="free_used"?"You've used your 20 free Seek searches. More Seek searches will be available to buy soon.":e==="monthly"?"Seek is paused until next month.":e==="signin"?"Please sign in again to use Seek.":"Seek isn't available right now.";
       el.innerHTML=plain+`<p class="muted" style="padding:6px 2px">${why}</p>`;return;}}
   catch(e){el.innerHTML=plain;return;}
   const out=[],why=w=>w?`<span class="rt sawhy">${esc(w)}</span>`:"";
@@ -4399,6 +4399,7 @@ async function askAI(q){const el=$("#hres");q=q.trim();if(q.length<3)return;el.h
       out.push(`<button class="sres" data-goto='{"type":"verse","ref":"${r}"}'><span class="rk">${refLabel(r)}</span><span class="rt">${esc(vtext(r,verOf(p.b)))}</span>${why(v.why)}</button>`);}
     else out.push(`<div class="sres"><span class="rk">${esc(lab)} · not in Joined yet</span>${why(v.why)}</div>`);}
   (j.talks||[]).forEach(t=>{const T=TALKS[t.i];if(!T)return;out.push(`<a class="sres" href="${T.u}" target="_blank" rel="noopener"><span class="rk">Talk · ${esc(T.sp)} · ${esc(T.d)}</span><strong>${esc(T.t)}</strong>${why(t.why)}</a>`);});
+  if(typeof j.left==="number"&&j.left<=10)out.push(`<p class="muted" style="padding:4px 2px">${j.left===0?"That was your last free Seek search.":j.left+" free Seek search"+(j.left===1?"":"es")+" left."}</p>`);
   if(j.note)out.push(`<p class="muted" style="padding:4px 2px">${esc(j.note)}</p>`);
   const words=/Nothing found for/.test(plain)?"":plain;
   el.innerHTML=out.length||words?(out.length?`<div class="seekhead"><span class="seekbadge">Seek · AI</span><span class="seekref">for “${esc(q)}”</span></div>`:"")+out.join("")+words:`<p class="muted" style="padding:8px 2px">Nothing found for that. Try describing it another way.</p>`;}

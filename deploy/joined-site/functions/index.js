@@ -31,12 +31,13 @@ exports.lessonPage=onRequest({cors:true,region:"us-central1",memory:"256MiB",tim
 // "Ask" search: a signed-in person describes what they're looking for in their own words.
 // Claude suggests scripture references and picks from that person's own highlights and the app's talk list.
 // The app always shows the real verse text itself; Claude never writes quotes.
-// Limits: DAILY_PER_PERSON searches per person per day, MONTHLY_TOTAL searches for the whole app per month.
+// Limits: FREE_SEEKS free searches per person (total, not per day), then paid credits (users/{uid} field seekCredits, added when payments exist).
+// MONTHLY_TOTAL caps the whole app per month as a safety net.
 // One-time setup: firebase functions:secrets:set ANTHROPIC_API_KEY
 const {defineSecret}=require("firebase-functions/params");
 const Anthropic=require("@anthropic-ai/sdk");
 const ANTHROPIC_API_KEY=defineSecret("ANTHROPIC_API_KEY");
-const DAILY_PER_PERSON=20,MONTHLY_TOTAL=10000;
+const FREE_SEEKS=20,MONTHLY_TOTAL=10000;
 const ASK_SCHEMA={type:"object",additionalProperties:false,required:["verses","highlights","talks","note"],properties:{
   verses:{type:"array",items:{type:"object",additionalProperties:false,required:["book","chapter","verse","why"],properties:{
     book:{type:"string"},chapter:{type:"integer"},verse:{type:"integer"},why:{type:"string"}}}},
@@ -60,17 +61,20 @@ exports.askSearch=onRequest({cors:true,region:"us-central1",memory:"256MiB",time
   const hl=(Array.isArray(b.hl)?b.hl:[]).slice(0,200).map(x=>String(x).slice(0,220));
   const talks=(Array.isArray(b.talks)?b.talks:[]).slice(0,400).map(x=>String(x).slice(0,160));
   const db=admin.firestore(),now=new Date(),day=now.toISOString().slice(0,10),month=day.slice(0,7);
-  const uRef=db.doc("aiUsage/u_"+uid),mRef=db.doc("aiUsage/m_"+month);
+  const uRef=db.doc("aiUsage/u_"+uid),mRef=db.doc("aiUsage/m_"+month);let left=0;
   try{await db.runTransaction(async t=>{const [u,m]=await Promise.all([t.get(uRef),t.get(mRef)]);
-    const un=u.exists&&u.data().day===day?u.data().n:0,mn=m.exists?m.data().n:0;
-    if(un>=DAILY_PER_PERSON)throw new Error("daily");if(mn>=MONTHLY_TOTAL)throw new Error("monthly");
-    t.set(uRef,{day,n:un+1});t.set(mRef,{n:mn+1},{merge:true});});}
-  catch(e){const m=e.message;res.status(429).json({error:m==="daily"||m==="monthly"?m:"busy"});return;}
+    const ud=u.exists?u.data():{},used=ud.used||0,credits=ud.seekCredits||0,mn=m.exists?m.data().n:0;
+    if(mn>=MONTHLY_TOTAL)throw new Error("monthly");
+    if(used<FREE_SEEKS){t.set(uRef,{used:used+1},{merge:true});left=FREE_SEEKS-used-1+credits;}
+    else if(credits>0){t.set(uRef,{seekCredits:credits-1},{merge:true});left=credits-1;}
+    else throw new Error("free_used");
+    t.set(mRef,{n:mn+1},{merge:true});});}
+  catch(e){const m=e.message;res.status(429).json({error:m==="free_used"||m==="monthly"?m:"busy"});return;}
   const user=`THEIR HIGHLIGHTS:\n${hl.map((x,i)=>i+". "+x).join("\n")||"(none)"}\n\nTALKS:\n${talks.map((x,i)=>i+". "+x).join("\n")||"(none)"}\n\nWHAT THEY'RE LOOKING FOR:\n${q}`;
   try{const client=new Anthropic({apiKey:ANTHROPIC_API_KEY.value()});
     const r=await client.messages.create({model:"claude-haiku-5-5",max_tokens:4000,system:ASK_SYSTEM,
       output_config:{effort:"low",format:{type:"json_schema",schema:ASK_SCHEMA}},messages:[{role:"user",content:user}]});
     const txt=(r.content.find(c=>c.type==="text")||{}).text;
     if(r.stop_reason==="refusal"||!txt){res.json({verses:[],highlights:[],talks:[],note:"Sorry, I couldn't help with that one."});return;}
-    res.json(JSON.parse(txt));}
+    res.json(Object.assign(JSON.parse(txt),{left}));}
   catch(e){console.error("askSearch",e&&e.message);res.status(502).json({error:"ai"});}});
