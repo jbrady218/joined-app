@@ -118,35 +118,42 @@ function doSearch(q){q=q.trim();const out=[];if(!q)return "";
 // "Ask" search (AI). The server function suggests references and picks from your highlights and the talk list;
 // the app shows the real verse text from its own copy. Signed-in only, with daily and monthly limits on the server.
 const ASK_EX=["A verse about trusting God even when He doesn't take the trial away","The verse I highlighted where Nephi went into Jerusalem not knowing what to do","A talk about feeling alone"];
-const askIntro=()=>`<div class="seekpanel"><div class="seekhead"><span class="seekbadge">Seek · AI</span><span class="seekref">“Seek, and ye shall find” (Matthew 7:7)</span></div><p><b>Don't remember the exact words?</b> Describe it the way you'd tell a friend, then tap <b>Seek</b>. It finds matching verses, verses you've highlighted, and Conference talks.</p><p class="muted">Try one:</p>${ASK_EX.map(x=>`<button class="sres sask" data-askex="${esc(x)}"><span class="rt">“${esc(x)}”</span></button>`).join("")}<p class="muted seekfine">Seek uses AI. Always read the verse in context.</p></div>`;
+const SK_ICON=`<svg class="skico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15.6 8.4l-2.1 5.1-5.1 2.1 2.1-5.1z"/></svg>`;
+const askIntro=()=>`<div class="seekcard"><div class="sk-top"><span class="sk-badge">${SK_ICON}</span><div><h3 class="sk-title">Seek</h3><span class="sk-sub">Find it by meaning, with AI</span></div></div>
+<p class="sk-verse">“Seek, and ye shall find.”<span>Matthew 7:7</span></p>
+<p class="sk-p">Can't remember the exact words? Describe a verse, a story, or something you highlighted, the way you'd tell a friend, then tap <b>Seek</b>.</p>
+<ul class="sk-list"><li><b>Verses</b> that match the idea</li><li><b>Your highlights</b> you're trying to find again</li><li><b>Conference talks</b> on the topic</li></ul>
+<p class="sk-try">Try one</p>${ASK_EX.map(x=>`<button class="sk-chip" data-askex="${esc(x)}">“${esc(x)}”</button>`).join("")}
+<p class="sk-fine">Seek uses AI and shows the real scripture text. Always read the verse in context.</p></div>`;
 const ASK_URL="https://us-central1-joined-3adda.cloudfunctions.net/askSearch";
+const skCard=(kind,ref,text,why,attrs,tag)=>`<${tag||"button"} class="skr" ${attrs||""}><span class="skm"><span class="skk skk-${kind[0]}">${kind[1]}</span><span class="skref">${ref}</span></span>${text?`<span class="skt">${text}</span>`:""}${why?`<span class="skw">${esc(why)}</span>`:""}</${tag||"button"}>`;
+const skHead=q=>`<div class="skhead"><span class="sk-badge sm">${SK_ICON}</span><span><b>Seek</b> <i>${q}</i></span></div>`;
 async function askAI(q){const el=$("#hres");q=q.trim();if(q.length<3)return;el.hidden=false;
-  const msg=t=>{el.innerHTML=`<p class="muted" style="padding:8px 2px">${t}</p>`;};
   const u=typeof fbAuth!=="undefined"&&fbAuth&&fbAuth.currentUser;
   const plain=doSearch(q);
-  if(!u){el.innerHTML=plain+`<p class="muted" style="padding:6px 2px">Sign in to use Seek.</p>`;return;}
-  msg("Seeking…");
+  if(!u){el.innerHTML=plain+`<p class="sknote">Sign in to use <b>Seek</b>, which finds verses, your highlights and talks by meaning.</p>`;return;}
+  el.innerHTML=`<div class="skload"><span class="sk-badge sm">${SK_ICON}</span><b>Seeking</b><span class="skd"></span><span class="skd"></span><span class="skd"></span></div>`;
   const hrefs=[...new Set([...Object.keys(S.hl).sort((a,b)=>((S.hlt||{})[b]||0)-((S.hlt||{})[a]||0)),...(S.marks||[]).map(m=>m.ref)])].filter(r=>BOOKS[PR(r).b]).slice(0,200);
   await Promise.all([...new Set(hrefs.map(r=>PR(r).b))].map(ensureText));
   const hl=hrefs.map(r=>refLabel(r)+": "+(vtext(r,verOf(PR(r).b))||"").slice(0,180));
   const talks=TALKS.map(t=>`${t.t} (${t.sp}, ${t.d})`);
   let j;try{const r=await fetch(ASK_URL,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+await u.getIdToken()},body:JSON.stringify({q,hl,talks})});
     j=await r.json();if(!r.ok){const e=j&&j.error;
-      const why=e==="free_used"?"You've used your 20 free Seek searches. More Seek searches will be available to buy soon.":e==="monthly"?"Seek is paused until next month.":e==="signin"?"Please sign in again to use Seek.":"Seek isn't available right now.";
-      el.innerHTML=plain+`<p class="muted" style="padding:6px 2px">${why}</p>`;return;}}
+      const why=e==="free_used"?"You've used your 20 free Seek searches. More will be available to buy soon.":e==="monthly"?"Seek is paused until next month.":e==="signin"?"Please sign in again to use Seek.":"Seek isn't available right now.";
+      el.innerHTML=plain+`<p class="sknote">${why}</p>`;return;}}
   catch(e){el.innerHTML=plain;return;}
-  const out=[],why=w=>w?`<span class="rt sawhy">${esc(w)}</span>`:"";
-  (j.highlights||[]).forEach(h=>{const r=hrefs[h.i];if(!r)return;out.push(`<button class="sres" data-goto='{"type":"verse","ref":"${r}"}'><span class="rk">Your highlight · ${refLabel(r)}</span><span class="rt">${esc(vtext(r,verOf(PR(r).b))||"")}</span>${why(h.why)}</button>`);});
+  const out=[];
+  (j.highlights||[]).forEach(h=>{const r=hrefs[h.i];if(!r)return;out.push(skCard(["h","Your highlight"],refLabel(r),esc(vtext(r,verOf(PR(r).b))||""),h.why,`data-goto='{"type":"verse","ref":"${r}"}'`));});
   for(const v of (j.verses||[])){const lab=`${v.book} ${v.chapter}:${v.verse}`,p=parseRef(lab);
     if(p&&p.b&&BOOKS[p.b]&&BOOKS[p.b].chs.includes(p.c)&&await ensureText(p.b)&&p.v&&p.v<=vcount(p.b,p.c)){const r=MR(p.b,p.c,p.v);
       if(hrefs.includes(r)&&(j.highlights||[]).some(h=>hrefs[h.i]===r))continue;
-      out.push(`<button class="sres" data-goto='{"type":"verse","ref":"${r}"}'><span class="rk">${refLabel(r)}</span><span class="rt">${esc(vtext(r,verOf(p.b)))}</span>${why(v.why)}</button>`);}
-    else out.push(`<div class="sres"><span class="rk">${esc(lab)} · not in Joined yet</span>${why(v.why)}</div>`);}
-  (j.talks||[]).forEach(t=>{const T=TALKS[t.i];if(!T)return;out.push(`<a class="sres" href="${T.u}" target="_blank" rel="noopener"><span class="rk">Talk · ${esc(T.sp)} · ${esc(T.d)}</span><strong>${esc(T.t)}</strong>${why(t.why)}</a>`);});
-  if(typeof j.left==="number"&&j.left>=0&&j.left<=10)out.push(`<p class="muted" style="padding:4px 2px">${j.left===0?"That was your last free Seek search.":j.left+" free Seek search"+(j.left===1?"":"es")+" left."}</p>`);
-  if(j.note)out.push(`<p class="muted" style="padding:4px 2px">${esc(j.note)}</p>`);
+      out.push(skCard(["v","Verse"],refLabel(r),esc(vtext(r,verOf(p.b))),v.why,`data-goto='{"type":"verse","ref":"${r}"}'`));}
+    else out.push(skCard(["n","Not in Joined yet"],esc(lab),"",v.why,"","div"));}
+  (j.talks||[]).forEach(t=>{const T=TALKS[t.i];if(!T)return;out.push(skCard(["t","Talk"],`${esc(T.sp)} · ${esc(T.d)}`,esc(T.t),t.why,`href="${T.u}" target="_blank" rel="noopener"`,"a"));});
+  if(typeof j.left==="number"&&j.left>=0&&j.left<=10)out.push(`<p class="skleft">${j.left===0?"That was your last free Seek search.":j.left+" free Seek search"+(j.left===1?"":"es")+" left"}</p>`);
+  if(j.note)out.push(`<p class="sknote">${esc(j.note)}</p>`);
   const words=/Nothing found for/.test(plain)?"":plain;
-  el.innerHTML=out.length||words?(out.length?`<div class="seekhead"><span class="seekbadge">Seek · AI</span><span class="seekref">for “${esc(q)}”</span></div>`:"")+out.join("")+words:`<p class="muted" style="padding:8px 2px">Nothing found for that. Try describing it another way.</p>`;}
+  el.innerHTML=out.length||words?(out.length?skHead("for “"+esc(q)+"”"):"")+out.join("")+words:`<p class="sknote">Nothing found for that. Try describing it another way.</p>`;}
 const TOPICS=[["Faith in Jesus Christ","Trusting Him enough to act"],["Repentance","Turning back to God"],["The Atonement of Jesus Christ","His power to save and heal"],["Hope","An anchor to the soul"],["Prayer","Talking with Heavenly Father"],["Charity","The pure love of Christ"],["Forgiveness","Receiving it and giving it"],["Grace","Help beyond our own strength"],["Covenants","Promises that bind us to God"],["The Holy Ghost","Comfort, warning and witness"],["Personal Revelation","Hearing Him for yourself"],["Obedience","Choosing His way"],["Trials and Adversity","When the furnace is hot"],["Peace","Peace in a troubled world"],["Gratitude","Seeing His hand"],["Service","Ministering as He did"],["Temples","His holy house"],["Families","Eternal relationships"],["Scripture Study","Feasting on the word"],["Testimony","Knowing for yourself"]];
 const VOLUMES=[
  {id:"ot",n:"Old Testament",books:"Genesis|Exodus|Leviticus|Numbers|Deuteronomy|Joshua|Judges|Ruth|1 Samuel|2 Samuel|1 Kings|2 Kings|1 Chronicles|2 Chronicles|Ezra|Nehemiah|Esther|Job|Psalms|Proverbs|Ecclesiastes|Song of Solomon|Isaiah|Jeremiah|Lamentations|Ezekiel|Daniel|Hosea|Joel|Amos|Obadiah|Jonah|Micah|Nahum|Habakkuk|Zephaniah|Haggai|Zechariah|Malachi"},
