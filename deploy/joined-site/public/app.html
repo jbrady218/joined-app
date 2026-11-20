@@ -4399,7 +4399,7 @@ async function askAI(q){const el=$("#hres");q=q.trim();if(q.length<3)return;el.h
       out.push(`<button class="sres" data-goto='{"type":"verse","ref":"${r}"}'><span class="rk">${refLabel(r)}</span><span class="rt">${esc(vtext(r,verOf(p.b)))}</span>${why(v.why)}</button>`);}
     else out.push(`<div class="sres"><span class="rk">${esc(lab)} · not in Joined yet</span>${why(v.why)}</div>`);}
   (j.talks||[]).forEach(t=>{const T=TALKS[t.i];if(!T)return;out.push(`<a class="sres" href="${T.u}" target="_blank" rel="noopener"><span class="rk">Talk · ${esc(T.sp)} · ${esc(T.d)}</span><strong>${esc(T.t)}</strong>${why(t.why)}</a>`);});
-  if(typeof j.left==="number"&&j.left<=10)out.push(`<p class="muted" style="padding:4px 2px">${j.left===0?"That was your last free Seek search.":j.left+" free Seek search"+(j.left===1?"":"es")+" left."}</p>`);
+  if(typeof j.left==="number"&&j.left>=0&&j.left<=10)out.push(`<p class="muted" style="padding:4px 2px">${j.left===0?"That was your last free Seek search.":j.left+" free Seek search"+(j.left===1?"":"es")+" left."}</p>`);
   if(j.note)out.push(`<p class="muted" style="padding:4px 2px">${esc(j.note)}</p>`);
   const words=/Nothing found for/.test(plain)?"":plain;
   el.innerHTML=out.length||words?(out.length?`<div class="seekhead"><span class="seekbadge">Seek · AI</span><span class="seekref">for “${esc(q)}”</span></div>`:"")+out.join("")+words:`<p class="muted" style="padding:8px 2px">Nothing found for that. Try describing it another way.</p>`;}
