@@ -16,6 +16,7 @@ body='''
 <script>__GLOSS2__
 __GLOSS3__
 __GLOSS4__
+__GLOSS5__
 __HISTORY__
 __NTP__
 __RECHK__
@@ -31,7 +32,8 @@ __CH6__
 __CH7__
 __CH8__
 __CH9__
-__CH10__</script>
+__CH10__
+__CH11__</script>
 <script>__MAPS__</script>
 <script>__FAMDATA__</script>
 <script>__FAMILY__</script>
@@ -41,7 +43,7 @@ __IMPORTER__</script>
 <script>__APP__
 __EXTRAS__</script>
 '''
-for k,f in [('__TEXTS__','texts.json'),('__GLOSS__','gloss.js'),('__GLOSS2__','gloss2.js'),('__GLOSS3__','gloss3.js'),('__GLOSS4__','gloss4.js'),('__HISTORY__','history.js'),('__NTP__','nt_people.js'),('__RECHK__','recheck.js'),('__ALMA__','alma.js'),('__BOMV__','bom_visuals.js'),('__BOOKS__','books.js'),('__CH2__','chapters2.js'),('__BMORE__','books_more.js'),('__CH3__','chapters3.js'),('__CH4__','chapters4.js'),('__CH5__','chapters5.js'),('__CH6__','chapters6.js'),('__CH7__','chapters7.js'),('__CH8__','chapters8.js'),('__CH9__','chapters9.js'),('__CH10__','chapters10.js'),('__MAPS__','maps.js'),('__FAMDATA__','family_data.js'),('__FAMILY__','family.js'),('__LESSON__','lesson.js'),('__IMPORTER__','importer.js'),('__ACCOUNT__','account.js'),('__APP__','app.js'),('__EXTRAS__','extras.js')]:
+for k,f in [('__TEXTS__','texts.json'),('__GLOSS__','gloss.js'),('__GLOSS2__','gloss2.js'),('__GLOSS3__','gloss3.js'),('__GLOSS4__','gloss4.js'),('__GLOSS5__','gloss5.js'),('__HISTORY__','history.js'),('__NTP__','nt_people.js'),('__RECHK__','recheck.js'),('__ALMA__','alma.js'),('__BOMV__','bom_visuals.js'),('__BOOKS__','books.js'),('__CH2__','chapters2.js'),('__BMORE__','books_more.js'),('__CH3__','chapters3.js'),('__CH4__','chapters4.js'),('__CH5__','chapters5.js'),('__CH6__','chapters6.js'),('__CH7__','chapters7.js'),('__CH8__','chapters8.js'),('__CH9__','chapters9.js'),('__CH10__','chapters10.js'),('__CH11__','chapters11.js'),('__MAPS__','maps.js'),('__FAMDATA__','family_data.js'),('__FAMILY__','family.js'),('__LESSON__','lesson.js'),('__IMPORTER__','importer.js'),('__ACCOUNT__','account.js'),('__APP__','app.js'),('__EXTRAS__','extras.js')]:
     body=body.replace(k,open(f).read(),1)
 body=body.replace('__ICON__','data:image/png;base64,'+b64('logo/icon128sq.png')).replace('__MARK__','data:image/png;base64,'+b64('logo/mark.png'))
 open('daniel-study.html','w').write(head+body)
