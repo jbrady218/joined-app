@@ -157,11 +157,11 @@ async function askAI(q){const el=$("#hres");q=q.trim();if(q.length<3)return;el.h
   el.innerHTML=out.length||words?(out.length?skHead("for “"+esc(q)+"”"):"")+out.join("")+words:`<p class="sknote">Nothing found for that. Try describing it another way.</p>`;}
 const TOPICS=[["Faith in Jesus Christ","Trusting Him enough to act"],["Repentance","Turning back to God"],["The Atonement of Jesus Christ","His power to save and heal"],["Hope","An anchor to the soul"],["Prayer","Talking with Heavenly Father"],["Charity","The pure love of Christ"],["Forgiveness","Receiving it and giving it"],["Grace","Help beyond our own strength"],["Covenants","Promises that bind us to God"],["The Holy Ghost","Comfort, warning and witness"],["Personal Revelation","Hearing Him for yourself"],["Obedience","Choosing His way"],["Trials and Adversity","When the furnace is hot"],["Peace","Peace in a troubled world"],["Gratitude","Seeing His hand"],["Service","Ministering as He did"],["Temples","His holy house"],["Families","Eternal relationships"],["Scripture Study","Feasting on the word"],["Testimony","Knowing for yourself"]];
 const VOLUMES=[
- {id:"ot",n:"Old Testament",books:"Genesis|Exodus|Leviticus|Numbers|Deuteronomy|Joshua|Judges|Ruth|1 Samuel|2 Samuel|1 Kings|2 Kings|1 Chronicles|2 Chronicles|Ezra|Nehemiah|Esther|Job|Psalms|Proverbs|Ecclesiastes|Song of Solomon|Isaiah|Jeremiah|Lamentations|Ezekiel|Daniel|Hosea|Joel|Amos|Obadiah|Jonah|Micah|Nahum|Habakkuk|Zephaniah|Haggai|Zechariah|Malachi"},
- {id:"nt",n:"New Testament",books:"Matthew|Mark|Luke|John|Acts|Romans|1 Corinthians|2 Corinthians|Galatians|Ephesians|Philippians|Colossians|1 Thessalonians|2 Thessalonians|1 Timothy|2 Timothy|Titus|Philemon|Hebrews|James|1 Peter|2 Peter|1 John|2 John|3 John|Jude|Revelation"},
- {id:"bofm",n:"Book of Mormon",books:"1 Nephi|2 Nephi|Jacob|Enos|Jarom|Omni|Words of Mormon|Mosiah|Alma|Helaman|3 Nephi|4 Nephi|Mormon|Ether|Moroni"},
- {id:"dc",n:"Doctrine and Covenants",books:"Doctrine and Covenants|Official Declarations"},
- {id:"pgp",n:"Pearl of Great Price",books:"Moses|Abraham|Joseph Smith—Matthew|Joseph Smith—History|Articles of Faith"}];
+ {id:"ot",n:"Old Testament",s:"Old Testament",books:"Genesis|Exodus|Leviticus|Numbers|Deuteronomy|Joshua|Judges|Ruth|1 Samuel|2 Samuel|1 Kings|2 Kings|1 Chronicles|2 Chronicles|Ezra|Nehemiah|Esther|Job|Psalms|Proverbs|Ecclesiastes|Song of Solomon|Isaiah|Jeremiah|Lamentations|Ezekiel|Daniel|Hosea|Joel|Amos|Obadiah|Jonah|Micah|Nahum|Habakkuk|Zephaniah|Haggai|Zechariah|Malachi"},
+ {id:"nt",n:"New Testament",s:"New Testament",books:"Matthew|Mark|Luke|John|Acts|Romans|1 Corinthians|2 Corinthians|Galatians|Ephesians|Philippians|Colossians|1 Thessalonians|2 Thessalonians|1 Timothy|2 Timothy|Titus|Philemon|Hebrews|James|1 Peter|2 Peter|1 John|2 John|3 John|Jude|Revelation"},
+ {id:"bofm",n:"Book of Mormon",s:"Book of Mormon",books:"1 Nephi|2 Nephi|Jacob|Enos|Jarom|Omni|Words of Mormon|Mosiah|Alma|Helaman|3 Nephi|4 Nephi|Mormon|Ether|Moroni"},
+ {id:"dc",n:"Doctrine and Covenants",s:"D&C",books:"Doctrine and Covenants|Official Declarations"},
+ {id:"pgp",n:"Pearl of Great Price",s:"Pearl of Great Price",books:"Moses|Abraham|Joseph Smith—Matthew|Joseph Smith—History|Articles of Faith"}];
 // Which listed book is readable here, and how many chapters it has in all
 const READY_BASE={"Daniel":["dan",12],"Hosea":["hos",14],"Joel":["joel",3],"Matthew":["mat",28],"1 Nephi":["1ne",22],"Doctrine and Covenants":["dc",138],"Abraham":["abr",5]};
 const READY=Object.assign({},READY_BASE,typeof MORE_READY!=="undefined"?MORE_READY:{});
@@ -197,10 +197,12 @@ function renderHome(){
 
   ${rec.length?`<section class="hsect"><div class="h-head"><h2 class="h4-h">Your recent study</h2><a class="linkbtn" href="${hashFor(lb,lc)}" data-open="notes">All notes →</a></div><div class="recent">${recentHTML()}</div></section>`:""}
   ${homeFoot()}</div>`;
+  ensureFor(recentRefs(5),()=>{if(view==="home")renderHome();});
 }
 function renderStudy(){const all=recentItems(200);
   $("#reader").innerHTML=`<div class="home4"><h1 class="h4-h study-h">Study</h1>${famButton()}${studyLinks()}
-  <section class="hsect"><div class="h-head"><h2 class="h4-h">Your highlights and notes</h2><span class="muted" style="font-size:13px">${all.length?all.length+" saved":""}</span></div><div class="recent">${recentHTML(200)}</div></section></div>`;}
+  <section class="hsect"><div class="h-head"><h2 class="h4-h">Your highlights and notes</h2><span class="muted" style="font-size:13px">${all.length?all.length+" saved":""}</span></div><div class="recent">${recentHTML(200)}</div></section></div>`;
+  ensureFor(recentRefs(200),()=>{if(view==="study")renderStudy();});}
 let PENDING=null;
 function tryIt(k){const T={term:["dan",1,{type:"term",key:"babylon"},null],orig:["mat",5,{type:"term",key:"teleios"},["term","Original"]],history:["dan",3,{type:"history"},["history","History"]],verse:["dan",1,{type:"verse",ref:"dan.1:8"},["verse","Talks"]]}[k];
   if(!T)return;if(T[3])TAB[T[3][0]]=T[3][1];else TAB.term="Definition";PENDING=T[2];const h=hashFor(T[0],T[1]);if(location.hash===h)route();else location.hash=h;}
@@ -217,17 +219,30 @@ document.addEventListener("click",e=>{const b=e.target.closest("[data-try],[data
   if(d.try)tryIt(d.try);
   else if("search" in d)toggleSearch();
 });
-function renderVolume(id){const V=VOLUMES.find(x=>x.id===id)||VOLUMES[0];const list=V.books.split("|");
+function volumeBooks(V){const list=V.books.split("|");
   const ready=list.filter(b=>READY[b]),later=list.filter(b=>!READY[b]);
-  $("#reader").innerHTML=`<div class="home4"><a class="back" href="#home">← Home</a>
-  <section class="volhead"><span class="cv-rule" aria-hidden="true"></span><h1>${V.n}</h1><span class="cv-rule" aria-hidden="true"></span></section>
-  <section class="hsect"><h2 class="h4-h">Ready to study</h2>${ready.map(name=>{const [b,total]=READY[name],B=BOOKS[b];
+  return `<section class="hsect"><h2 class="h4-h">Ready to study</h2>${ready.map(name=>{const [b,total]=READY[name],B=BOOKS[b];
     if(total===1&&B.chs.includes(1))return `<a class="vbook vb-one" href="${hashFor(b,1)}"><div class="vb-head"><strong>${name}</strong><em>${esc(B.blurb)}</em></div><span class="vb-chev" aria-hidden="true">›</span></a>`;
     return `<details class="vbook"><summary class="vb-head"><strong>${name}</strong><em>${esc(B.blurb)}</em><span class="vb-count">${total} ${unit(b).toLowerCase()}s</span><span class="vb-chev" aria-hidden="true">›</span></summary>
       <div class="vb-grid">${Array.from({length:total},(_,i)=>i+1).map(c=>B.chs.includes(c)?`<a href="${hashFor(b,c)}" aria-label="${esc(chapLabel(b,c))}">${c}</a>`:`<span aria-label="${esc(chapLabel(b,c))}, coming soon">${c}</span>`).join("")}</div>
       <p class="vb-note">${B.chs.length>=total?`All ${total} ${unit(b).toLowerCase()}s are ready.`:`${unit(b)}s ${B.chs[0]}–${B.chs[B.chs.length-1]} are ready. The rest are coming soon.`}</p></details>`;}).join("")}</section>
-  ${later.length?`<section class="hsect"><h2 class="h4-h">Coming soon</h2><div class="vb-later">${later.map(n=>`<span>${esc(n)}</span>`).join("")}</div></section>`:""}
+  ${later.length?`<section class="hsect"><h2 class="h4-h">Coming soon</h2><div class="vb-later">${later.map(n=>`<span>${esc(n)}</span>`).join("")}</div></section>`:""}`;}
+function renderVolume(id){const V=VOLUMES.find(x=>x.id===id)||VOLUMES[0];
+  $("#reader").innerHTML=`<div class="home4"><a class="back" href="#scriptures">← Scriptures</a>
+  <section class="volhead"><span class="cv-rule" aria-hidden="true"></span><h1>${V.n}</h1><span class="cv-rule" aria-hidden="true"></span></section>
+  ${volumeBooks(V)}
   ${homeFoot()}</div>`;}
+// Scriptures: all five volumes on one screen, reached from the bottom bar
+let SCR_VOL=null;
+function renderScriptures(){let id=SCR_VOL;if(!id){try{id=localStorage.getItem(KEY+"-scrvol");}catch(e){}}
+  if(!VOLUMES.some(v=>v.id===id)){const lb=(LAST||"dan.1").split(".")[0],v=BOOKS[lb]&&VOLUMES.find(x=>x.n===BOOKS[lb].vol);id=v?v.id:"ot";}
+  const V=VOLUMES.find(x=>x.id===id);
+  $("#reader").innerHTML=`<div class="home4 scr"><h1 class="h4-h study-h">Scriptures</h1>
+  <div class="scr-tabs" role="tablist" aria-label="Volumes">${VOLUMES.map(v=>`<button role="tab" class="scr-tab" data-scrvol="${v.id}" aria-selected="${v.id===V.id}">${esc(v.s)}</button>`).join("")}</div>
+  <p class="scr-sub">${V.n}</p>${volumeBooks(V)}</div>`;}
+// Books load on demand, so make sure the text of saved highlights is there before showing it
+function ensureFor(refs,again){const bs=[...new Set(refs.map(r=>{const p=PR(r);return p&&p.b;}).filter(b=>b&&BOOKS[b]&&!TEXTS[b]))];if(!bs.length)return;Promise.all(bs.map(ensureText)).then(()=>{if(again)again();});}
+const recentRefs=lim=>recentItems(lim).map(x=>x.kind==="note"?(x.n.target.type==="verse"?x.n.target.ref:null):x.kind==="mark"?x.m.ref:x.ref).filter(Boolean);
 function renderTopics(){
   $("#reader").innerHTML=`<div class="home3"><a class="back" href="#home">← Home</a>
   <section class="hsect"><div class="h-head"><h1 class="pg-title">Study by topic</h1><span class="soon">Coming soon</span></div>
@@ -246,10 +261,10 @@ function route(){let h=location.hash;if(/^#import=/.test(h)){takeSharedLink();re
   if(m&&BOOKS[m[1]]&&BOOKS[m[1]].chs.includes(+m[2])){view="read";const nb=m[1],n=+m[2];
     if(nb!==bk||n!==ch){const keep=panelView.type==="notes"||panelView.type==="library"||(panelView.type==="verse"&&PR(panelView.ref)&&PR(panelView.ref).b===nb&&PR(panelView.ref).c===n);bk=nb;ch=n;if(!keep)panelView={type:"guide"};}
     LAST=CK(bk,ch);try{localStorage.setItem(KEY+"-last",LAST);}catch(e){}}
-  else{const vm=h.match(/^#vol-(\w+)$/),bm=h.match(/^#build-([a-z0-9]+)-(\d+)(?:~(\w+))?$/),gm=h.match(/^#build~([\w-]+)$/);view=vm?"volume":bm&&BOOKS[bm[1]]&&BOOKS[bm[1]].chs.includes(+bm[2])?"build":h==="#build"?"buildpick":gm?"buildgroup":h==="#family"?"family":h==="#study"?"study":h==="#books"?"books":h==="#topics"?"topics":h==="#prepare"?"prepare":"home";if(vm)volId=vm[1];if(view==="build"){buildKey=CK(bm[1],+bm[2]);buildLesson=bm[3]||null;}if(gm)buildGroup=gm[1];else LB=null;}
+  else{const vm=h.match(/^#vol-(\w+)$/),bm=h.match(/^#build-([a-z0-9]+)-(\d+)(?:~(\w+))?$/),gm=h.match(/^#build~([\w-]+)$/);view=vm?"volume":bm&&BOOKS[bm[1]]&&BOOKS[bm[1]].chs.includes(+bm[2])?"build":h==="#build"?"buildpick":gm?"buildgroup":h==="#family"?"family":h==="#study"?"study":h==="#scriptures"?"scriptures":h==="#books"?"books":h==="#topics"?"topics":h==="#prepare"?"prepare":"home";if(vm)volId=vm[1];if(view==="build"){buildKey=CK(bm[1],+bm[2]);buildLesson=bm[3]||null;}if(gm)buildGroup=gm[1];else LB=null;}
   if(PENDING&&view==="read"){panelView=PENDING;PENDING=null;}
   document.body.classList.toggle("on-home",view!=="read");renderTop();
-  if(view!=="read"){({home:renderHome,study:renderStudy,family:()=>{FAM_OFF=0;renderFamily();},books:renderBooks,topics:renderTopics,prepare:renderPrepare,volume:()=>renderVolume(volId),buildpick:renderBuildPick,buildgroup:()=>renderBuildGroup(buildGroup),build:()=>{LADD=null;LEDIT=null;renderBuild(buildKey,buildLesson);}})[view]();$("#panel").classList.remove("open");}
+  if(view!=="read"){({home:renderHome,scriptures:renderScriptures,study:renderStudy,family:()=>{FAM_OFF=0;renderFamily();},books:renderBooks,topics:renderTopics,prepare:renderPrepare,volume:()=>renderVolume(volId),buildpick:renderBuildPick,buildgroup:()=>renderBuildGroup(buildGroup),build:()=>{LADD=null;LEDIT=null;renderBuild(buildKey,buildLesson);}})[view]();$("#panel").classList.remove("open");}
   else if(!TEXTS[bk]){$("#panel").classList.remove("open");$("#reader").innerHTML=`<div class="page"><p class="muted" style="padding:48px 0;text-align:center">Loading ${esc(bname(bk))}…</p></div>`;
     const want=bk;ensureText(bk).then(ok=>{if(view!=="read"||bk!==want)return;if(ok)route();else $("#reader").innerHTML=`<div class="page"><p class="muted" style="padding:48px 0;text-align:center">Couldn’t load ${esc(bname(bk))}. Check your connection and try again.</p></div>`;});}
   else{renderReader();renderPanel();}
@@ -258,6 +273,7 @@ function route(){let h=location.hash;if(/^#import=/.test(h)){takeSharedLink();re
 window.addEventListener("hashchange",route);
 document.addEventListener("click",e=>{const a=e.target.closest("a[data-open]");if(a){setTimeout(()=>open({type:a.dataset.open}),0);}
   const hb=e.target.closest("[data-home]");if(hb){location.hash="#home";}
+  const sv=e.target.closest("[data-scrvol]");if(sv){SCR_VOL=sv.dataset.scrvol;try{localStorage.setItem(KEY+"-scrvol",SCR_VOL);}catch(x){}renderScriptures();return;}
   const cb=e.target.closest("[data-cont]");if(cb){let l=LAST;try{l=localStorage.getItem(KEY+"-last")||LAST;}catch(x){}const [b,c]=(CHAPTERS[l]?l:"dan.1").split(".");location.hash=hashFor(b,+c);}});
 const GC="https://www.churchofjesuschrist.org/study/general-conference/";
 // 1996 to today; First Presidency, Quorum of the Twelve and Relief Society General Presidency only. Each checked against the talk's footnotes.
@@ -382,7 +398,7 @@ function renderTop(){
   document.body.classList.toggle("not-bible",!isBible(bk));
   document.querySelectorAll("[data-mode]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.mode===mode)));
   const nc=$("#ncount");if(nc)nc.textContent=S.notes.length;
-  const tab=({home:"home",read:"cont",family:"study",study:"study",books:"study",topics:"study",prepare:"study"})[view]||"";document.querySelectorAll(".nv[data-tab]").forEach(b=>b.classList.toggle("on",b.dataset.tab===tab));
+  const tab=({home:"",read:"cont",family:"study",study:"study",books:"study",topics:"study",prepare:"study",scriptures:"scr",volume:"scr"})[view]||"";document.querySelectorAll(".nv[data-tab]").forEach(b=>b.classList.toggle("on",b.dataset.tab===tab));
   setBars(true);
 }
 // Bars slide away while you read downward and return when you scroll up; a double-tap on empty space toggles them.
@@ -674,11 +690,14 @@ const TOUR=[
  {t:"Names have meanings",p:["Many names in the scriptures mean something. <b>Noah</b> means “rest,” <b>Solomon</b> means “peace,” and <b>Levi</b> means “joined.”","Tap a name to see what it means, with the verse that explains it. Genesis through Deuteronomy have this for the people and places in them."],
   m:`<div class="mk-page"><p><b>8</b> But <span class="mk-hit">Noah</span> found grace in the eyes of the LORD.</p></div>
      <div class="mk-card"><div class="mk-title">Noah</div><div class="mk-tabs"><span class="on">Definition</span><span>Verses</span><span>Notes</span></div><p>The prophet who built the ark. The name means “rest” or “comfort.” Its Hebrew letters, reversed, spell “grace.”</p></div>`},
+ {t:"The Book of Mormon beside the Bible",p:["Many Book of Mormon chapters quote or retell the Bible: the Sermon on the Mount in 3 Nephi 12–14, Malachi in 3 Nephi 24–25, and Isaiah in 1 and 2 Nephi, Mosiah and 3 Nephi.","At the top of those chapters, choose <b>Modern</b> to see the Bible verse under each verse, or <b>Compare</b> to see exactly which words differ. A Bible chapter also links to the Book of Mormon chapter that quotes it."],
+  m:`<div class="mk-page"><p class="mk-sel"><b>3</b> Blessed are the poor in spirit who come unto me…</p></div>
+     <div class="mk-card"><div class="mk-tabs"><span>Book of Mormon</span><span>Modern</span><span class="on">Compare</span></div><p><b>MATTHEW 5:3</b> Blessed are the poor in spirit<ins> who come unto me</ins>: for theirs is the kingdom of heaven.</p></div>`},
  {t:"Seek: find it by meaning",p:["Tap the gold <b>Joined</b> button in the middle of the bottom bar.","Describe what you're looking for the way you'd tell a friend, like “the verse I highlighted where Nephi went into Jerusalem not knowing what to do.” Seek finds matching verses, your own highlights and Conference talks, and always shows the real scripture text.","You get 20 free Seek searches. Typing a verse (1 Nephi 3:7), a name or a word works for free, always."],
   m:`<div class="mk-seekq">“the verse I highlighted where Nephi went into Jerusalem…”</div>
      <div class="mk-card"><div class="mk-skmeta"><span class="mk-skk">YOUR HIGHLIGHT</span><b>1 Nephi 4:6</b></div><p>And I was led by the Spirit, not knowing beforehand the things which I should do.</p><p class="mk-skwhy">Why it fits: Nephi went in not knowing what to do.</p></div>`},
- {t:"Find your way around",p:["<b>Home:</b> your library of books and today's reading.","<b>Continue:</b> jump back to where you left off.","<b>Seek:</b> the big middle button.","<b>Study:</b> your highlights and notes, study by topic, your books, help preparing a lesson or talk, and today's Come, Follow Me lesson.","<b>Account:</b> sign in to keep your notes, highlights and name on every device.","While you read, the bars slide away as you scroll down and return when you scroll up. Double-tap empty space to hide or show them. Swipe left or right to change chapters."],
-  m:`<div class="mk-bar">${["Home","Continue","","Study","Sign in"].map(n=>n?`<span>${n}</span>`:`<span class="mk-orb"><img src="${LOGO_MARK}" alt=""></span>`).join("")}</div>`}];
+ {t:"Find your way around",p:["<b>Scriptures:</b> all five volumes on one screen. Pick a volume, then a book, then a chapter.","<b>Continue:</b> jump back to where you left off.","<b>Seek:</b> the big middle button.","<b>Study:</b> your highlights and notes, study by topic, your books, help preparing a lesson or talk, and today's Come, Follow Me lesson.","<b>Account:</b> sign in to keep your notes, highlights and name on every device.","Tap the Joined logo at the top for the home page. While you read, the bars slide away as you scroll down and return when you scroll up. Double-tap empty space to hide or show them. Swipe left or right to change chapters."],
+  m:`<div class="mk-bar">${["Scriptures","Continue","","Study","Sign in"].map(n=>n?`<span>${n}</span>`:`<span class="mk-orb"><img src="${LOGO_MARK}" alt=""></span>`).join("")}</div>`}];
 let tourI=0;
 function tourHTML(){const s=TOUR[tourI],last=tourI===TOUR.length-1;
   return `<div class="tour" role="dialog" aria-modal="true" aria-labelledby="tour-t"><div class="tour-in">
