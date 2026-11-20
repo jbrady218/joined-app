@@ -4315,7 +4315,499 @@ OT3ALT(["jer.48:24"],{ot3_bozrah:"nolink"}); // Bozrah in Moab, probably not Edo
 OT3ALT(["isa.4:2"],{ot3_netzer:"ot3_tsemach_isa"}); // tsemach, “branch of the LORD”
 OT3ALT(["isa.9:14","isa.14:19","isa.17:9","isa.19:15","isa.25:5","isa.60:21"],{ot3_netzer:"nolink"}); // ordinary branches, or other uses of netzer
 
-// Names and words for the Doctrine and Covenants and the Pearl of Great Price (in progress).
+// Names and words for the Doctrine and Covenants and the Pearl of Great Price. Checked with audit.js.
+// Names and words for the Doctrine and Covenants and the Pearl of Great Price (Moses, Abraham, Joseph Smith—Matthew, Joseph Smith—History, Articles of Faith).
+// Loads after alma.js and gloss6.js. New cards for Pearl of Great Price books other than Joseph Smith—History and the Articles of Faith use the key prefix mos_.
+// Where the text gives no meaning and none is widely agreed, the card says so. Names that mean more than one person or place are sorted verse by verse with ALT.
+const DCB=(o)=>Object.assign({books:["dc"],more:[],resp:"",say:""},o);
+const DCALT=(refs,map)=>refs.forEach(r=>{ALT[r]=Object.assign(ALT[r]||{},map);});
+const DCALTV=(b,ch,vs,map)=>vs.forEach(v=>{const r=b+"."+ch+":"+v;ALT[r]=Object.assign(ALT[r]||{},map);});
+
+// ---- Existing cards that carry over with the same meaning ----
+TERMS.morm_moroni.books.push("dc","jsh");
+TERMS.messiah.books.push("dc","moses","jsh");
+TERMS.priesthood.books.push("moses","jsh","abr");
+TERMS.paul.books.push("dc","jsh","aof");
+TERMS.baptist.books.push("jsh");
+TERMS.peter.books.push("dc","jsh");
+TERMS.jerusalem.books.push("dc","jsm");
+TERMS.lamanites.books.push("dc");
+TERMS.nephites.books.push("dc");
+TERMS.babylon.books.push("dc");
+
+Object.assign(TERMS,{
+// =====================================================================
+// DOCTRINE AND COVENANTS: PEOPLE
+// =====================================================================
+dc_joseph:DCB({name:"Joseph Smith",forms:["Joseph Smith","Joseph"],books:["dc","jsh"],resp:"JOH-zuf SMITH",say:"joh zuf smith",
+ plain:"The Prophet Joseph Smith, born at Sharon, Vermont, in 1805 (Joseph Smith—History 1:3), through whom most of these revelations came. The name is Hebrew, “may he add” (Genesis 30:24), and Lehi foretold a latter-day seer whose “name shall be called after me; and it shall be after the name of his father” (2 Nephi 3:15).",
+ bg:"The Lord says Joseph receives revelations “even as Moses” (D&C 28:2); he was killed with Hyrum at Carthage on 27 June 1844 (D&C 135:1). Some early printings used code names for Church leaders, and “Enoch” was one of the names for Joseph Smith (sections such as 78, 82, 92, 96 and 104), a different use from the patriarch Enoch of Moses 6–7."}),
+dc_joseph_sr:DCB({name:"Joseph Smith Sr.",forms:["Joseph Smith, Sen"],books:["dc","jsh"],resp:"JOH-zuf SMITH SEE-nyer",say:"joh zuf smith seen yer",
+ plain:"The Prophet’s father and the first Patriarch to the Church, told that his calling is “to exhortation, and to strengthen the church” (D&C 23:5). He is one who “sitteth with Abraham at his right hand” (D&C 124:19).",
+ bg:"His son Hyrum received the office of Patriarch “appointed unto him by his father, by blessing and also by right” (D&C 124:91). Joseph Smith—History 1:3–4 names him as the father who moved the family from Vermont to Palmyra."}),
+dc_joseph_egypt:DCB({name:"Joseph (son of Jacob)",forms:[],books:["dc"],resp:"JOH-zuf",say:"joh zuf",
+ plain:"Jacob’s son, sold into Egypt and later its ruler, listed with Jacob, Isaac and Abraham among the “fathers, by whom the promises remain” (27:10; 98:32). The name is Hebrew, “may he add” (Genesis 30:24), and “the house of Joseph” means his descendants, usually understood as Ephraim and Manasseh (90:10; 96:7; 113:4, 6).",
+ bg:"Joseph Smith’s name recalls his, as Lehi foretold (2 Nephi 3:15)."}),
+dc_joseph_knight:DCB({name:"Joseph Knight",forms:["Joseph Knight"],resp:"JOH-zuf NITE",say:"joh zuf nite",
+ plain:"Joseph Knight Sr., a farmer of Colesville, New York, who helped Joseph Smith with supplies during the translation. The Lord tells him to take up his cross and pray “vocally before the world as well as in secret” (23:6).",
+ bg:"His son Newel Knight is named in 54:2 and 56:6–7."}),
+dc_hyrum:DCB({name:"Hyrum Smith",forms:["Hyrum"],books:["dc","jsh"],resp:"HY-rum SMITH",say:"hy rum smith",
+ plain:"Joseph Smith’s older brother, whom the Lord calls “my son” (D&C 11:23), later Patriarch to the Church (D&C 124:91–92) and killed with Joseph at Carthage Jail (D&C 135:1). Hyrum is a form of the Hebrew name Hiram, often explained as “my brother is exalted.”",
+ bg:"Hiram is also the king of Tyre who supplied cedar for Solomon’s temple (1 Kings 5:1–10)."}),
+dc_emma:DCB({name:"Emma Smith",forms:["Emma"],books:["dc","jsh"],resp:"EM-uh",say:"em uh",
+ plain:"Emma Hale Smith, Joseph’s wife, whom he met while boarding at her father’s home and married in January 1827 (Joseph Smith—History 1:57–58). The Lord calls her “my daughter” and “an elect lady” and tells her to make a selection of hymns (D&C 25:1, 3, 11); Emma is a Germanic name usually explained as “whole” or “universal.”",
+ bg:"She served at times as Joseph’s scribe; D&C 132:51–54 also addresses her by name."}),
+dc_oliver:DCB({name:"Oliver Cowdery",forms:["Oliver Cowdery","Oliver","Cowdery"],books:["dc","jsh"],resp:"OL-ih-ver KOW-der-ee",say:"ol ih ver kow der ee",
+ plain:"The schoolteacher who came to Joseph Smith on 5 April 1829 and wrote most of the Book of Mormon as Joseph translated (Joseph Smith—History 1:66–67). He received the Aaronic Priesthood with Joseph from John the Baptist (JS—H 1:68–72) and was named “the second elder of this church” (D&C 20:3); the scriptures give no meaning for his name.",
+ bg:"He was one of the Three Witnesses (D&C 17), and sections 6–9 are addressed to him."}),
+dc_martin:DCB({name:"Martin Harris",forms:["Martin Harris"],books:["dc","jsh"],resp:"MAR-tin HAIR-is",say:"mar tin hair is",
+ plain:"A farmer from the Palmyra area who gave Joseph fifty dollars for his move to Pennsylvania and took copied characters to Professor Anthon (Joseph Smith—History 1:61–65). The Lord told him to “impart (his property) freely to the printing of the Book of Mormon” (D&C 19:26); the name Martin is often traced to the Roman god Mars.",
+ bg:"He became one of the Three Witnesses, and section 5 answers his request for a witness (D&C 5:1)."}),
+dc_david_whitmer:DCB({name:"David Whitmer",forms:["David Whitmer"],resp:"DAY-vid WIT-mer",say:"day vid wit mer",
+ plain:"A son of the Whitmer family of Fayette, New York, who brought Joseph and Oliver to his father’s farm to finish the translation in 1829. The Lord addressed him in section 14 and named him with Oliver to search out the Twelve (18:9, 37); David is Hebrew, usually explained as “beloved.”",
+ bg:"He was one of the Three Witnesses. D&C 128:21 recalls “the voice of God in the chamber of old Father Whitmer, in Fayette, Seneca county.”"}),
+dc_peter_whitmer:DCB({name:"Peter Whitmer Jr.",forms:["Peter Whitmer"],resp:"PEE-ter WIT-mer",say:"pee ter wit mer",
+ plain:"A brother of David and John Whitmer, told to take his journey with “your brother Oliver” (30:5) and sent with Oliver Cowdery “into the wilderness among the Lamanites” (32:2). His first name Peter means “rock.”",
+ bg:"He was one of the Eight Witnesses; the Church was organized at his family’s home in Fayette on 6 April 1830."}),
+dc_john_whitmer:DCB({name:"John Whitmer",forms:["John Whitmer"],resp:"JAHN WIT-mer",say:"jahn wit mer",
+ plain:"A Whitmer brother appointed in 1831 to “write and keep a regular history” for the Church (47:1; 69:3). John is Hebrew, “the Lord is gracious.”",
+ bg:"He was one of the Eight Witnesses and was sent with Oliver Cowdery to carry the commandments and money to Zion (69:1–2)."}),
+dc_john:DCB({name:"John (the Apostle)",forms:["John"],books:["dc"],resp:"JAHN",say:"jahn",
+ plain:"John the Apostle, “the Beloved,” whose request to stay on earth until Christ comes is answered in section 7 and whose writings are called “the revelations of John” (20:35). The name means “the Lord is gracious.”",
+ bg:"Other Johns here are marked separately: John the Baptist (27:7–8; 84:27; 93:6–18) and John Whitmer (47:1)."}),
+dc_sidney:DCB({name:"Sidney Rigdon",forms:["Sidney Rigdon","Sidney"],resp:"SID-nee RIG-dun",say:"sid nee rig dun",
+ plain:"A preacher from Ohio who joined the Church in 1830, served as Joseph’s scribe and from 1833 as a counselor in the First Presidency (90:6). The Lord says he was “sent forth, even as John, to prepare the way before me” (35:3–4); the name Sidney has no meaning given in scripture.",
+ bg:"He received the vision of the glories with Joseph (section 76) and was to be “a spokesman unto my servant Joseph” (100:9)."}),
+dc_sidney_gilbert:DCB({name:"Sidney Gilbert",forms:["Sidney Gilbert"],resp:"SID-nee GIL-bert",say:"sid nee gil bert",
+ plain:"A merchant told to “be an agent unto the church, to buy land” and to “establish a store” at Independence, Missouri (57:6, 8). He is a different man from Sidney Rigdon.",
+ bg:"He was sent with W. W. Phelps on an urgent errand (61:7)."}),
+dc_edward_partridge:DCB({name:"Edward Partridge",forms:["Edward Partridge","Edward"],resp:"ED-werd PAR-trij",say:"ed werd par trij",
+ plain:"A hatmaker from Painesville, Ohio, who became the Church’s first bishop, told to “leave his merchandise and to spend all his time in the labors of the church” (41:9). Edward is an English name usually explained as “wealth guardian.”",
+ bg:"His office was to care for the poor and the consecrated property in Zion (42:10; 51:1–4)."}),
+dc_newel_whitney:DCB({name:"Newel K. Whitney",forms:["Newel K. Whitney"],resp:"NOO-el K WIT-nee",say:"noo el kay wit nee",
+ plain:"A Kirtland merchant appointed bishop in Ohio (72:8), who was told to keep his store “for a little season” (63:42). The name Newel has no meaning given in scripture.",
+ bg:"He and Sidney Gilbert were told not to sell their store yet (64:26); early printings of some revelations used a code name in place of his."}),
+dc_newel_knight:DCB({name:"Newel Knight",forms:["Newel Knight"],resp:"NOO-el NITE",say:"noo el nite",
+ plain:"A son of Joseph Knight Sr. and a leader of the Colesville Saints, told to “stand fast in the office whereunto I have appointed you” (54:2). The scriptures give no meaning for the name.",
+ bg:"A commandment given him was revoked because of the stiffneckedness of the Saints in Thompson, Ohio (56:6–7); he appears again in 124:132."}),
+dc_frederick:DCB({name:"Frederick G. Williams",forms:["Frederick G. Williams","Frederick"],resp:"FRED-rik G WIL-yumz",say:"fred rik jee wil yumz",
+ plain:"A physician of Kirtland called “a counselor unto my servant Joseph Smith” (81:1) and received into the united order (92:1–2). Frederick is a Germanic name usually explained as “peaceful ruler.”",
+ bg:"The Lord asked him not to sell his farm, so that He might “retain a strong hold in the land of Kirtland” (64:21)."}),
+dc_orson_pratt:DCB({name:"Orson Pratt",forms:["Orson Pratt","Orson"],resp:"OR-sun PRAT",say:"or sun prat",
+ plain:"A young convert whom the Lord calls “my son” and says is “called of me to preach my gospel” (34:1, 3, 5), later one of the Twelve (124:129). Orson is a name for “little bear,” from the Latin for bear.",
+ bg:"His brother Parley P. Pratt is named beside him in 52:26."}),
+dc_orson_hyde:DCB({name:"Orson Hyde",forms:["Orson Hyde"],resp:"OR-sun HYDE",say:"or sun hyde",
+ plain:"An early missionary who “was called by his ordination to proclaim the everlasting gospel” (68:1) and later one of the Twelve (124:129). In 1841 he went to Jerusalem and prayed on the Mount of Olives.",
+ bg:"He is a different man from Orson Pratt, who is named beside him in 124:129."}),
+dc_parley:DCB({name:"Parley P. Pratt",forms:["Parley P. Pratt","Parley"],resp:"PAR-lee P PRAT",say:"par lee pee prat",
+ plain:"An early missionary, told to preach to the Lamanites (32:1–2) and sent with Sidney Rigdon and Leman Copley to the Shakers (49:1–3). He was later one of the Twelve (124:129); the name Parley has no meaning given in scripture.",
+ bg:"His brother Orson Pratt is named in 52:26."}),
+dc_brigham:DCB({name:"Brigham Young",forms:["Brigham Young","Brigham"],resp:"BRIG-um YUNG",say:"brig um yung",
+ plain:"A convert appointed in 1841 “a president over the Twelve traveling council” (124:127), whom the Lord told, “it is no more required at your hand to leave your family” (126:1). The name Brigham has no meaning given in scripture.",
+ bg:"He appears among the faithful in the vision of the spirit world (138:53)."}),
+dc_heber:DCB({name:"Heber C. Kimball",forms:["Heber C. Kimball","Heber"],resp:"HEE-ber C KIM-bul",say:"hee ber see kim bul",
+ plain:"An apostle named first among the Twelve in 124:129, who led the first Latter-day Saint mission to England in 1837. Heber is the Hebrew name Eber (Genesis 11:14–16), whose meaning, “the other side” or “to cross over,” is debated.",
+ bg:"Brigham Young is named as president of the Twelve in 124:127."}),
+dc_lyman_wight:DCB({name:"Lyman Wight",forms:["Lyman Wight"],resp:"LY-mun WITE",say:"ly mun wite",
+ plain:"An early convert in Ohio who preached in Missouri and marched with Zion’s Camp, sent on missions in 52:7 and 103:30, 38. The Lord warned him, “Satan desireth to sift him as chaff” (52:12), echoing Luke 22:31.",
+ bg:"The name Lyman has no meaning given in scripture; 124:18 calls him to keep preaching “for Zion, in the spirit of meekness.”"}),
+dc_thomas_marsh:DCB({name:"Thomas B. Marsh",forms:["Thomas B. Marsh","Thomas"],resp:"TAHM-us B MARSH",say:"tahm us bee marsh",
+ plain:"The first president of the Quorum of the Twelve, called “my son” in 31:1 and told, “thou art the man whom I have chosen to hold the keys of my kingdom, as pertaining to the Twelve” (112:16). Thomas is Aramaic for “twin.”",
+ bg:"The Lord also tells him, “Be thou humble; and the Lord thy God shall lead thee by the hand” (112:10)."}),
+dc_hiram_page:DCB({name:"Hiram Page",forms:["Hiram Page"],resp:"HY-rum PAYJ",say:"hy rum payj",
+ plain:"An early member who claimed revelations through a seer stone in 1830, and the Lord said what he had written “from that stone” was “not of me and that Satan deceiveth him” (28:11). Hiram is a Hebrew name often explained as “my brother is exalted.”",
+ bg:"Only Joseph Smith receives revelations for the Church (28:2); Hiram Page was one of the Eight Witnesses."}),
+dc_ww_phelps:DCB({name:"William W. Phelps",forms:["William W. Phelps","W. W. Phelps"],resp:"WIL-yum W FELPS",say:"wil yum dub ul yoo felps",
+ plain:"A newspaper editor called to be “a printer unto the church” in Missouri (57:11), who printed the Book of Commandments and wrote many early hymns. William is a Germanic name, “resolute protector.”",
+ bg:"He was sent with Sidney Gilbert on an urgent errand (61:7)."}),
+dc_alvin:DCB({name:"Alvin Smith",forms:["Alvin"],books:["dc","jsh"],resp:"AL-vin",say:"al vin",
+ plain:"Joseph’s eldest brother, who died on 19 November 1823 (Joseph Smith—History 1:4, 56) and whom Joseph saw in the celestial kingdom in 1836, marveling that he had died before the gospel was restored (D&C 137:5–6). Alvin is an English name usually explained as “elf friend.”",
+ bg:"The Lord explained that all who would have received the gospel are heirs of the celestial kingdom (D&C 137:7)."}),
+dc_ezra_thayre:DCB({name:"Ezra Thayre",forms:["Ezra Thayre"],resp:"EZ-ruh THAIR",say:"ez ruh thair",
+ plain:"An early convert addressed with Northrop Sweet in section 33 and sent on a mission with Thomas Marsh (52:22), whom the Lord told to repent “of his pride, and of his selfishness” (56:8). Ezra is Hebrew for “help.”",
+ bg:"In 33:1 the Lord speaks to “my servants Ezra and Northrop.”"}),
+dc_john_corrill:DCB({name:"John Corrill",forms:["John Corrill"],resp:"JAHN KOR-il",say:"jahn kor il",
+ plain:"An early convert in Ohio named among those ordained to preach (50:38) and sent to Missouri with Lyman Wight (52:7). The scriptures give no meaning for his name.",
+ bg:"He later served in the leadership of the Saints in Missouri."}),
+dc_john_johnson:DCB({name:"John Johnson",forms:["John Johnson"],resp:"JAHN JAHN-sun",say:"jahn jahn sun",
+ plain:"A farmer of Hiram, Ohio, in whose home Joseph and Sidney lived in 1831–32 and where section 76 was received. The Lord accepted his offering and said he was “a descendant of Joseph” (96:6–7).",
+ bg:"He sat on the first high council (102:3) and was assigned “the house in which he lives, and the inheritance” (104:34)."}),
+dc_john_taylor:DCB({name:"John Taylor",forms:["John Taylor"],resp:"JAHN TAY-ler",say:"jahn tay ler",
+ plain:"An apostle named in 118:6 and 124:129, wounded at Carthage Jail “in a savage manner with four balls” (135:2). He later became the third President of the Church.",
+ bg:"The men named with him in 118:6 were chosen to fill places left in the Twelve."}),
+dc_zebedee:DCB({name:"Zebedee Coltrin",forms:["Zebedee Coltrin"],resp:"ZEB-uh-dee KOHL-trin",say:"zeb uh dee kohl trin",
+ plain:"An early convert called to take a mission with Levi Hancock (52:29), later one of the presidents of the Seventy. Zebedee is the Greek form of a Hebrew name often explained as “gift of God.”",
+ bg:"The fisherman Zebedee, father of the apostles James and John, bore the same name (Matthew 4:21)."}),
+dc_samuel_smith:DCB({name:"Samuel H. Smith",forms:["Samuel"],books:["dc","jsh"],resp:"SAM-yoo-el SMITH",say:"sam yoo el smith",
+ plain:"Joseph’s younger brother Samuel Harrison Smith, one of the first baptized and often called the Church’s first missionary, told that his calling is “to exhortation” (D&C 23:4). Samuel is Hebrew, “God has heard” or “name of God.”",
+ bg:"The Lord sent him on missions (D&C 52:30; 66:8); Joseph Smith—History 1:7 names him among the family who joined the Presbyterians."}),
+
+// =====================================================================
+// JOSEPH SMITH—HISTORY: PEOPLE
+// =====================================================================
+jsh_lucy:DCB({name:"Lucy Mack Smith",forms:["Lucy Smith","Lucy"],books:["jsh"],resp:"LOO-see SMITH",say:"loo see smith",
+ plain:"Joseph’s mother, whose maiden name was Mack, “daughter of Solomon Mack” (1:4), and who joined the Presbyterian church with Hyrum, Samuel Harrison and Sophronia (1:7). Lucy is a Latin name tied to lux, “light.”",
+ bg:"Verse 4 also lists a sister named Lucy, so “Lucy” there can be either."}),
+jsh_don_carlos:DCB({name:"Don Carlos Smith",forms:["Don Carlos"],books:["jsh"],resp:"DAHN KAR-lus",say:"dahn kar lus",
+ plain:"The youngest of the Smith brothers, listed among the family’s children in 1:4. The name is Spanish: Don is a title of respect and Carlos is Charles, from a Germanic word for “free man.”",
+ bg:"He is not named elsewhere in the standard works."}),
+jsh_isaac_hale:DCB({name:"Isaac Hale",forms:["Isaac Hale"],books:["jsh"],resp:"EYE-zik HAYL",say:"eye zik hayl",
+ plain:"Emma’s father, of Harmony, Pennsylvania, at whose house Joseph boarded (1:57) and whose family “were very much opposed to our being married” (1:58). Isaac is Hebrew, “he laughs.”",
+ bg:"The same name belonged to Abraham’s son (Genesis 21:6)."}),
+jsh_anthon:DCB({name:"Charles Anthon",forms:["Charles Anthon","Anthon"],books:["jsh"],resp:"CHARLZ AN-thun",say:"charlz an thun",
+ plain:"A classical scholar in New York City, “celebrated for his literary attainments,” to whom Martin Harris took characters copied from the plates (1:62–65). By Martin’s account Anthon tore up his certificate when told an angel had revealed the plates, and said of the sealed part, “I cannot read a sealed book” (1:65).",
+ bg:"His answer echoes Isaiah 29:11, which the Book of Mormon says is fulfilled in its coming forth (2 Nephi 27:15–18)."}),
+jsh_james:DCB({name:"James",forms:["James"],books:["jsh","dc"],resp:"JAYMZ",say:"jaymz",
+ plain:"The English form of Jacob. In Joseph Smith—History 1:11–13, 26 it is the author of the letter whose verse 1:5, “If any of you lack wisdom, let him ask of God,” sent Joseph to pray; in JS—H 1:72 and D&C 7:7; 27:12; 128:20 it is the apostle James, who with Peter and John held the keys of the Melchizedek Priesthood.",
+ bg:"The letter of James is usually attributed to James the brother of Jesus, a different man from the apostle James son of Zebedee."}),
+
+// =====================================================================
+// DIVINE NAMES, TITLES AND PRIESTHOOD WORDS
+// =====================================================================
+dc_alpha:DCB({name:"Alpha and Omega",forms:["Alpha and Omega"],resp:"AL-fuh and oh-MAY-guh",say:"al fuh and oh may guh",
+ plain:"A title of Christ: alpha and omega are the first and last letters of the Greek alphabet, so it means “the beginning and the end” (35:1; 19:1). The Lord says, “I am Alpha and Omega, even Jesus Christ” (63:60).",
+ bg:"The title comes from Revelation 1:8, 21:6 and 22:13; in 95:17 the Lord also uses the spellings Alphus and Omegus."}),
+dc_ahman:DCB({name:"Ahman, Son Ahman, Alphus, Omegus",forms:["Son Ahman","Ahman","Alphus","Omegus"],resp:"AH-mun",say:"ah mun",
+ plain:"Names of Jesus Christ: “your Redeemer, even the Son Ahman” (78:20) and “Son Ahman; or, in other words, Alphus; or, in other words, Omegus; even Jesus Christ your Lord” (95:17). Alphus and Omegus echo Alpha and Omega, but the revelations do not define Ahman.",
+ bg:"Some early Latter-day Saint writers explained Ahman as a name for God in the language of Adam; that is not stated in the text. Ahman is also part of the place name Adam-ondi-Ahman (116:1)."}),
+dc_jehovah:DCB({name:"Jehovah",forms:["Jehovah"],books:["dc","abr"],resp:"jeh-HOH-vuh",say:"jeh hoh vuh",
+ plain:"The English form of the divine name written YHWH in Hebrew and printed LORD in the King James Bible, usually linked to the verb “to be” (Exodus 3:14). Latter-day Saints teach that Jehovah is Jesus Christ, and Joseph hears “the voice of Jehovah” in the Kirtland Temple (D&C 110:3).",
+ bg:"The dedicatory prayer addresses “O Jehovah” (D&C 109:34, 42, 56), and in Abraham 1:16 and 2:8 the Lord says, “my name is Jehovah.”"}),
+dc_michael:DCB({name:"Michael",forms:["Michael"],resp:"MY-kul",say:"my kul",
+ plain:"An archangel whose Hebrew name is a question, “Who is like God?” In these revelations Michael is Adam: “Michael, or Adam, the father of all, the prince of all, the ancient of days” (27:11; 107:54).",
+ bg:"He will sound the trump before the end (29:26) and lead the Lord’s armies in the last battle (88:112–115); 128:20–21 lists his voice among the messengers of the Restoration."}),
+dc_gabriel:DCB({name:"Gabriel",forms:["Gabriel"],resp:"GAY-bree-ul",say:"gay bree ul",
+ plain:"An angel whose Hebrew name is often explained as “God is my strength,” who announces the births of John the Baptist and Jesus in Luke 1; D&C 128:21 includes “the voice of Gabriel” among the messengers of the Restoration. Joseph Smith taught that Gabriel is Noah.",
+ bg:"The Bible Dictionary entry for Gabriel notes the same teaching."}),
+dc_raphael:DCB({name:"Raphael",forms:["Raphael"],resp:"RAF-ay-el",say:"raf ay el",
+ plain:"An angel named only once in the standard works, among the messengers of the Restoration (128:21). The Hebrew name is usually explained as “God has healed.”",
+ bg:"He is also the angel who heals Tobit in the Book of Tobit, in the Apocrypha; the revelation gives no details of his appearance."}),
+dc_elias:DCB({name:"Elias",forms:["Elias"],resp:"ee-LY-us",say:"ee ly us",
+ plain:"The Greek form of Elijah, but these revelations also use it for others: one who holds “the keys of bringing to pass the restoration of all things” (27:6; 77:9, 14), or a messenger who “committed the dispensation of the gospel of Abraham” in the Kirtland Temple before Elijah came (110:12–13). Whether Elias is a title or one person is not always spelled out.",
+ bg:"Joseph Smith taught that the spirit of Elias is a forerunner’s spirit, preparing the way for something greater."}),
+dc_elias_zach:DCB({name:"Elias (who visited Zacharias)",forms:[],resp:"ee-LY-us",say:"ee ly us",
+ plain:"Section 27:7 says Zacharias, the father of John the Baptist, was visited by Elias, who promised him a son named John; Luke 1:11–19 names that angel Gabriel, so here Elias seems to be a title or name for him. The same verse says John was “filled with the spirit of Elias.”",
+ bg:"Zacharias is the Greek form of Zechariah, “the Lord remembers.”"}),
+dc_elijah:DCB({name:"Elijah",forms:["Elijah"],books:["dc","jsh"],resp:"ee-LY-juh",say:"ee ly juh",
+ plain:"The Old Testament prophet taken to heaven without tasting death (D&C 110:13), whose name means “my God is the LORD.” Malachi promised he would come “before the great and dreadful day of the Lord” (D&C 2:1; Joseph Smith—History 1:38), and he appeared in the Kirtland Temple in 1836 to commit the keys of turning hearts (D&C 110:13–16).",
+ bg:"The New Testament calls him Elias."}),
+dc_esaias:DCB({name:"Esaias",forms:["Esaias"],resp:"ee-ZAY-us",say:"ee zay us",
+ plain:"The Greek form of Isaiah, but in section 84 a priesthood holder who “lived in the days of Abraham, and was blessed of him” and “received it under the hand of God” (84:12–13). Section 76:100 names Esaias and Isaiah separately, so they appear to be two men.",
+ bg:"He is listed in the line of priesthood holders from Abraham to Moses (84:6–13)."}),
+dc_melchizedek:DCB({name:"Melchizedek",forms:["Melchizedek"],books:["dc","jsh"],resp:"mel-KIZ-eh-dek",say:"mel kiz eh dek",
+ plain:"The king of Salem and priest of the most high God who blessed Abraham (Genesis 14:18–20); his name means “king of righteousness” (Hebrews 7:2). The higher priesthood is named for him “to avoid the too frequent repetition of” the name of the Supreme Being (D&C 107:2–4).",
+ bg:"Abraham received it from him (D&C 84:14); Joseph Smith—History 1:72 says Peter, James and John held “the keys of the Priesthood of Melchizedek.”"}),
+dc_aaronic:DCB({name:"Aaronic and Levitical (Priesthood)",forms:["Aaronic"],books:["dc","jsh"],resp:"air-ON-ik",say:"air on ik",
+ plain:"The lesser priesthood, named for Aaron and holding “the keys of the ministering of angels, and of the gospel of repentance, and of baptism by immersion” (D&C 13:1; 107:20). “Levitical” is a second name, because its offices came through Levi’s tribe (D&C 107:1, 6).",
+ bg:"John the Baptist conferred it on Joseph and Oliver in May 1829 (Joseph Smith—History 1:68–72)."}),
+dc_aaron:DCB({name:"Aaron",forms:["Aaron"],books:["dc","jsh"],resp:"AIR-un",say:"air un",
+ plain:"Moses’ older brother and Israel’s first high priest; the lesser priesthood “is called the Priesthood of Aaron, because it was conferred upon Aaron and his seed” (D&C 107:13; Joseph Smith—History 1:69). The meaning of the name is uncertain.",
+ bg:"“The house of Aaron” and “the sons of Aaron” mean his descendants (D&C 84:27, 31)."}),
+dc_levi:DCB({name:"Levi",forms:["Levi"],books:["dc","jsh"],resp:"LEE-vy",say:"lee vy",
+ plain:"Jacob’s third son and the priestly tribe, a name that sounds like “joined,” from Leah’s words, “Now this time will my husband be joined unto me” (Genesis 29:34). The Aaronic Priesthood stays “until the sons of Levi do offer again an offering unto the Lord in righteousness” (D&C 13:1; Joseph Smith—History 1:69).",
+ bg:"D&C 128:24 uses Malachi’s picture of the Lord purifying “the sons of Levi.”"}),
+dc_urim:DCB({name:"Urim and Thummim",forms:["Urim and Thummim"],books:["dc","jsh"],resp:"YOOR-im and THUM-im",say:"yoor im and thum im",
+ plain:"Sacred instruments for receiving revelation, whose Hebrew names are usually understood as “lights and perfections.” Joseph describes “two stones in silver bows” fastened to a breastplate and deposited with the plates (Joseph Smith—History 1:35).",
+ bg:"D&C 17:1 says such interpreters “were given to the brother of Jared upon the mount”; 130:8–10 says the sanctified earth will be “a Urim and Thummim.”"}),
+dc_sabaoth:DCB({name:"Sabaoth",forms:["Sabaoth"],resp:"SAB-ay-oth",say:"sab ay oth",
+ plain:"A Hebrew word meaning “hosts” or “armies,” as in “Lord of hosts,” which the revelation itself explains: “the Lord of Sabaoth, which is by interpretation, the creator of the first day, the beginning and the end” (95:7). In other sections the Lord of Sabaoth hears the Saints’ prayers (87:7; 88:2; 98:2).",
+ bg:"Romans 9:29 and James 5:4 also use the word."}),
+dc_comforter:DCB({name:"Comforter",forms:["Comforter"],books:["dc","moses"],resp:"KUM-fer-ter",say:"kum fer ter",
+ plain:"A name for the Holy Ghost: the English word means “strengthen greatly,” and the Greek in John 14:26 is paraklētos, “one called alongside to help.” D&C 88:3 speaks of “another Comforter … the Holy Spirit of promise,” and Moses 6:61 names the Comforter among the gifts of the Spirit.",
+ bg:"The same word translates what John’s Gospel says Jesus promised His disciples (John 14:16–17)."}),
+dc_perdition:DCB({name:"Perdition and Lucifer",forms:["Perdition"],books:["dc","moses"],resp:"per-DISH-un",say:"per dish un",
+ plain:"Perdition means utter loss or destruction and is a title of Satan: “thou shalt be called Perdition” (Moses 5:24); “was called Perdition, for the heavens wept over him—he was Lucifer, a son of the morning” (D&C 76:26). Lucifer is Latin for “light-bearer,” the name used for the shining one of Isaiah 14:12.",
+ bg:"“Sons of perdition” knowingly deny the Holy Spirit after receiving it (D&C 76:30–32)."}),
+mos_satan:DCB({name:"Satan",forms:["Satan"],books:["moses","dc","jsh"],resp:"SAY-tun",say:"say tun",
+ plain:"From a Hebrew word meaning “adversary” or “accuser”; in Moses he is the one who offered himself as redeemer in the council in heaven but “sought to destroy the agency of man” and was cast down (Moses 4:1–4). He is “the devil, the father of all lies” (Moses 4:4), called Perdition (Moses 5:24) and Lucifer (D&C 76:26).",
+ bg:"In Moses 1:12–22 Moses commands him in the name of the Only Begotten to depart."}),
+mos_onlybegotten:DCB({name:"Only Begotten",forms:["Only Begotten Son","Only Begotten"],books:["moses","dc"],resp:"OHN-lee bih-GOT-un",say:"ohn lee bih got un",
+ plain:"A title of Jesus Christ as the Son of God; the Greek behind it in John 3:16 (monogenēs) is usually understood as “one of a kind,” not only “the only one born.” God tells Moses he is “in the similitude of mine Only Begotten” (Moses 1:6) and made the earth “by mine Only Begotten” (Moses 2:1).",
+ bg:"In Moses 6:52 salvation comes in the name of “mine Only Begotten Son, … which is Jesus Christ.”"}),
+dc_stake:DCB({name:"stake",forms:["stake","stakes"],resp:"STAYK",say:"stayk",
+ plain:"A tent stake, and so a district of the Church that holds up Zion like a tent; the image comes from Isaiah 54:2, “strengthen thy stakes,” echoed in “her stakes must be strengthened” (82:14). Section 101:21 says new places will be “called stakes, for the curtains or the strength of Zion.”",
+ bg:"Section 94:1 speaks of “the city of the stake of Zion, here in the land of Kirtland.”"}),
+
+// =====================================================================
+// ZION AND THE NEW JERUSALEM
+// =====================================================================
+dc_zion:DCB({name:"Zion",forms:["Zion"],resp:"ZY-un",say:"zy un",
+ plain:"Zion means the pure in heart (“this is Zion—THE PURE IN HEART,” 97:21); a land and city, “the center place” at Independence, Missouri (57:1–3); the New Jerusalem to be built there (45:66–67); the stakes that strengthen it (82:13–14); and the city of Enoch. The Hebrew word first named a hill in Jerusalem (2 Samuel 5:7), and its original meaning is uncertain.",
+ bg:"Moses 7:18 explains the name for Enoch’s city: “because they were of one heart and one mind, and dwelt in righteousness; and there was no poor among them.”"}),
+dc_zion_enoch:DCB({name:"Zion (the city of Enoch)",forms:[],resp:"ZY-un",say:"zy un",
+ plain:"The city Enoch built, whose people were of one heart and one mind and were taken up to God (Moses 7:18–21, 69); the Lord says He “took the Zion of Enoch into mine own bosom” (38:4). Section 45:11–12 calls it “a city reserved until a day of righteousness shall come.”",
+ bg:"The Lord promises that Zion in the last days will be joined by it (Moses 7:62–64)."}),
+dc_mountzion:DCB({name:"Mount Zion",forms:["Mount Zion"],resp:"MOWNT ZY-un",say:"mownt zy un",
+ plain:"Zion was first the temple hill in Jerusalem (Psalm 2:6); here “Mount Zion” is the heavenly city of the faithful (76:66), the New Jerusalem the Saints are to build (84:2), and where the Lamb will stand with the 144,000 (133:18, 56).",
+ bg:"Section 84:32 speaks of the sons of Moses and Aaron serving “upon Mount Zion in the Lord’s house.”"}),
+mos_zion:DCB({name:"Zion",forms:["Zion"],books:["moses","aof"],resp:"ZY-un",say:"zy un",
+ plain:"The Lord names Enoch’s people Zion “because they were of one heart and one mind, and dwelt in righteousness; and there was no poor among them” (Moses 7:18), and the city is “the City of Holiness, even ZION” (7:19), taken up to heaven (7:21, 69). Moses 7:62 promises another, “a New Jerusalem,” and Article of Faith 10 says Zion “will be built upon the American continent.”",
+ bg:"The Hebrew word first named a hill in Jerusalem (2 Samuel 5:7); its original meaning is uncertain."}),
+mos_newjerusalem:DCB({name:"New Jerusalem",forms:["New Jerusalem"],books:["moses","dc","aof"],resp:"NOO jeh-ROO-suh-lum",say:"noo jeh roo suh lum",
+ plain:"The holy city to be built in the last days, also called Zion: “an Holy City … it shall be called Zion, a New Jerusalem” (Moses 7:62), “a land of peace, a city of refuge” (D&C 45:66). Independence, Missouri, is its center place (D&C 57:1–3), and Article of Faith 10 says it will be built upon the American continent.",
+ bg:"Ether 13:3–10 and Revelation 21:2 also speak of a new Jerusalem."}),
+
+// =====================================================================
+// PLACES (DOCTRINE AND COVENANTS AND JOSEPH SMITH—HISTORY)
+// =====================================================================
+dc_kirtland:DCB({name:"Kirtland",forms:["Kirtland"],resp:"KIRT-lund",say:"kirt lund",
+ plain:"A town in northeastern Ohio where the Church gathered from 1831 to 1838, called “consecrated … for the benefit of the saints of the Most High” (82:13). It is named for Turhand Kirtland, a land agent of the Connecticut Western Reserve.",
+ bg:"The Lord told the Saints to “go to the Ohio” (38:32) and commanded a house there, the Kirtland Temple, dedicated in March 1836 (section 109)."}),
+dc_independence:DCB({name:"Independence",forms:["Independence"],resp:"in-duh-PEN-dunts",say:"in duh pen dunts",
+ plain:"A town in Jackson County, Missouri, and “the center place” for Zion: “a spot for the temple is lying westward, upon a lot which is not far from the courthouse” (57:3). The revelations give no meaning for the name beyond the English word.",
+ bg:"Joseph dedicated the temple site in August 1831, and the Saints were to buy land there (58:37)."}),
+dc_jackson:DCB({name:"Jackson County",forms:["Jackson county"],resp:"JAK-sun KOWN-tee",say:"jak sun kown tee",
+ plain:"The Missouri county named for President Andrew Jackson, where Independence stands and where the Saints were told to buy land (101:70–71; 105:28). Mobs drove them out in 1833 (109:47).",
+ bg:"The Lord says some were “hindered by their enemies” from building a city and house there (124:51)."}),
+dc_farwest:DCB({name:"Far West",forms:["Far West"],resp:"FAR WEST",say:"far west",
+ plain:"A city in Caldwell County, Missouri, that the Lord called “a holy and consecrated land unto me; and it shall be called most holy” (115:7). The name seems to describe its place on the western frontier; the revelations give no other meaning.",
+ bg:"The Twelve were to leave from “the building-spot of my house” there (118:5)."}),
+dc_nauvoo:DCB({name:"Nauvoo",forms:["Nauvoo House","Nauvoo"],resp:"naw-VOO",say:"naw voo",
+ plain:"The Illinois city on the Mississippi where the Saints gathered from 1839 to 1846 (124:109), with a Nauvoo House to be “a delightful habitation for man, and a resting-place for the weary traveler” (124:60). Joseph Smith said the name is Hebrew and “signifies a beautiful situation, carrying with it, also, the idea of rest.”",
+ bg:"The town was called Commerce before the Saints arrived; the Hebrew word is related to the one translated “beautiful” in Isaiah 52:7."}),
+dc_carthage:DCB({name:"Carthage",forms:["Carthage"],resp:"KAR-thij",say:"kar thij",
+ plain:"The county seat of Hancock County, Illinois, a few miles from Nauvoo, where Joseph and Hyrum Smith were killed in the jail on 27 June 1844 (135:1). The revelations give no meaning for the name.",
+ bg:"Joseph’s blood on the jail floor, the revelation says, “is a broad seal affixed to ‘Mormonism’” (135:7)."}),
+dc_adamahman:DCB({name:"Adam-ondi-Ahman",forms:["Adam-ondi-Ahman","Spring Hill"],resp:"AD-um ahn-dy AH-mun",say:"ad um ahn dy ah mun",
+ plain:"A place in what is now Daviess County, Missouri, named by the Lord “because … it is the place where Adam shall come to visit his people, or the Ancient of Days shall sit, as spoken of by Daniel the prophet” (116:1). Section 107:53 says Adam gathered his righteous descendants there to give them his last blessing, and the revelations do not define the name.",
+ bg:"The Lord also speaks of “the mountains of Adam-ondi-Ahman” and “the land where Adam dwelt” (117:8, 11)."}),
+dc_olaha:DCB({name:"Olaha Shinehah",forms:["Olaha Shinehah"],resp:"oh-LAY-huh shih-NEE-huh",say:"oh lay huh shih nee huh",
+ plain:"“The plains of Olaha Shinehah, or the land where Adam dwelt” (117:8), named with the mountains of Adam-ondi-Ahman to show there is room enough for the Saints. The revelation gives no meaning for the name.",
+ bg:"In Abraham 3:13 the word Shinehah means “the sun,” but the text does not say whether the two names are related."}),
+dc_ohio:DCB({name:"Ohio",forms:["Ohio"],resp:"oh-HY-oh",say:"oh hy oh",
+ plain:"The state where the Church gathered in 1831: “go to the Ohio; and there I will give unto you my law; and there you shall be endowed with power from on high” (38:32). The name comes from the Ohio River, from an Iroquoian word often translated “good river” or “great river.”",
+ bg:"The Saints in Ohio were also to send money to the bishop in Zion (84:104)."}),
+dc_missouri:DCB({name:"Missouri",forms:["Missouri"],resp:"muh-ZOOR-ee",say:"muh zoor ee",
+ plain:"The frontier state the Lord called “the land which I have appointed and consecrated for the gathering of the saints” (57:1), with Independence as “the center place” (57:3). The name comes from the Missouri River and the Missouria people; its original meaning is uncertain.",
+ bg:"The Saints were driven from Jackson County in 1833 and from the state in 1838–39 (109:47; 124:54)."}),
+dc_colesville:DCB({name:"Colesville",forms:["Colesville"],resp:"KOHLZ-vil",say:"kohlz vil",
+ plain:"A town in Broome County, New York, where one of the earliest branches formed; the Lord told Joseph to confirm the church there (26:1) and said they prayed “in much faith” (37:2). The Colesville Saints later moved to Ohio and Missouri.",
+ bg:"D&C 128:20 places Peter, James and John “in the wilderness between Harmony … and Colesville.”"}),
+dc_fayette:DCB({name:"Fayette",forms:["Fayette"],resp:"fay-ET",say:"fay et",
+ plain:"A town in Seneca County, New York, home of the Whitmers, where Joseph finished the translation in 1829 and the Church was organized on 6 April 1830; it is said to be named for the Marquis de Lafayette. D&C 128:21 recalls “the voice of God in the chamber of old Father Whitmer, in Fayette, Seneca county.”",
+ bg:"The Lord told Joseph to go “speedily unto the church which is in Colesville, Fayette, and Manchester” (24:3)."}),
+dc_zarahemla:DCB({name:"Zarahemla (in Iowa)",forms:["Zarahemla"],resp:"zuh-RAH-heh-muh",say:"zuh rah heh muh",
+ plain:"A city the Lord told the Saints in 1841 to build “upon the land opposite the city of Nauvoo,” across the river in Iowa Territory (125:3). The name comes from the Book of Mormon capital, which gives no meaning for it.",
+ bg:"The Book of Mormon city was named for Zarahemla, leader of the people of Mulek (Omni 1:13–19)."}),
+dc_cumorah:DCB({name:"Cumorah",forms:["Cumorah"],resp:"kyoo-MOR-uh",say:"kyoo mor uh",
+ plain:"The hill where, in the Book of Mormon, the Nephites fought their last battle and Mormon hid the records (Mormon 6), hailed in “glad tidings from Cumorah” as the place where the angel Moroni came from (128:20). The Book of Mormon gives no meaning for the name.",
+ bg:"Joseph Smith—History 1:51 describes the hill near Manchester, New York, where the plates lay, without naming it."}),
+dc_susquehanna:DCB({name:"Susquehanna",forms:["Susquehanna"],books:["dc","jsh"],resp:"sus-kweh-HAN-uh",say:"sus kweh han uh",
+ plain:"A river and county in northeastern Pennsylvania where Joseph and Emma lived at Harmony during the translation (Joseph Smith—History 1:61–62). D&C 128:20 names “the voice of Michael on the banks of the Susquehanna”; the name comes from a Native American name for the river, whose meaning is uncertain.",
+ bg:"Peter, James and John appeared “between Harmony, Susquehanna county, and Colesville, Broome county, on the Susquehanna river” (D&C 128:20)."}),
+jsh_harmony:DCB({name:"Harmony",forms:["Harmony"],books:["jsh","dc"],only:["dc.128","jsh.1"],resp:"HAR-muh-nee",say:"har muh nee",
+ plain:"The town in Susquehanna County, Pennsylvania, where Joseph and Emma lived and much of the Book of Mormon was translated (Joseph Smith—History 1:56, 61–67). The name is simply the English word; no other meaning is documented.",
+ bg:"Peter, James and John appeared between Harmony and Colesville (D&C 128:20). This card applies only where Harmony is the town, not the ordinary word “harmony” (as in D&C 134:6)."}),
+jsh_palmyra:DCB({name:"Palmyra",forms:["Palmyra"],books:["jsh"],resp:"pal-MY-ruh",say:"pal my ruh",
+ plain:"The western New York village where the Smiths moved from Vermont when Joseph was “in my tenth year,” in “Ontario (now Wayne) county” (1:3). It is said to be named for the ancient city of Palmyra in Syria, whose name is usually linked to the palm tree.",
+ bg:"The family later moved to a farm in neighboring Manchester (1:5)."}),
+jsh_manchester:DCB({name:"Manchester",forms:["Manchester"],books:["jsh","dc"],resp:"MAN-ches-ter",say:"man ches ter",
+ plain:"The township in Ontario County, New York, next to Palmyra, where the great religious excitement began “in the second year after our removal to Manchester” (Joseph Smith—History 1:5) and near whose village the plates lay (1:51). The history gives no meaning for the name.",
+ bg:"The Lord also names a branch of the Church at Manchester (D&C 24:3)."}),
+
+// =====================================================================
+// PEARL OF GREAT PRICE: MOSES (with the Doctrine and Covenants lists of the patriarchs)
+// =====================================================================
+mos_moses:DCB({name:"Moses",forms:["Moses"],books:["moses","dc","jsm"],resp:"MOH-zez",say:"moh zez",
+ plain:"The prophet who led Israel out of Egypt, who “saw God face to face” in the vision recorded in the book of Moses (Moses 1:1–2). Exodus 2:10 explains the name as “drawn out,” because Pharaoh’s daughter drew him from the water; it may also echo an Egyptian word for “son.”",
+ bg:"In Moses 1:12 Satan mockingly calls him “son of man”; D&C 28:2 says Joseph receives revelations “even as Moses,” and D&C 110:11 says Moses restored the keys of the gathering of Israel."}),
+mos_sonofman:DCB({name:"Son of Man",forms:["Son of Man"],books:["moses","jsm"],resp:"SUN uv MAN",say:"sun uv man",
+ plain:"A title Jesus used for Himself; in Hebrew the phrase means simply “a man,” and in Daniel 7:13 it names the heavenly figure who receives dominion. Moses 6:57 says “the name of his Only Begotten is the Son of Man, even Jesus Christ,” and Joseph Smith—Matthew 1:26, 36 calls His coming the great sign.",
+ bg:"The Father’s own name there is “Man of Holiness” (Moses 6:57), so the two titles echo each other."}),
+mos_adam:DCB({name:"Adam",forms:["Adam"],books:["moses","dc","aof"],resp:"AD-um",say:"add um",
+ plain:"The first man; in Hebrew adam means “man” or “mankind” and sounds like adamah, “ground,” the dust he was formed from (Moses 3:7). The Lord says, “the first man of all men have I called Adam, which is many” (Moses 1:34), and Moses 6:9 says God “called their name Adam,” meaning the man and the woman together.",
+ bg:"In the Doctrine and Covenants he is also Michael (27:11; 107:54), and Article of Faith 2 says men are punished for their own sins “and not for Adam’s transgression.”"}),
+mos_eve:DCB({name:"Eve",forms:["Eve"],books:["moses","dc"],resp:"EEV",say:"eev",
+ plain:"The first woman, named because “she was the mother of all living” (Moses 4:26), as the Hebrew name means “living” or “life.” After the Fall she said, “Were it not for our transgression we never should have had seed, and never should have known good and evil, and the joy of our redemption” (Moses 5:11).",
+ bg:"D&C 138:39 calls her “our glorious Mother Eve.”"}),
+mos_eden:DCB({name:"Eden",forms:["Eden"],books:["moses"],resp:"EE-dun",say:"ee dun",
+ plain:"The land where the Lord God “planted a garden eastward in Eden” (3:8), with a river that parted into four heads (3:10–14). The name is usually understood to mean “delight” or “pleasure.”",
+ bg:"After the Fall Cain lived “in the land of Nod, on the east of Eden” (5:41)."}),
+mos_cain:DCB({name:"Cain",forms:["Cain"],books:["moses","dc"],resp:"KAYN",say:"kayn",
+ plain:"The first son of Adam and Eve, who killed Abel; Eve said, “I have gotten a man from the Lord” (Moses 5:16), and the name sounds like the Hebrew for “gotten.” Moses adds that Cain “loved Satan more than God” (5:28) and was called Master Mahan (5:29–31).",
+ bg:"D&C 124:75 mentions “the offerings of Cain.”"}),
+mos_abel:DCB({name:"Abel",forms:["Abel"],books:["moses","dc"],resp:"AY-bul",say:"ay bul",
+ plain:"Adam and Eve’s second son, “a keeper of sheep” who “hearkened unto the voice of the Lord” (Moses 5:17) and was killed by Cain (5:32). The Hebrew name hevel means “breath” or “vapor,” which fits a short life.",
+ bg:"D&C 84:16 says he received the priesthood from Adam, and 138:40 calls him “the first martyr.”"}),
+mos_seth:DCB({name:"Seth",forms:["Seth"],books:["moses","dc"],resp:"SETH",say:"seth",
+ plain:"The son born after Abel’s death; Adam said, “God hath appointed me another seed, instead of Abel” (Moses 6:2), and the name is related to the Hebrew for “appointed.” D&C 107:42–43 says Adam ordained him and that he “was a perfect man.”",
+ bg:"D&C 138:40 calls him “one of the mighty ones.”"}),
+mos_enos:DCB({name:"Enos",forms:["Enos"],books:["moses","dc"],resp:"EE-nus",say:"ee nus",
+ plain:"Seth’s son, who led the people of God “out from the land, which was called Shulon” (Moses 6:13, 17). The Hebrew word enosh means “man” or “mortal.”",
+ bg:"D&C 107:44 says Adam ordained him; he is a different man from Enos the Book of Mormon prophet."}),
+mos_cainan:DCB({name:"Cainan",forms:["Cainan"],books:["moses","dc"],resp:"KAY-nun",say:"kay nun",
+ plain:"Enos’s son, for whom Enos named the land of promise, and Enoch says he “came out from the land of Cainan, the land of my fathers” (Moses 6:17, 41). The meaning of the name is uncertain.",
+ bg:"D&C 107:45 says God called Cainan in the wilderness and he met Adam at Shedolamak."}),
+mos_mahalaleel:DCB({name:"Mahalaleel",forms:["Mahalaleel"],books:["moses","dc"],resp:"muh-HAL-uh-leel",say:"muh hal uh leel",
+ plain:"Cainan’s son and Jared’s father (Moses 6:19–20). The Hebrew name is usually explained as “praise of God.”",
+ bg:"The King James Bible spells it Maleleel (Genesis 5:12); D&C 107:46 says Adam ordained him."}),
+mos_jared:DCB({name:"Jared (father of Enoch)",forms:["Jared"],books:["moses","dc"],resp:"JAIR-ed",say:"jair ed",
+ plain:"Mahalaleel’s son and Enoch’s father, who “taught Enoch in all the ways of God” (Moses 6:20–21). The Hebrew name is usually explained as “descent.”",
+ bg:"He is a different man from the Jared of the Jaredites in the Book of Ether."}),
+mos_enoch:DCB({name:"Enoch",forms:["Enoch"],books:["moses","dc"],resp:"EE-nuk",say:"ee nuk",
+ plain:"The prophet of the city of Zion, called as “a lad … slow of speech” (Moses 6:31), who saw the Lord face to face (7:4) and whose people were taken up to heaven (7:21, 69). The name is usually understood to mean “dedicated.”",
+ bg:"A different Enoch is Cain’s son (Moses 5:42); D&C 107:48 says the patriarch Enoch was ordained at twenty-five, and 107:57 mentions “the book of Enoch.”"}),
+mos_enoch_cain:DCB({name:"Enoch (Cain’s son)",forms:[],books:["moses"],resp:"EE-nuk",say:"ee nuk",
+ plain:"Cain’s son, for whom Cain named the city he built (5:42); his own son Irad revealed Cain’s secret (5:43, 49). The name is usually understood to mean “dedicated.”",
+ bg:"He is not the prophet Enoch of chapters 6–7, who came through Seth’s line."}),
+mos_methuselah:DCB({name:"Methuselah",forms:["Methuselah"],books:["moses","dc"],resp:"meh-THOO-zuh-luh",say:"meh thoo zuh luh",
+ plain:"Enoch’s son and Noah’s grandfather, who lived 969 years (Moses 8:7) and “was not taken, that the covenants of the Lord might be fulfilled” that Noah would come from Enoch’s line (8:2). The meaning of the name is uncertain; scholars do not agree.",
+ bg:"D&C 107:50 says Adam ordained him at 100."}),
+mos_lamech:DCB({name:"Lamech (father of Noah)",forms:["Lamech"],books:["moses","dc"],resp:"LAY-mek",say:"lay mek",
+ plain:"Methuselah’s son, who lived 777 years and named his son Noah, “This son shall comfort us concerning our work and toil of our hands” (Moses 8:5–11). The meaning of the name is uncertain.",
+ bg:"A descendant of Cain also named Lamech covenanted with Satan (Moses 5:43–54); D&C 107:51 says Seth ordained Noah’s father."}),
+mos_lamech_cain:DCB({name:"Lamech (descendant of Cain)",forms:[],books:["moses"],resp:"LAY-mek",say:"lay mek",
+ plain:"A descendant of Cain who took two wives, Adah and Zillah, and boasted that he had killed a man (5:44, 47–48). He covenanted with Satan “after the manner of Cain,” became Master Mahan, and killed Irad for revealing the secret (5:49–50).",
+ bg:"He is not Noah’s father Lamech (8:5–11); the meaning of the name is uncertain."}),
+mos_noah:DCB({name:"Noah",forms:["Noah"],books:["moses","dc","jsm","abr"],resp:"NOH-uh",say:"noh uh",
+ plain:"The prophet who built the ark; his father said, “This son shall comfort us” (Moses 8:9), and the name is usually understood to mean “rest” or “comfort.” The Lord ordained him “after his own order,” he preached repentance and baptism (Moses 8:19, 23–24), and Joseph Smith taught that Noah is the angel Gabriel.",
+ bg:"Joseph Smith—Matthew 1:41–43 compares “the days of Noah” to the coming of the Son of Man; D&C 138:41 calls him one “who gave warning of the flood.”"}),
+mos_shem:DCB({name:"Shem",forms:["Shem"],books:["moses","dc"],resp:"SHEM",say:"shem",
+ plain:"Noah’s son, born after Japheth (Moses 8:12), whom D&C 138:41 calls “Shem, the great high priest.” The Hebrew word shem means “name,” and can also mean fame or renown.",
+ bg:"“The land of Shem” in Moses 7:9 appears in Enoch’s vision long before Noah’s son was born, so it is a place whose name is not explained."}),
+mos_ham:DCB({name:"Ham",forms:["Ham"],books:["moses","abr"],resp:"HAM",say:"ham",
+ plain:"The youngest of Noah’s three sons (Moses 8:12), from whom Abraham says the Egyptian Pharaohs descended through Ham’s daughter Egyptus (Abraham 1:21–25). The meaning of the name is uncertain; it is often linked to a word for “hot,” but that is not certain.",
+ bg:"Abraham 1:11 says Onitah was “of the royal descent directly from the loins of Ham.”"}),
+mos_nod:DCB({name:"Nod",forms:["Nod"],books:["moses"],resp:"NAHD",say:"nahd",
+ plain:"The land east of Eden where Cain went to live (5:41). The name means “wandering,” echoing the sentence, “A fugitive and a vagabond shalt thou be” (5:37, 39).",
+ bg:"In Hebrew the word for “vagabond” is nad, which sounds like Nod."}),
+mos_mahan:DCB({name:"Master Mahan",forms:["Master Mahan","Mahan"],books:["moses"],resp:"muh-HAHN",say:"muh hahn",
+ plain:"A title Cain took when he swore his secret oath with Satan, saying “Truly I am Mahan, the master of this great secret”; “Cain was called Master Mahan” (5:31). The text gives no meaning for Mahan, and the word appears nowhere else in scripture.",
+ bg:"Lamech later also became Master Mahan (5:49), and the Lord cursed him and his house (5:51–52)."}),
+mos_manofholiness:DCB({name:"Man of Holiness, Man of Counsel",forms:["Man of Holiness","Man of Counsel"],books:["moses"],resp:"MAN uv HOH-lih-nes",say:"man uv hoh lih nes",
+ plain:"Names of God the Father: “in the language of Adam, Man of Holiness is his name, and the name of his Only Begotten is the Son of Man” (6:57), and “Man of Holiness is my name; Man of Counsel is my name” (7:35). “Holiness” also names Enoch’s city, “the City of Holiness, even ZION” (7:19), and “Counsel” echoes “Wonderful, Counsellor” in Isaiah 9:6.",
+ bg:"Moses 6:5–6 describes the language of Adam as “pure and undefiled.”"}),
+mos_endless:DCB({name:"Endless",forms:["Endless"],books:["moses","dc"],resp:"END-les",say:"end les",
+ plain:"A name of God: “Endless is my name” (Moses 1:3), “Endless and Eternal is my name, also” (Moses 7:35). The Lord uses it to explain a hard phrase: “Endless punishment is God’s punishment,” for “Endless is my name” (D&C 19:10–12), so “endless punishment” means God’s own punishment.",
+ bg:"“Eternal punishment” is explained the same way (D&C 19:11–12)."}),
+mos_canaan_enoch:DCB({name:"Canaan (in Enoch’s vision)",forms:["Canaan"],books:["moses"],resp:"KAY-nun",say:"kay nun",
+ plain:"A people Enoch saw dwelling in tents in the north, who would destroy the people of Shum and divide the land (7:6–7); Enoch was told to call all the people to repent except them (7:12). The text says “a blackness came upon all the children of Canaan” (7:8), and the Church today disavows past theories that link skin color with divine disfavor or a curse (“Race and the Priesthood,” Gospel Topics).",
+ bg:"This is not Canaan the son of Ham (Genesis 9:18) or the land Abraham entered; those belong after the Flood."}),
+mos_sharon:DCB({name:"Shum, Sharon, Omner, Heni, Haner, Hanannihah",forms:["Sharon","Shum","Omner","Heni","Haner","Hanannihah"],books:["moses"],resp:"SHAIR-un",say:"shair un",
+ plain:"Places in Enoch’s vision: “the valley of Shum” and its people (7:5), then “the land of Sharon, … the land of Omner, and the land of Heni, … the land of Haner, and the land of Hanannihah” (7:9). The text gives no meanings; Sharon is also the Hebrew name of Israel’s coastal plain, usually explained as “level place,” and Hanannihah resembles Hananiah, “the Lord has been gracious.”",
+ bg:"Omner is also a Book of Mormon name (Mosiah 27:34), and Shum is not the Nephite measure of grain in Alma 11."}),
+mos_mahijah:DCB({name:"Mahijah and Mahujah",forms:["Mahijah","Mahujah"],books:["moses"],resp:"muh-HY-juh",say:"muh hy juh",
+ plain:"Mahijah is the man who asked Enoch, “Tell us plainly who thou art, and from whence thou comest?” (6:40); Mahujah is “the place” where Enoch “cried unto the Lord” (7:2). The scripture gives no meaning for either name and does not say whether they are related.",
+ bg:"A similar name, Mahujael, belongs to a descendant of Cain (5:43)."}),
+mos_tubalcain:DCB({name:"Tubal Cain and Naamah",forms:["Tubal Cain","Naamah"],books:["moses"],resp:"TOO-bul KAYN",say:"too bul kayn",
+ plain:"Zillah’s son, “an instructor of every artificer in brass and iron,” and his sister Naamah (5:46). The meaning of Tubal Cain is uncertain, though the second part, qayin, may mean “smith”; Naamah is Hebrew for “pleasant.”",
+ bg:"They are of the family of the Lamech who covenanted with Satan (5:44–49)."}),
+
+// =====================================================================
+// THE BOOK OF ABRAHAM
+// =====================================================================
+mos_abraham:DCB({name:"Abraham",forms:["Abraham"],books:["abr","dc"],resp:"AY-bruh-ham",say:"ay bruh ham",
+ plain:"The father of the covenant family; his first name Abram means “exalted father,” and God renamed him Abraham, “for a father of many nations have I made thee” (Genesis 17:5). The book of Abraham is his own account of seeking “the blessings of the fathers” (Abraham 1:2) and of his call (2:3–11).",
+ bg:"The Doctrine and Covenants speaks of “the gospel of Abraham” (110:12) and calls him “the father of the faithful” (138:41)."}),
+mos_abr_egyptus:DCB({name:"Egyptus",forms:["Egyptus"],books:["abr"],resp:"ee-JIP-tus",say:"ee jip tus",
+ plain:"The name of Ham’s wife and daughter, whose meaning Abraham gives himself: “Egyptus, which in the Chaldean signifies Egypt, which signifies that which is forbidden” (1:23). Her eldest son Pharaoh set up the first government of Egypt (1:25).",
+ bg:"Abraham says the land was first discovered “by a woman, who was the daughter of Ham” (1:23)."}),
+mos_abr_canaan:DCB({name:"Canaan and the Canaanites",forms:["Canaan","Canaanites"],books:["abr"],resp:"KAY-nun",say:"kay nun",
+ plain:"The land promised to Abraham’s family, named for Ham’s son Canaan (Genesis 10:6, 15–19); Abraham left Ur “to go into the land of Canaan” (2:4) and was told, “Unto thy seed will I give this land” (2:19). The Canaanites already lived there as an idolatrous nation (2:18), and the meaning of the name is debated, perhaps “lowland” or purple dye.",
+ bg:"Abraham 1:21–22 says the blood of the Canaanites ran in Egypt’s kings."}),
+mos_abr_jershon:DCB({name:"Jershon",forms:["Jershon"],books:["abr"],resp:"JER-shon",say:"jer shon",
+ plain:"A land on Abraham’s road from Haran to Canaan, where he built an altar and prayed that the famine might be turned away from his father’s house (2:16–17). The book gives no meaning for the name.",
+ bg:"It is a different Jershon from the Nephite land of Jershon in Alma 27."}),
+mos_abr_bethel:DCB({name:"Bethel and Hai",forms:["Bethel","Hai"],books:["abr"],resp:"BETH-el and HY",say:"beth el and hy",
+ plain:"Abraham pitched his tent on a mountain “on the east of Bethel,” “Bethel on the west, and Hai on the east” (2:20). Bethel means “house of God” (Genesis 28:19), and Hai, spelled Ai in later Bible stories, means “the ruin.”",
+ bg:"Jacob later gave Bethel its name after his dream (Genesis 28:19)."}),
+mos_abr_shagreel:DCB({name:"Shagreel",forms:["Shagreel"],books:["abr"],resp:"shuh-GREEL",say:"shuh greel",
+ plain:"One of the false gods of Abraham’s homeland, whose meaning Abraham gives: “the god of Shagreel was the sun” (1:9). He lists it with the gods of Elkenah, Libnah, Mahmackrah, Korash and Pharaoh (1:6, 13).",
+ bg:""}),
+mos_abr_rahleenos:DCB({name:"Rahleenos",forms:["Rahleenos"],books:["abr"],resp:"rah-LEE-nus",say:"rah lee nus",
+ plain:"The Chaldean word for the figures on the altar picture: “which manner of figures is called by the Chaldeans Rahleenos, which signifies hieroglyphics” (1:14).",
+ bg:"Abraham refers readers to the picture at the start of his record (1:12–14)."}),
+mos_abr_sun:DCB({name:"Shinehah and Olea",forms:["Shinehah","Olea"],books:["abr"],resp:"shih-NEE-huh",say:"shih nee huh",
+ plain:"Names of heavenly lights whose meanings the Lord gives: “This is Shinehah, which is the sun … Olea, which is the moon” (3:13). The same verse gives Kokob as “star” and Kokaubeam as “stars, or all the great lights.”",
+ bg:"D&C 117:8 has a place name, Olaha Shinehah, that shares a word with this one."}),
+mos_abr_chaldea:DCB({name:"Chaldea",forms:["Chaldea","Chaldees","Chaldean"],books:["abr"],resp:"kal-DEE-uh",say:"kal dee uh",
+ plain:"Abraham’s homeland in southern Mesopotamia, where Ur stood (1:20; 2:1, 4), so his hometown is “Ur of the Chaldees.” “Chaldean” also names their language, from which Abraham translates Rahleenos and Egyptus (1:14, 23).",
+ bg:"The same people later ruled Babylon under Nebuchadnezzar."}),
+
+// =====================================================================
+// JOSEPH SMITH—MATTHEW
+// =====================================================================
+mos_jsm_jews:DCB({name:"Jews",forms:["Jews"],books:["jsm"],resp:"JOOZ",say:"jooz",
+ plain:"The people of Judah, from the Hebrew yehudi, “one of Judah,” the name coming from Judah, “praise” (Genesis 29:35). Joseph Smith—Matthew 1:18 foretells “great tribulation on the Jews, and upon the inhabitants of Jerusalem,” the destruction of the city by Rome in AD 70.",
+ bg:"The prophecy also looks ahead to the last days (1:21–55)."}),
+mos_jsm_judea:DCB({name:"Judea",forms:["Judea"],books:["jsm"],resp:"joo-DEE-uh",say:"joo dee uh",
+ plain:"The Roman name for the southern part of Palestine around Jerusalem, taken from Judah. In JS—M 1:13 the Lord warns, “Then let them who are in Judea flee into the mountains.”",
+ bg:"Early Christian tradition says many Christians left Jerusalem before the siege."}),
+mos_jsm_olives:DCB({name:"Mount of Olives",forms:["Mount of Olives"],books:["jsm"],resp:"MOWNT uv OL-ivz",say:"mownt uv ol ivz",
+ plain:"The ridge just east of Jerusalem, once covered with olive groves, where Jesus gave this prophecy to His disciples (JS—M 1:4). Zechariah 14:4 says the Lord’s feet will stand upon it at His coming, and D&C 45:48–53 describes that scene.",
+ bg:"Gethsemane, where Jesus prayed before His arrest, lies at its foot."}),
+
+// =====================================================================
+// ARTICLES OF FAITH AND TRIBES
+// =====================================================================
+aof_jesuschrist:DCB({name:"Jesus Christ",forms:["Jesus Christ"],books:["aof","moses","jsh"],resp:"JEE-zus KRYST",say:"jee zus kryst",
+ plain:"Jesus is the Greek form of Joshua (Yeshua), “the LORD saves,” as the angel told Joseph: “thou shalt call his name Jesus: for he shall save his people from their sins” (Matthew 1:21). Christ is Greek for “anointed one,” the same title as Messiah.",
+ bg:"Moses 6:52 says salvation comes “in the name of mine Only Begotten Son … which is Jesus Christ”; Article of Faith 4 names “faith in the Lord Jesus Christ” as the first principle."}),
+aof_tentribes:DCB({name:"The Ten Tribes",forms:["Ten Tribes"],books:["aof","dc"],resp:"TEN TRYBZ",say:"ten trybz",
+ plain:"The ten northern tribes of Israel, carried away by Assyria about 722 BC (2 Kings 17:6), whose restoration Article of Faith 10 affirms. D&C 110:11 says Moses committed “the leading of the ten tribes from the land of the north,” and 133:26–34 describes their return.",
+ bg:"The two southern tribes, Judah and Benjamin, kept the kingdom of Judah."}),
+dc_israel:DCB({name:"Israel",forms:["Israel"],books:["dc","aof","jsm"],resp:"IZ-ray-el",say:"iz ray el",
+ plain:"The new name God gave Jacob and then his family and nation; Genesis 32:28 explains it as one who has striven with God and prevailed, though scholars debate whether it means “he strives with God” or “God strives.” In these scriptures Israel is also the covenant people being gathered: “the keys of the gathering of Israel” (D&C 110:11) and “the literal gathering of Israel” (Article of Faith 10).",
+ bg:""}),
+
+// =====================================================================
+// PATRIARCHS, TRIBES AND PROPHETS NAMED IN THE DOCTRINE AND COVENANTS
+// =====================================================================
+dc_isaac:DCB({name:"Isaac",forms:["Isaac"],books:["dc"],resp:"EYE-zik",say:"eye zik",
+ plain:"Abraham’s son of promise, named “he laughs” from his parents’ laughter at the promise (Genesis 21:6), counted among “your fathers, by whom the promises remain” (27:10). The Lord says He “accepted the offering of Abraham of his son Isaac” (132:50).",
+ bg:"D&C 132:36–37 speaks of Abraham being commanded to offer Isaac."}),
+dc_jacob:DCB({name:"Jacob",forms:["Jacob"],books:["dc"],resp:"JAY-kub",say:"jay kub",
+ plain:"Isaac’s younger son, later named Israel; the name means “heel-holder,” so “he supplants,” because he was born holding Esau’s heel (Genesis 25:26). “Jacob” also stands for his descendants: “Jacob shall flourish in the wilderness, and the Lamanites shall blossom as the rose” (49:24).",
+ bg:"The Lord is called “the Mighty God of Jacob” (109:68)."}),
+dc_ephraim:DCB({name:"Ephraim",forms:["Ephraim"],books:["dc"],resp:"EE-fray-im",say:"ee fray im",
+ plain:"Joseph’s younger son and the tribe named for him, a name that sounds like the Hebrew for “doubly fruitful” (Genesis 41:52). D&C 27:5 calls the Book of Mormon “the stick of Ephraim,” and 133:30–34 says Ephraim’s children lead the gathering of Israel.",
+ bg:"D&C 113:4 says the servant of Isaiah 11 is a descendant “of Jesse as well as of Ephraim.”"}),
+dc_judah:DCB({name:"Judah",forms:["Judah"],books:["dc"],resp:"JOO-duh",say:"joo duh",
+ plain:"Jacob’s fourth son and the tribe named for him, meaning “praise”: “now will I praise the LORD” (Genesis 29:35). D&C 133:13 says, “let them who be of Judah flee unto Jerusalem,” and 133:35 promises that Judah will be sanctified “after their pain.”",
+ bg:"The word “Jew” comes from Judah."}),
+dc_isaiah:DCB({name:"Isaiah",forms:["Isaiah"],books:["dc","jsh"],resp:"eye-ZAY-uh",say:"eye zay uh",
+ plain:"The Hebrew prophet whose name means “the LORD saves,” whose chapters 11 and 52 are explained in D&C 113 and whose chapter 11 Moroni quoted to Joseph (Joseph Smith—History 1:40). D&C 128:19 quotes Isaiah 52:7, “How beautiful upon the mountains are the feet of those that bring glad tidings.”",
+ bg:"D&C 76:100 names Isaiah and Esaias separately."}),
+dc_malachi:DCB({name:"Malachi",forms:["Malachi"],books:["dc","jsh"],resp:"MAL-uh-ky",say:"mal uh ky",
+ plain:"The last Old Testament prophet, whose name means “my messenger” (Malachi 3:1), and whose chapters 3 and 4 Moroni quoted to Joseph with changes (Joseph Smith—History 1:36–39). D&C 110:14 and 128:17 point to Malachi’s promise that Elijah would come before “the great and dreadful day of the Lord.”",
+ bg:"The Savior gave the Nephites Malachi’s words (3 Nephi 24–25)."}),
+});
+
+
+// ---- Verse-by-verse sorting where the same spelling means someone or something else ----
+// Joseph Smith, his father, Joseph of Egypt, and other Josephs
+DCALT(["jsh.1:4"],{dc_joseph:"dc_joseph_sr"});
+DCALT(["dc.23:5"],{dc_joseph:"dc_joseph_sr"});
+DCALT(["dc.27:10","dc.90:10","dc.96:7","dc.98:32","dc.113:4","dc.113:6"],{dc_joseph:"dc_joseph_egypt"}); // Joseph son of Jacob, or his house
+DCALT(["dc.50:37","dc.52:35","dc.55:6","dc.102:3","dc.102:34","dc.124:138"],{dc_joseph:"nolink"}); // Joseph Wakefield, Joseph Coe, Joseph Young
+// The Johns
+DCALT(["dc.27:7","dc.27:8","dc.35:4","dc.84:27","dc.93:6","dc.93:11","dc.93:12","dc.93:15","dc.93:16","dc.93:18","dc.93:26","dc.133:55"],{dc_john:"baptist"}); // John the Baptist
+DCALT(["dc.15:1","dc.30:9","dc.47:1"],{dc_john:"dc_john_whitmer"});
+DCALT(["dc.52:8","dc.99:1","dc.100:14","dc.102:3","dc.102:34","dc.118:6","dc.124:16","dc.124:22","dc.124:62","dc.124:70","dc.124:129","dc.124:137"],{dc_john:"nolink"}); // John Murdock, Gould, Smith, Carter, E. Page, C. Bennett, Snider, A. Hicks
+// Peter, James
+DCALT(["dc.16:1","dc.30:5"],{peter:"dc_peter_whitmer"});
+DCALT(["dc.124:62","dc.124:70"],{peter:"nolink"}); // Peter Haws
+DCALT(["dc.39:7","dc.40:1","dc.52:38","dc.124:138"],{jsh_james:"nolink"}); // James Covel, George James, James Foster
+// Other men who share a first name
+DCALT(["dc.124:132","dc.124:137","dc.124:142"],{dc_samuel_smith:"nolink"}); // Samuel Bent, Williams, Rolfe
+DCALT(["dc.124:132"],{dc_thomas_marsh:"nolink",dc_aaron:"nolink"}); // Thomas Grover; Aaron Johnson
+DCALT(["dc.52:29","dc.124:138"],{dc_levi:"nolink"}); // Levi Hancock
+DCALT(["dc.52:23","dc.64:15","dc.64:16","dc.64:20","dc.124:78","dc.124:79"],{dc_isaac:"nolink"}); // Isaac Morley, Isaac Galland
+DCALT(["dc.52:28"],{dc_jacob:"nolink"}); // Jacob Scott
+DCALT(["dc.117:12","dc.117:15"],{dc_oliver:"nolink"}); // Oliver Granger
+DCALT(["dc.106:1"],{dc_oliver:"nolink"}); // Warren A. Cowdery
+DCALT(["dc.113:7"],{dc_elias:"nolink"}); // Elias Higbee
+DCALT(["dc.124:136"],{mos_noah:"nolink"}); // Noah Packard
+DCALT(["dc.52:38","dc.79:1","dc.79:4","dc.94:14","dc.102:3","dc.102:34"],{mos_jared:"nolink"}); // Jared Carter
+DCALT(["dc.17:1"],{mos_jared:"ether_jared"}); // the brother of Jared
+// Elias, Zion
+DCALT(["dc.27:7"],{dc_elias:"dc_elias_zach"});
+DCALT(["dc.138:45"],{dc_elias:"elias"}); // Elias with Moses on the Mount of Transfiguration is Elijah
+DCALT(["dc.38:4"],{dc_zion:"dc_zion_enoch"});
+// Enoch and Lamech in Moses
+DCALTV("moses",5,[42,43,49],{mos_enoch:"mos_enoch_cain"});
+DCALT(["moses.7:9"],{mos_enoch:"nolink"}); // the land of Enoch
+DCALTV("moses",5,[43,44,47,48,49,50,52,53,54],{mos_lamech:"mos_lamech_cain"});
 </script>
 <script>// Books in the library. Refs everywhere use the form "dan.3:18".
 const BOOKS={
