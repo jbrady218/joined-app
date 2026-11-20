@@ -127,11 +127,12 @@ const askIntro=()=>`<div class="seekcard"><div class="sk-top"><span class="sk-ba
 <p class="sk-fine">Seek uses AI and shows the real scripture text. Always read the verse in context.</p></div>`;
 const ASK_URL="https://us-central1-joined-3adda.cloudfunctions.net/askSearch";
 const skCard=(kind,ref,text,why,attrs,tag)=>`<${tag||"button"} class="skr" ${attrs||""}><span class="skm"><span class="skk skk-${kind[0]}">${kind[1]}</span><span class="skref">${ref}</span></span>${text?`<span class="skt">${text}</span>`:""}${why?`<span class="skw">${esc(why)}</span>`:""}</${tag||"button"}>`;
+const skPlain=h=>/Nothing found for/.test(h)?"":h;
 const skHead=q=>`<div class="skhead"><span class="sk-badge sm">${SK_ICON}</span><span><b>Seek</b> <i>${q}</i></span></div>`;
 async function askAI(q){const el=$("#hres");q=q.trim();if(q.length<3)return;el.hidden=false;
   const u=typeof fbAuth!=="undefined"&&fbAuth&&fbAuth.currentUser;
   const plain=doSearch(q);
-  if(!u){el.innerHTML=plain+`<p class="sknote">Sign in to use <b>Seek</b>, which finds verses, your highlights and talks by meaning.</p>`;return;}
+  if(!u){el.innerHTML=skPlain(plain)+`<p class="sknote">Sign in to use <b>Seek</b>, which finds verses, your highlights and talks by meaning.</p>`;return;}
   el.innerHTML=`<div class="skload"><span class="sk-badge sm">${SK_ICON}</span><b>Seeking</b><span class="skd"></span><span class="skd"></span><span class="skd"></span></div>`;
   const hrefs=[...new Set([...Object.keys(S.hl).sort((a,b)=>((S.hlt||{})[b]||0)-((S.hlt||{})[a]||0)),...(S.marks||[]).map(m=>m.ref)])].filter(r=>BOOKS[PR(r).b]).slice(0,200);
   await Promise.all([...new Set(hrefs.map(r=>PR(r).b))].map(ensureText));
@@ -140,8 +141,8 @@ async function askAI(q){const el=$("#hres");q=q.trim();if(q.length<3)return;el.h
   let j;try{const r=await fetch(ASK_URL,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+await u.getIdToken()},body:JSON.stringify({q,hl,talks})});
     j=await r.json();if(!r.ok){const e=j&&j.error;
       const why=e==="free_used"?"You've used your 20 free Seek searches. More will be available to buy soon.":e==="monthly"?"Seek is paused until next month.":e==="signin"?"Please sign in again to use Seek.":"Seek isn't available right now.";
-      el.innerHTML=plain+`<p class="sknote">${why}</p>`;return;}}
-  catch(e){el.innerHTML=plain;return;}
+      el.innerHTML=skPlain(plain)+`<p class="sknote">${why}</p>`;return;}}
+  catch(e){el.innerHTML=skPlain(plain)||`<p class="sknote">Seek needs an internet connection.</p>`;return;}
   const out=[];
   (j.highlights||[]).forEach(h=>{const r=hrefs[h.i];if(!r)return;out.push(skCard(["h","Your highlight"],refLabel(r),esc(vtext(r,verOf(PR(r).b))||""),h.why,`data-goto='{"type":"verse","ref":"${r}"}'`));});
   for(const v of (j.verses||[])){const lab=`${v.book} ${v.chapter}:${v.verse}`,p=parseRef(lab);
@@ -199,7 +200,7 @@ function renderHome(){
 let PENDING=null;
 function tryIt(k){const T={term:["dan",1,{type:"term",key:"babylon"},null],orig:["mat",5,{type:"term",key:"teleios"},["term","Original"]],history:["dan",3,{type:"history"},["history","History"]],verse:["dan",1,{type:"verse",ref:"dan.1:8"},["verse","Talks"]]}[k];
   if(!T)return;if(T[3])TAB[T[3][0]]=T[3][1];else TAB.term="Definition";PENDING=T[2];const h=hashFor(T[0],T[1]);if(location.hash===h)route();else location.hash=h;}
-function toggleSearch(force){const el=$("#hsearch");const show=force!==undefined?force:el.hidden;el.hidden=!show;if(show){const q=$("#hq");q.value="";$("#hres").innerHTML=askIntro();$("#hres").hidden=false;q.focus();}}
+function toggleSearch(force){const el=$("#hsearch");const show=force!==undefined?force:el.hidden;el.hidden=!show;const tp=document.querySelector("header.top");if(tp)tp.classList.toggle("searching",show);if(show){const q=$("#hq");q.value="";$("#hres").innerHTML=askIntro();$("#hres").hidden=false;q.focus();}}
 document.addEventListener("input",e=>{if(e.target.id==="hq"){const h=e.target.value.trim()?doSearch(e.target.value):askIntro();$("#hres").innerHTML=h;$("#hres").hidden=!h;}});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#hsearch").hidden)toggleSearch(false);if(e.key==="Enter"&&e.target.id==="hq"){e.target.blur();if(!parseRef(e.target.value)&&e.target.value.trim().split(/\s+/).length>=3)askAI(e.target.value);}});
 document.addEventListener("click",e=>{const b=e.target.closest("[data-try],[data-search]");

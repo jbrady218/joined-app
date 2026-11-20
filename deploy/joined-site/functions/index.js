@@ -54,6 +54,7 @@ The person describes an idea, story, or feeling in their own words. Return:
 - talks: indexes (i) from the TALKS list that fit. Use [] if none fit.
 - why: one short plain sentence each, in your own words. Do not quote scripture text; the app shows the real text.
 - note: one short sentence, or "" if nothing to add.
+If the person asks about a specific talk, speaker or lesson, use what you actually know about it to suggest the scriptures it quotes or relates to. If you do not recognize the talk or speaker, give no guesses: leave verses empty and set note to ask for the talk's title or a sentence about what it said.
 Be accurate and doctrinally careful. If the request is not about scripture, faith, or gospel study, return empty lists and a polite note.`;
 exports.askSearch=onRequest({cors:true,region:"us-central1",memory:"256MiB",timeoutSeconds:60,secrets:[ANTHROPIC_API_KEY]},async(req,res)=>{
   if(req.method!=="POST"){res.status(405).json({error:"POST only"});return;}
@@ -75,10 +76,10 @@ exports.askSearch=onRequest({cors:true,region:"us-central1",memory:"256MiB",time
     t.set(mRef,{n:mn+1},{merge:true});});}
   catch(e){const m=e.message;res.status(429).json({error:m==="free_used"||m==="monthly"?m:"busy"});return;}
   const user=`THEIR HIGHLIGHTS:\n${hl.map((x,i)=>i+". "+x).join("\n")||"(none)"}\n\nTALKS:\n${talks.map((x,i)=>i+". "+x).join("\n")||"(none)"}\n\nWHAT THEY'RE LOOKING FOR:\n${q}`;
-  try{const client=new Anthropic({apiKey:ANTHROPIC_API_KEY.value()});
+  try{const client=new Anthropic({apiKey:String(ANTHROPIC_API_KEY.value()).replace(/\s+/g,"")}); // strip any stray spaces or line breaks from the pasted key
     const r=await client.messages.create({model:"claude-haiku-5-5",max_tokens:4000,system:ASK_SYSTEM,
       output_config:{effort:"low",format:{type:"json_schema",schema:ASK_SCHEMA}},messages:[{role:"user",content:user}]});
     const txt=(r.content.find(c=>c.type==="text")||{}).text;
     if(r.stop_reason==="refusal"||!txt){res.json({verses:[],highlights:[],talks:[],note:"Sorry, I couldn't help with that one."});return;}
     res.json(Object.assign(JSON.parse(txt),{left}));}
-  catch(e){console.error("askSearch",e&&e.message);res.status(502).json({error:"ai"});}});
+  catch(e){console.error("askSearch",e&&e.status,e&&e.name,String(e&&e.message||"").slice(0,200).replace(/sk-[A-Za-z0-9_-]+/g,"[key]"));res.status(502).json({error:"ai"});}});
