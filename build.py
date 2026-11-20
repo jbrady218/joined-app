@@ -10,7 +10,7 @@ body='''
 </header>
 <div id="hsearch" class="hsearch" hidden role="dialog" aria-label="Seek"><div class="hs-in">
   <div class="hs-top"><span class="sk-badge sm"><svg class="skico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15.6 8.4l-2.1 5.1-5.1 2.1 2.1-5.1z"/></svg></span><b>Seek</b><button class="btn" data-search>Close</button></div>
-  <div class="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input id="hq" type="search" placeholder="Describe it, or type a verse or word" enterkeyhint="search" autocomplete="off" aria-label="Search or Seek"><button class="btn seekbtn" data-seek aria-label="Seek: find by meaning"><img class="sk-mini" src="__ICON__" alt=""><span>Seek</span></button></div>
+  <div class="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><textarea id="hq" rows="1" placeholder="Describe it, or type a verse or word" enterkeyhint="search" autocomplete="off" autocapitalize="sentences" aria-label="Search or Seek"></textarea><button class="btn seekbtn" data-seek aria-label="Seek: find by meaning"><img class="sk-mini" src="__ICON__" alt=""><span>Seek</span></button></div>
   <div id="hres" class="sresults" hidden></div></div></div>
 <nav class="bnav" id="bnav" aria-label="Main"><div class="bnav-in">
   <button class="nv" data-tab="home" data-home><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7"/><path d="M6 10v10h12V10"/><path d="M10 20v-6h4v6"/></svg><span>Home</span></button>

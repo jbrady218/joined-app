@@ -204,12 +204,14 @@ function renderStudy(){const all=recentItems(200);
 let PENDING=null;
 function tryIt(k){const T={term:["dan",1,{type:"term",key:"babylon"},null],orig:["mat",5,{type:"term",key:"teleios"},["term","Original"]],history:["dan",3,{type:"history"},["history","History"]],verse:["dan",1,{type:"verse",ref:"dan.1:8"},["verse","Talks"]]}[k];
   if(!T)return;if(T[3])TAB[T[3][0]]=T[3][1];else TAB.term="Definition";PENDING=T[2];const h=hashFor(T[0],T[1]);if(location.hash===h)route();else location.hash=h;}
-function toggleSearch(force){const el=$("#hsearch");const show=force!==undefined?force:el.hidden;el.hidden=!show;document.body.classList.toggle("sheet-open",show);if(show){const q=$("#hq");q.value="";$("#hres").innerHTML=askIntro();$("#hres").hidden=false;q.focus();}}
-document.addEventListener("input",e=>{if(e.target.id==="hq"){const h=e.target.value.trim()?doSearch(e.target.value):askIntro();$("#hres").innerHTML=h;$("#hres").hidden=!h;}});
-document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#hsearch").hidden)toggleSearch(false);if(e.key==="Enter"&&e.target.id==="hq"){e.target.blur();if(!parseRef(e.target.value)&&e.target.value.trim().split(/\s+/).length>=3)askAI(e.target.value);}});
+function hqFit(){const t=$("#hq");if(!t)return;t.style.height="auto";const cs=getComputedStyle(t),lh=parseFloat(cs.lineHeight)||24,pad=parseFloat(cs.paddingTop)+parseFloat(cs.paddingBottom),max=lh*4+pad;t.style.height=Math.min(t.scrollHeight,max)+"px";t.style.overflowY=t.scrollHeight>max?"auto":"hidden";}
+window.addEventListener("resize",()=>{if(!$("#hsearch").hidden)hqFit();});
+function toggleSearch(force){const el=$("#hsearch");const show=force!==undefined?force:el.hidden;el.hidden=!show;document.body.classList.toggle("sheet-open",show);if(show){const q=$("#hq");q.value="";hqFit();$("#hres").innerHTML=askIntro();$("#hres").hidden=false;q.focus();}}
+document.addEventListener("input",e=>{if(e.target.id==="hq"){hqFit();const h=e.target.value.trim()?doSearch(e.target.value):askIntro();$("#hres").innerHTML=h;$("#hres").hidden=!h;}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#hsearch").hidden)toggleSearch(false);if(e.key==="Enter"&&e.target.id==="hq"&&!e.shiftKey){e.preventDefault();e.target.blur();if(!parseRef(e.target.value)&&e.target.value.trim().split(/\s+/).length>=3)askAI(e.target.value);}});
 document.addEventListener("click",e=>{const b=e.target.closest("[data-try],[data-search]");
   if(e.target.closest("[data-seek]")){const v=$("#hq").value;if(v.trim().length>=3)askAI(v);else{$("#hq").placeholder="Describe what you're looking for";$("#hq").focus();}return;}
-  const ax=e.target.closest("[data-askex]");if(ax){$("#hq").value=ax.dataset.askex;askAI(ax.dataset.askex);return;}
+  const ax=e.target.closest("[data-askex]");if(ax){$("#hq").value=ax.dataset.askex;hqFit();askAI(ax.dataset.askex);return;}
   if(e.target.closest("#hres .sres, #hres button.skr"))setTimeout(()=>toggleSearch(false),0);
   if(!b)return;const d=b.dataset;
   if(d.try)tryIt(d.try);

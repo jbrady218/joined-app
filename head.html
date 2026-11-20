@@ -415,7 +415,7 @@ mark.mk{color:inherit;border-radius:2px;padding:1px 0;box-decoration-break:clone
 .search{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:0 14px;margin-top:6px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
 .search:focus-within{border-color:var(--accent)}
 .search svg{width:20px;height:20px;fill:none;stroke:var(--muted);stroke-width:2;stroke-linecap:round;flex:none}
-.search input{flex:1;min-width:0;border:0;background:none;padding:13px 0;font-size:16px;outline:none}
+.search input,.search textarea{flex:1;min-width:0;border:0;background:none;padding:13px 0;font-size:16px;outline:none}
 .sresults[hidden]{display:none}
 .sresults{display:flex;flex-direction:column;gap:6px;max-height:420px;overflow:auto;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px}
 .search .seekbtn{background:linear-gradient(180deg,#ecc65f,#cf9d2b);color:#10284a;border:1px solid #b98a22;font-weight:700;display:inline-flex;align-items:center;gap:6px;flex:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 1px 3px rgba(0,0,0,.18)}
@@ -665,7 +665,8 @@ a.cover{text-decoration:none;min-height:0;aspect-ratio:2/3}
 .hs-in{max-width:680px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:12px}
 .hs-top{display:flex;align-items:center;gap:10px;padding:6px 0}.hs-top b{font-family:var(--serif);font-size:26px;color:var(--fg);margin-right:auto;font-weight:600}
 .hsearch .search{margin:0}.hsearch .search .btn{flex:none}
-.hsearch .search input{font-size:17px}
+.hsearch .search{align-items:flex-start}.hsearch .search>svg{margin-top:14px}.hsearch .search .seekbtn{margin-top:6px;margin-bottom:6px}
+.hsearch .search textarea{font-size:17px;line-height:1.4;resize:none;overflow-y:auto;height:auto;max-height:calc(4 * 1.4em + 26px);display:block}
 .hsearch .sresults{max-height:none;overflow:visible;border:0;background:none;padding:0;gap:10px}
 body.sheet-open{overflow:hidden}
 .h4-acts{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:22px}
