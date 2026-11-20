@@ -1,0 +1,14 @@
+# Read-only: prints the most recent log lines of the Seek (askSearch) function so problems can be diagnosed.
+# Run by hand from the Actions tab. Uses the same FIREBASE_SERVICE_ACCOUNT secret as the deploy.
+# Anything that looks like an API key is hidden in the output (this repository is public).
+name: Show Seek logs
+on: workflow_dispatch
+jobs:
+  logs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: google-github-actions/auth@v2
+        with: {credentials_json: "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}"}
+      - name: Recent askSearch log lines
+        run: |
+          gcloud logging read 'resource.labels.service_name="asksearch"' --project joined-3adda --limit 25 --freshness 1d --format 'value(timestamp,severity,textPayload,httpRequest.status)' 2>&1 | sed -E 's/sk-[A-Za-z0-9_-]+/[key]/g; s/[A-Za-z0-9_-]{40,}/[hidden]/g' || true
