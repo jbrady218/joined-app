@@ -145,11 +145,18 @@ async function askAI(q){const el=$("#hres");q=q.trim();if(q.length<3)return;el.h
   catch(e){el.innerHTML=skPlain(plain)||`<p class="sknote">Seek needs an internet connection.</p>`;return;}
   const out=[];
   (j.highlights||[]).forEach(h=>{const r=hrefs[h.i];if(!r)return;out.push(skCard(["h","Your highlight"],refLabel(r),esc(vtext(r,verOf(PR(r).b))||""),h.why,`data-goto='{"type":"verse","ref":"${r}"}'`));});
-  for(const v of (j.verses||[])){const lab=`${v.book} ${v.chapter}:${v.verse}`,p=parseRef(lab);
-    if(p&&p.b&&BOOKS[p.b]&&BOOKS[p.b].chs.includes(p.c)&&await ensureText(p.b)&&p.v&&p.v<=vcount(p.b,p.c)){const r=MR(p.b,p.c,p.v);
-      if(hrefs.includes(r)&&(j.highlights||[]).some(h=>hrefs[h.i]===r))continue;
-      out.push(skCard(["v","Verse"],refLabel(r),esc(vtext(r,verOf(p.b))),v.why,`data-goto='{"type":"verse","ref":"${r}"}'`));}
-    else out.push(skCard(["n","Not in Joined yet"],esc(lab),"",v.why,"","div"));}
+  const KL={direct:["Direct","Says it plainly"],principle:["Related","Supporting principle"],interpretive:["Interpretive","A connection some see differently"]},seen=new Set();let lastKind="";
+  const vs=(j.verses||[]).slice().sort((x,y)=>["direct","principle","interpretive"].indexOf(x.kind)-["direct","principle","interpretive"].indexOf(y.kind));
+  for(const v of vs){const kd=KL[v.kind]?v.kind:"principle",lab=`${v.book} ${v.chapter}:${v.verse}`,p=parseRef(lab);
+    let card="";
+    if(p&&p.b&&BOOKS[p.b]&&BOOKS[p.b].chs.includes(p.c)&&await ensureText(p.b)){
+      if(p.v&&p.v<=vcount(p.b,p.c)){const r=MR(p.b,p.c,p.v);if(seen.has(r))continue;seen.add(r);
+        if(hrefs.includes(r)&&(j.highlights||[]).some(h=>hrefs[h.i]===r))continue;
+        card=skCard(["v","Verse"],refLabel(r),esc(vtext(r,verOf(p.b))),v.why,`data-goto='{"type":"verse","ref":"${r}"}'`);}
+      else card=skCard(["v","Chapter"],esc(chapLabel(p.b,p.c)),"",v.why,`href="${hashFor(p.b,p.c)}"`,"a");}
+    else continue; // never show a reference the app can't open
+    if(kd!==lastKind){lastKind=kd;out.push(`<p class="skgrp"><b>${KL[kd][0]}</b> <span>${KL[kd][1]}</span></p>`);}
+    out.push(card);}
   (j.talks||[]).forEach(t=>{const T=TALKS[t.i];if(!T)return;out.push(skCard(["t","Talk"],`${esc(T.sp)} · ${esc(T.d)}`,esc(T.t),t.why,`href="${T.u}" target="_blank" rel="noopener"`,"a"));});
   if(typeof j.left==="number"&&j.left>=0&&j.left<=10)out.push(`<p class="skleft">${j.left===0?"That was your last free Seek search.":j.left+" free Seek search"+(j.left===1?"":"es")+" left"}</p>`);
   if(j.note)out.push(`<p class="sknote">${esc(j.note)}</p>`);

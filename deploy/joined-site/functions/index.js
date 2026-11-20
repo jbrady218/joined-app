@@ -42,14 +42,19 @@ const FREE_SEEKS=20,MONTHLY_TOTAL=10000;
 const UNLIMITED=new Set(["1d569d08c75bde40719a229539f0d55434786f67e0cb93c87f2bd1d7882bc6c6"]);
 const sha=x=>require("crypto").createHash("sha256").update(String(x||"").trim().toLowerCase()).digest("hex");
 const ASK_SCHEMA={type:"object",additionalProperties:false,required:["verses","highlights","talks","note"],properties:{
-  verses:{type:"array",items:{type:"object",additionalProperties:false,required:["book","chapter","verse","why"],properties:{
-    book:{type:"string"},chapter:{type:"integer"},verse:{type:"integer"},why:{type:"string"}}}},
+  verses:{type:"array",items:{type:"object",additionalProperties:false,required:["book","chapter","verse","kind","why"],properties:{
+    book:{type:"string"},chapter:{type:"integer"},verse:{type:"integer"},kind:{type:"string",enum:["direct","principle","interpretive"]},why:{type:"string"}}}},
   highlights:{type:"array",items:{type:"object",additionalProperties:false,required:["i","why"],properties:{i:{type:"integer"},why:{type:"string"}}}},
   talks:{type:"array",items:{type:"object",additionalProperties:false,required:["i","why"],properties:{i:{type:"integer"},why:{type:"string"}}}},
   note:{type:"string"}}};
 const ASK_SYSTEM=`You help members of The Church of Jesus Christ of Latter-day Saints find scriptures, talks, and their own highlighted verses by meaning.
 The person describes an idea, story, or feeling in their own words. Return:
-- verses: up to 6 of the most fitting verses from the KJV Bible, Book of Mormon, Doctrine and Covenants, or Pearl of Great Price. Use standard book names (e.g. "1 Nephi", "Matthew", "Doctrine and Covenants", "Daniel"). Only give references you are sure of. Never invent a reference.
+- verses: up to 8 verses from the KJV Bible, Book of Mormon, Doctrine and Covenants, or Pearl of Great Price. Use standard book names (e.g. "1 Nephi", "Matthew", "Doctrine and Covenants", "Joseph Smith—History"). Only give references you are sure of, with the exact chapter and verse. Never invent a reference.
+  Give each verse a kind and list them in this order, strongest first:
+  "direct": the verse itself plainly states the teaching or tells the story the person asked about. Always put the most direct evidence first, even if a looser verse is more famous.
+  "principle": a related doctrine or principle that supports the idea but does not state it outright.
+  "interpretive": a connection that depends on interpretation or that members disagree about. Use sparingly, and only when it truly helps.
+  If the question sets two ideas side by side (for example faith and works), include direct verses that speak to each side. Prefer a few verses that truly fit over many that merely share a word.
 - highlights: indexes (i) from THEIR HIGHLIGHTS list that match. If they say they highlighted or saw something, look here first. Use [] if none fit.
 - talks: indexes (i) from the TALKS list that fit. Use [] if none fit.
 - why: one short plain sentence each, in your own words. Do not quote scripture text; the app shows the real text.
