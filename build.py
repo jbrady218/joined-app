@@ -9,7 +9,7 @@ body='''
   <button class="notes-btn icon-btn" data-search aria-label="Search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><span>Search</span></button>
   <button class="notes-btn icon-btn acct-btn" id="acctbtn" data-acct aria-label="Sign in"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg><span id="acctlbl">Sign in</span></button>
 </div>
-<div id="hsearch" class="hsearch" hidden><div class="hs-in"><div class="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input id="hq" type="search" placeholder="Search, or describe what you need" autocomplete="off" aria-label="Search"><button class="btn" data-search>Close</button></div><div id="hres" class="sresults" hidden></div></div></div></header>
+<div id="hsearch" class="hsearch" hidden><div class="hs-in"><div class="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input id="hq" type="search" placeholder="Search a verse or word" enterkeyhint="search" autocomplete="off" aria-label="Search"><button class="btn seekbtn" data-seek>Seek</button><button class="btn" data-search>Close</button></div><div id="hres" class="sresults" hidden></div></div></div></header>
 <div class="wrap"><article id="reader"></article><aside id="panel" aria-label="Study panel"><div class="panel-in" id="panelIn"></div></aside></div>
 <script>const TEXTS=__TEXTS__;const LOGO_MARK="__MARK__";</script>
 <script>__GLOSS__</script>

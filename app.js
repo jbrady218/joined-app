@@ -118,21 +118,21 @@ function doSearch(q){q=q.trim();const out=[];if(!q)return "";
 // "Ask" search (AI). The server function suggests references and picks from your highlights and the talk list;
 // the app shows the real verse text from its own copy. Signed-in only, with daily and monthly limits on the server.
 const ASK_EX=["A verse about trusting God even when He doesn't take the trial away","The verse I highlighted where Nephi went into Jerusalem not knowing what to do","A talk about feeling alone"];
-const askIntro=()=>`<div class="askintro"><p>Type a verse (1 Nephi 3:7), a word or name, or describe what you remember, like a story, an idea or a verse you highlighted. Then tap <b>Search</b> on your keyboard.</p><p class="muted">Try:</p>${ASK_EX.map(x=>`<button class="sres sask" data-askex="${esc(x)}"><span class="rt">“${esc(x)}”</span></button>`).join("")}</div>`;
+const askIntro=()=>`<div class="seekpanel"><div class="seekhead"><span class="seekbadge">Seek · AI</span><span class="seekref">“Seek, and ye shall find” (Matthew 7:7)</span></div><p><b>Don't remember the exact words?</b> Describe it the way you'd tell a friend, then tap <b>Seek</b>. It finds matching verses, verses you've highlighted, and Conference talks.</p><p class="muted">Try one:</p>${ASK_EX.map(x=>`<button class="sres sask" data-askex="${esc(x)}"><span class="rt">“${esc(x)}”</span></button>`).join("")}<p class="muted seekfine">Seek uses AI. Always read the verse in context.</p></div>`;
 const ASK_URL="https://us-central1-joined-3adda.cloudfunctions.net/askSearch";
 async function askAI(q){const el=$("#hres");q=q.trim();if(q.length<3)return;el.hidden=false;
   const msg=t=>{el.innerHTML=`<p class="muted" style="padding:8px 2px">${t}</p>`;};
   const u=typeof fbAuth!=="undefined"&&fbAuth&&fbAuth.currentUser;
   const plain=doSearch(q);
-  if(!u){el.innerHTML=plain+`<p class="muted" style="padding:6px 2px">Sign in to also search by description.</p>`;return;}
-  msg("Searching…");
+  if(!u){el.innerHTML=plain+`<p class="muted" style="padding:6px 2px">Sign in to use Seek.</p>`;return;}
+  msg("Seeking…");
   const hrefs=[...new Set([...Object.keys(S.hl).sort((a,b)=>((S.hlt||{})[b]||0)-((S.hlt||{})[a]||0)),...(S.marks||[]).map(m=>m.ref)])].filter(r=>BOOKS[PR(r).b]).slice(0,200);
   await Promise.all([...new Set(hrefs.map(r=>PR(r).b))].map(ensureText));
   const hl=hrefs.map(r=>refLabel(r)+": "+(vtext(r,verOf(PR(r).b))||"").slice(0,180));
   const talks=TALKS.map(t=>`${t.t} (${t.sp}, ${t.d})`);
   let j;try{const r=await fetch(ASK_URL,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+await u.getIdToken()},body:JSON.stringify({q,hl,talks})});
     j=await r.json();if(!r.ok){const e=j&&j.error;
-      const why=e==="daily"?"You've used today's description searches. They reset tomorrow.":e==="monthly"?"Description search is paused until next month.":e==="signin"?"Please sign in again to search by description.":"Description search isn't available right now.";
+      const why=e==="daily"?"You've used today's Seek searches. They reset tomorrow.":e==="monthly"?"Seek is paused until next month.":e==="signin"?"Please sign in again to use Seek.":"Seek isn't available right now.";
       el.innerHTML=plain+`<p class="muted" style="padding:6px 2px">${why}</p>`;return;}}
   catch(e){el.innerHTML=plain;return;}
   const out=[],why=w=>w?`<span class="rt sawhy">${esc(w)}</span>`:"";
@@ -145,7 +145,7 @@ async function askAI(q){const el=$("#hres");q=q.trim();if(q.length<3)return;el.h
   (j.talks||[]).forEach(t=>{const T=TALKS[t.i];if(!T)return;out.push(`<a class="sres" href="${T.u}" target="_blank" rel="noopener"><span class="rk">Talk · ${esc(T.sp)} · ${esc(T.d)}</span><strong>${esc(T.t)}</strong>${why(t.why)}</a>`);});
   if(j.note)out.push(`<p class="muted" style="padding:4px 2px">${esc(j.note)}</p>`);
   const words=/Nothing found for/.test(plain)?"":plain;
-  el.innerHTML=out.length||words?out.join("")+words:`<p class="muted" style="padding:8px 2px">Nothing found for that. Try describing it another way.</p>`;}
+  el.innerHTML=out.length||words?(out.length?`<div class="seekhead"><span class="seekbadge">Seek · AI</span><span class="seekref">for “${esc(q)}”</span></div>`:"")+out.join("")+words:`<p class="muted" style="padding:8px 2px">Nothing found for that. Try describing it another way.</p>`;}
 const TOPICS=[["Faith in Jesus Christ","Trusting Him enough to act"],["Repentance","Turning back to God"],["The Atonement of Jesus Christ","His power to save and heal"],["Hope","An anchor to the soul"],["Prayer","Talking with Heavenly Father"],["Charity","The pure love of Christ"],["Forgiveness","Receiving it and giving it"],["Grace","Help beyond our own strength"],["Covenants","Promises that bind us to God"],["The Holy Ghost","Comfort, warning and witness"],["Personal Revelation","Hearing Him for yourself"],["Obedience","Choosing His way"],["Trials and Adversity","When the furnace is hot"],["Peace","Peace in a troubled world"],["Gratitude","Seeing His hand"],["Service","Ministering as He did"],["Temples","His holy house"],["Families","Eternal relationships"],["Scripture Study","Feasting on the word"],["Testimony","Knowing for yourself"]];
 const VOLUMES=[
  {id:"ot",n:"Old Testament",books:"Genesis|Exodus|Leviticus|Numbers|Deuteronomy|Joshua|Judges|Ruth|1 Samuel|2 Samuel|1 Kings|2 Kings|1 Chronicles|2 Chronicles|Ezra|Nehemiah|Esther|Job|Psalms|Proverbs|Ecclesiastes|Song of Solomon|Isaiah|Jeremiah|Lamentations|Ezekiel|Daniel|Hosea|Joel|Amos|Obadiah|Jonah|Micah|Nahum|Habakkuk|Zephaniah|Haggai|Zechariah|Malachi"},
@@ -193,8 +193,9 @@ function tryIt(k){const T={term:["dan",1,{type:"term",key:"babylon"},null],orig:
   if(!T)return;if(T[3])TAB[T[3][0]]=T[3][1];else TAB.term="Definition";PENDING=T[2];const h=hashFor(T[0],T[1]);if(location.hash===h)route();else location.hash=h;}
 function toggleSearch(force){const el=$("#hsearch");const show=force!==undefined?force:el.hidden;el.hidden=!show;if(show){const q=$("#hq");q.value="";$("#hres").innerHTML=askIntro();$("#hres").hidden=false;q.focus();}}
 document.addEventListener("input",e=>{if(e.target.id==="hq"){const h=e.target.value.trim()?doSearch(e.target.value):askIntro();$("#hres").innerHTML=h;$("#hres").hidden=!h;}});
-document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#hsearch").hidden)toggleSearch(false);if(e.key==="Enter"&&e.target.id==="hq"&&!parseRef(e.target.value)&&e.target.value.trim().split(/\s+/).length>=3)askAI(e.target.value);});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#hsearch").hidden)toggleSearch(false);if(e.key==="Enter"&&e.target.id==="hq"){e.target.blur();if(!parseRef(e.target.value)&&e.target.value.trim().split(/\s+/).length>=3)askAI(e.target.value);}});
 document.addEventListener("click",e=>{const b=e.target.closest("[data-try],[data-search]");
+  if(e.target.closest("[data-seek]")){const v=$("#hq").value;if(v.trim().length>=3)askAI(v);else{$("#hq").placeholder="Describe what you're looking for";$("#hq").focus();}return;}
   const ax=e.target.closest("[data-askex]");if(ax){$("#hq").value=ax.dataset.askex;askAI(ax.dataset.askex);return;}
   if(e.target.closest("#hres .sres"))setTimeout(()=>toggleSearch(false),0);
   if(!b)return;const d=b.dataset;
