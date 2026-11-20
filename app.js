@@ -177,7 +177,7 @@ function renderHome(){
   $("#reader").innerHTML=`<div class="home4">${famButton()}
   <section class="hero4"><img class="h4-mark" src="${LOGO_MARK}" alt="Joined logo: a bundle of sticks bound together over an open book">
     <h1 class="h4-word">Joined</h1><span class="h4-orn" aria-hidden="true"></span><p class="h4-tag">“They shall become one in thine hand.”</p>
-    <div class="h4-acts"><button class="btn h4-tour" data-tour>How to use Joined</button><button class="btn h4-ghost h4-seek" data-search><img class="sk-mini" src="${LOGO_MARK}" alt=""><span>Seek</span></button></div></section>
+    <div class="h4-acts"><button class="btn h4-tour" data-tour>How to use Joined</button></div></section>
 
   <section class="today4">
     <a class="t4row" href="${hashFor(lb,lc)}"><span class="t4-ico" aria-hidden="true">${IC.read}</span><div class="t4-txt"><span class="t4-eye">Resume</span><strong>${chapLabel(lb,lc)}</strong><span>${esc(CHAPTERS[CK(lb,lc)].title)}</span></div><span class="arr" aria-hidden="true">→</span></a>

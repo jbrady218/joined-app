@@ -422,7 +422,7 @@ mark.mk{color:inherit;border-radius:2px;padding:1px 0;box-decoration-break:clone
 .sk-mini{width:26px;height:26px;border-radius:7px;display:block;flex:none}
 .top .notes-btn.seek-top{background:linear-gradient(180deg,#ecc65f,#cf9d2b);color:#10284a;border:1px solid #b98a22;font-weight:700;display:inline-flex;align-items:center;gap:8px;padding:6px 18px 6px 8px;box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 1px 3px rgba(0,0,0,.18)}
 .top .seek-top .sk-mini{width:28px;height:28px}
-.h4-seek{display:inline-flex;align-items:center;gap:8px}.h4-seek .sk-mini{width:22px;height:22px;border-radius:0}
+
 .sk-badge{display:grid;place-items:center;width:46px;height:46px;border-radius:50%;background:radial-gradient(circle at 30% 25%,#f6d982,#c9972a);color:#10284a;flex:none;box-shadow:0 2px 8px rgba(0,0,0,.3)}
 .sk-badge .skico{width:26px;height:26px;fill:rgba(16,40,74,.16);stroke:currentColor;stroke-width:1.8;stroke-linejoin:round;stroke-linecap:round}
 .sk-badge.sm{width:26px;height:26px;box-shadow:none}.sk-badge.sm .skico{width:16px;height:16px}
@@ -5437,7 +5437,7 @@ function renderHome(){
   $("#reader").innerHTML=`<div class="home4">${famButton()}
   <section class="hero4"><img class="h4-mark" src="${LOGO_MARK}" alt="Joined logo: a bundle of sticks bound together over an open book">
     <h1 class="h4-word">Joined</h1><span class="h4-orn" aria-hidden="true"></span><p class="h4-tag">“They shall become one in thine hand.”</p>
-    <div class="h4-acts"><button class="btn h4-tour" data-tour>How to use Joined</button><button class="btn h4-ghost h4-seek" data-search><img class="sk-mini" src="${LOGO_MARK}" alt=""><span>Seek</span></button></div></section>
+    <div class="h4-acts"><button class="btn h4-tour" data-tour>How to use Joined</button></div></section>
 
   <section class="today4">
     <a class="t4row" href="${hashFor(lb,lc)}"><span class="t4-ico" aria-hidden="true">${IC.read}</span><div class="t4-txt"><span class="t4-eye">Resume</span><strong>${chapLabel(lb,lc)}</strong><span>${esc(CHAPTERS[CK(lb,lc)].title)}</span></div><span class="arr" aria-hidden="true">→</span></a>
