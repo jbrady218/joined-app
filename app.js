@@ -84,12 +84,12 @@ const CFM=[{start:"2026-11-09",end:"2026-11-15",title:"“There Is No Other God 
 const CFM_HOME="https://www.churchofjesuschrist.org/study/manual/come-follow-me-for-home-and-church-old-testament-2026?lang=eng";
 function cfmNow(){const d=new Date();const iso=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;return CFM.find(w=>iso>=w.start&&iso<=w.end);}
 function fmtWeek(w){const m=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];const a=w.start.split("-").map(Number),b=w.end.split("-").map(Number);return `${m[a[1]-1]} ${a[2]}–${a[1]===b[1]?"":m[b[1]-1]+" "}${b[2]}`;}
-function recentItems(){const it=[];
+function recentItems(lim){const it=[];
   S.notes.forEach(n=>it.push({ts:n.ts||0,kind:"note",n}));
   (S.marks||[]).forEach(m=>{if(!PR(m.ref))return;it.push({ts:m.ts||0,kind:"mark",m,txt:vtext(m.ref,m.ver).slice(m.s,m.e)});});
   Object.entries(S.hl).forEach(([ref,col])=>it.push({ts:(S.hlt||{})[ref]||0,kind:"hl",ref,col}));
-  return it.sort((a,b)=>b.ts-a.ts).slice(0,5);}
-function recentHTML(){const it=recentItems();if(!it.length)return `<p class="muted">Highlights and notes you make will show up here.</p>`;
+  return it.sort((a,b)=>b.ts-a.ts).slice(0,lim||5);}
+function recentHTML(lim){const it=recentItems(lim);if(!it.length)return `<p class="muted">Highlights and notes you make will show up here.</p>`;
   return it.map(x=>{if(x.kind==="note"){const n=x.n,ref=n.target.type==="verse"?refLabel(n.target.ref):TERMS[n.target.key].name;
       return `<button class="ritem" data-goto='${esc(JSON.stringify(n.target))}'><span class="rk">Note · ${esc(ref)}</span><span class="rt">${esc((n.text||n.links.map(l=>l.title).join(", ")).slice(0,140))}</span></button>`;}
     if(x.kind==="mark")return `<button class="ritem" data-goto='{"type":"verse","ref":"${x.m.ref}"}'><span class="rk">Highlight · ${refLabel(x.m.ref)}</span><span class="rt"><mark class="mk mk-${x.m.color}">${esc(x.txt)}</mark></span></button>`;
@@ -170,6 +170,10 @@ function homeFoot(){return `<footer class="h-foot"><div class="foot-row"><p><str
     <button class="linkbtn" data-tour style="align-self:flex-start">How to use Joined</button>
     <details><summary>Add this site to your Home Screen</summary><p><strong>iPhone or iPad (Safari):</strong> tap Share, then <i>Add to Home Screen</i>. <strong>Android (Chrome):</strong> tap ⋮, then <i>Add to Home screen</i>. <strong>Computer:</strong> click the install icon in the address bar.</p></details>
     <p class="muted">Not an official publication of The Church of Jesus Christ of Latter-day Saints.</p></footer>`;}
+const studyLinks=()=>`<section class="hsect"><h2 class="h4-h">Study and prepare</h2><div class="links3">
+    <a class="link3" href="#topics"><span class="vol-ico">${ICO.topics}</span><div><strong>Study by topic</strong><span>Faith, repentance, hope and more: key scriptures, quotes and talks</span></div><span class="arr">→</span></a>
+    <a class="link3" href="#prepare"><span class="vol-ico">${ICO.teach}</span><div><strong>Prepare to teach or speak</strong><span>Help building a talk or a lesson</span></div><span class="arr">→</span></a>
+    <a class="link3" href="#books"><span class="vol-ico">${ICO.lesson}</span><div><strong>Your books</strong><span>Add books you own, and each verse shows where they talk about it</span></div><span class="arr">→</span></a></div></section>`;
 function renderHome(){
   let last=LAST;try{last=localStorage.getItem(KEY+"-last")||LAST;}catch(e){}
   if(!CHAPTERS[last])last="";const [lb,lcs]=(last||"dan.1").split("."),lc=+lcs;
@@ -189,14 +193,14 @@ function renderHome(){
   <section class="hsect"><div class="h-head"><h2 class="h4-h">Library</h2><span class="muted" style="font-size:13px">More books coming soon</span></div>
     <div class="shelf">${VOLUMES.map(v=>`<a class="cover" href="#vol-${v.id}"><span class="cv-in"><span class="cv-top"><span class="cv-rule" aria-hidden="true"></span><strong class="cv-title">${v.n}</strong><span class="cv-rule" aria-hidden="true"></span></span><img class="cv-emb" src="${LOGO_MARK}" alt=""></span></a>`).join("")}</div></section>
 
-  <section class="hsect"><h2 class="h4-h">Study and prepare</h2><div class="links3">
-    <a class="link3" href="#topics"><span class="vol-ico">${ICO.topics}</span><div><strong>Study by topic</strong><span>Faith, repentance, hope and more: key scriptures, quotes and talks</span></div><span class="arr">→</span></a>
-    <a class="link3" href="#prepare"><span class="vol-ico">${ICO.teach}</span><div><strong>Prepare to teach or speak</strong><span>Help building a talk or a lesson</span></div><span class="arr">→</span></a>
-    <a class="link3" href="#books"><span class="vol-ico">${ICO.lesson}</span><div><strong>Your books</strong><span>Add books you own, and each verse shows where they talk about it</span></div><span class="arr">→</span></a></div></section>
+  ${studyLinks()}
 
   ${rec.length?`<section class="hsect"><div class="h-head"><h2 class="h4-h">Your recent study</h2><a class="linkbtn" href="${hashFor(lb,lc)}" data-open="notes">All notes →</a></div><div class="recent">${recentHTML()}</div></section>`:""}
   ${homeFoot()}</div>`;
 }
+function renderStudy(){const all=recentItems(200);
+  $("#reader").innerHTML=`<div class="home4"><h1 class="h4-h study-h">Study</h1>${famButton()}${studyLinks()}
+  <section class="hsect"><div class="h-head"><h2 class="h4-h">Your highlights and notes</h2><span class="muted" style="font-size:13px">${all.length?all.length+" saved":""}</span></div><div class="recent">${recentHTML(200)}</div></section></div>`;}
 let PENDING=null;
 function tryIt(k){const T={term:["dan",1,{type:"term",key:"babylon"},null],orig:["mat",5,{type:"term",key:"teleios"},["term","Original"]],history:["dan",3,{type:"history"},["history","History"]],verse:["dan",1,{type:"verse",ref:"dan.1:8"},["verse","Talks"]]}[k];
   if(!T)return;if(T[3])TAB[T[3][0]]=T[3][1];else TAB.term="Definition";PENDING=T[2];const h=hashFor(T[0],T[1]);if(location.hash===h)route();else location.hash=h;}
@@ -240,10 +244,10 @@ function route(){let h=location.hash;if(/^#import=/.test(h)){takeSharedLink();re
   if(m&&BOOKS[m[1]]&&BOOKS[m[1]].chs.includes(+m[2])){view="read";const nb=m[1],n=+m[2];
     if(nb!==bk||n!==ch){const keep=panelView.type==="notes"||panelView.type==="library"||(panelView.type==="verse"&&PR(panelView.ref)&&PR(panelView.ref).b===nb&&PR(panelView.ref).c===n);bk=nb;ch=n;if(!keep)panelView={type:"guide"};}
     LAST=CK(bk,ch);try{localStorage.setItem(KEY+"-last",LAST);}catch(e){}}
-  else{const vm=h.match(/^#vol-(\w+)$/),bm=h.match(/^#build-([a-z0-9]+)-(\d+)(?:~(\w+))?$/),gm=h.match(/^#build~([\w-]+)$/);view=vm?"volume":bm&&BOOKS[bm[1]]&&BOOKS[bm[1]].chs.includes(+bm[2])?"build":h==="#build"?"buildpick":gm?"buildgroup":h==="#family"?"family":h==="#books"?"books":h==="#topics"?"topics":h==="#prepare"?"prepare":"home";if(vm)volId=vm[1];if(view==="build"){buildKey=CK(bm[1],+bm[2]);buildLesson=bm[3]||null;}if(gm)buildGroup=gm[1];else LB=null;}
+  else{const vm=h.match(/^#vol-(\w+)$/),bm=h.match(/^#build-([a-z0-9]+)-(\d+)(?:~(\w+))?$/),gm=h.match(/^#build~([\w-]+)$/);view=vm?"volume":bm&&BOOKS[bm[1]]&&BOOKS[bm[1]].chs.includes(+bm[2])?"build":h==="#build"?"buildpick":gm?"buildgroup":h==="#family"?"family":h==="#study"?"study":h==="#books"?"books":h==="#topics"?"topics":h==="#prepare"?"prepare":"home";if(vm)volId=vm[1];if(view==="build"){buildKey=CK(bm[1],+bm[2]);buildLesson=bm[3]||null;}if(gm)buildGroup=gm[1];else LB=null;}
   if(PENDING&&view==="read"){panelView=PENDING;PENDING=null;}
   document.body.classList.toggle("on-home",view!=="read");renderTop();
-  if(view!=="read"){({home:renderHome,family:()=>{FAM_OFF=0;renderFamily();},books:renderBooks,topics:renderTopics,prepare:renderPrepare,volume:()=>renderVolume(volId),buildpick:renderBuildPick,buildgroup:()=>renderBuildGroup(buildGroup),build:()=>{LADD=null;LEDIT=null;renderBuild(buildKey,buildLesson);}})[view]();$("#panel").classList.remove("open");}
+  if(view!=="read"){({home:renderHome,study:renderStudy,family:()=>{FAM_OFF=0;renderFamily();},books:renderBooks,topics:renderTopics,prepare:renderPrepare,volume:()=>renderVolume(volId),buildpick:renderBuildPick,buildgroup:()=>renderBuildGroup(buildGroup),build:()=>{LADD=null;LEDIT=null;renderBuild(buildKey,buildLesson);}})[view]();$("#panel").classList.remove("open");}
   else if(!TEXTS[bk]){$("#panel").classList.remove("open");$("#reader").innerHTML=`<div class="page"><p class="muted" style="padding:48px 0;text-align:center">Loading ${esc(bname(bk))}…</p></div>`;
     const want=bk;ensureText(bk).then(ok=>{if(view!=="read"||bk!==want)return;if(ok)route();else $("#reader").innerHTML=`<div class="page"><p class="muted" style="padding:48px 0;text-align:center">Couldn’t load ${esc(bname(bk))}. Check your connection and try again.</p></div>`;});}
   else{renderReader();renderPanel();}
@@ -376,7 +380,7 @@ function renderTop(){
   document.body.classList.toggle("not-bible",!isBible(bk));
   document.querySelectorAll("[data-mode]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.mode===mode)));
   const nc=$("#ncount");if(nc)nc.textContent=S.notes.length;
-  const tab=({home:"home",read:"cont",family:"fam"})[view]||"";document.querySelectorAll(".nv[data-tab]").forEach(b=>b.classList.toggle("on",b.dataset.tab===tab));
+  const tab=({home:"home",read:"cont",family:"study",study:"study",books:"study",topics:"study",prepare:"study"})[view]||"";document.querySelectorAll(".nv[data-tab]").forEach(b=>b.classList.toggle("on",b.dataset.tab===tab));
   setBars(true);
 }
 // Bars slide away while you read downward and return when you scroll up; a double-tap on empty space toggles them.
@@ -671,8 +675,8 @@ const TOUR=[
  {t:"Seek: find it by meaning",p:["Tap the gold <b>Joined</b> button in the middle of the bottom bar.","Describe what you're looking for the way you'd tell a friend, like “the verse I highlighted where Nephi went into Jerusalem not knowing what to do.” Seek finds matching verses, your own highlights and Conference talks, and always shows the real scripture text.","You get 20 free Seek searches. Typing a verse (1 Nephi 3:7), a name or a word works for free, always."],
   m:`<div class="mk-seekq">“the verse I highlighted where Nephi went into Jerusalem…”</div>
      <div class="mk-card"><div class="mk-skmeta"><span class="mk-skk">YOUR HIGHLIGHT</span><b>1 Nephi 4:6</b></div><p>And I was led by the Spirit, not knowing beforehand the things which I should do.</p><p class="mk-skwhy">Why it fits: Nephi went in not knowing what to do.</p></div>`},
- {t:"Find your way around",p:["<b>Home:</b> your library of books and today's reading.","<b>Continue:</b> jump back to where you left off.","<b>Seek:</b> the big middle button.","<b>Come, Follow Me:</b> today's family lesson, by age.","<b>Account:</b> sign in to keep your notes, highlights and name on every device.","While you read, the bars slide away as you scroll down and return when you scroll up. Double-tap empty space to hide or show them. Swipe left or right to change chapters."],
-  m:`<div class="mk-bar">${["Home","Continue","","Come, Follow Me","Sign in"].map(n=>n?`<span>${n}</span>`:`<span class="mk-orb"><img src="${LOGO_MARK}" alt=""></span>`).join("")}</div>`}];
+ {t:"Find your way around",p:["<b>Home:</b> your library of books and today's reading.","<b>Continue:</b> jump back to where you left off.","<b>Seek:</b> the big middle button.","<b>Study:</b> your highlights and notes, study by topic, your books, help preparing a lesson or talk, and today's Come, Follow Me lesson.","<b>Account:</b> sign in to keep your notes, highlights and name on every device.","While you read, the bars slide away as you scroll down and return when you scroll up. Double-tap empty space to hide or show them. Swipe left or right to change chapters."],
+  m:`<div class="mk-bar">${["Home","Continue","","Study","Sign in"].map(n=>n?`<span>${n}</span>`:`<span class="mk-orb"><img src="${LOGO_MARK}" alt=""></span>`).join("")}</div>`}];
 let tourI=0;
 function tourHTML(){const s=TOUR[tourI],last=tourI===TOUR.length-1;
   return `<div class="tour" role="dialog" aria-modal="true" aria-labelledby="tour-t"><div class="tour-in">

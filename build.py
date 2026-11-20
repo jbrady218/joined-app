@@ -16,7 +16,7 @@ body='''
   <button class="nv" data-tab="home" data-home><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7"/><path d="M6 10v10h12V10"/><path d="M10 20v-6h4v6"/></svg><span>Home</span></button>
   <button class="nv" data-tab="cont" data-cont><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.5C5.5 4 9 4 12 6c3-2 6.5-2 9-.5V19c-2.5-1.5-6-1.5-9 .5-3-2-6.5-2-9-.5z"/><path d="M12 6v13.5"/></svg><span>Continue</span></button>
   <button class="nv nv-seek" data-search aria-label="Seek: find verses, talks and your highlights by meaning"><span class="orb"><img src="__MARK__" alt=""></span><span>Seek</span></button>
-  <a class="nv" data-tab="fam" href="#family"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><span>Come, Follow Me</span></a>
+  <a class="nv" data-tab="study" href="#study"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h11a1 1 0 011 1v16a1 1 0 01-1 1H6z"/><path d="M6 3v18M10 8h5M10 12h5"/></svg><span>Study</span></a>
   <button class="nv acct-btn" id="acctbtn" data-acct aria-label="Sign in"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg><span id="acctlbl">Sign in</span></button>
 </div></nav>
 <div class="wrap"><article id="reader"></article><aside id="panel" aria-label="Study panel"><div class="panel-in" id="panelIn"></div></aside></div>
