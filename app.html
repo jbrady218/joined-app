@@ -9276,7 +9276,7 @@ function mapSVG(m){if(m.plan)return mapFig(PLANS[m.plan](m),m);
   (m.regions||[]).forEach(k=>{const p=RG[k][1];const cx=p.reduce((a,b)=>a+b[0],0)/p.length,cy=p.reduce((a,b)=>a+b[1],0)/p.length;const c=P(cx,cy);
     const dy=Z({judah:90,chaldea:110,babylonia:-70,galilee:bk==="holy"?70:-60,judea:40,samaria:0}[k]||0);s+=`<text x="${c[0]}" y="${+c[1]+dy}" class="m-rgl" text-anchor="middle">${RG[k][0]}</text>`;});
   if(m.area){const a=AREAS[m.area],c=P(a[1],a[2]);s+=`<text x="${+c[0]+Z(20)}" y="${+c[1]+Z(90)}" class="m-rgl area" text-anchor="middle">${a[0]}</text>`;}
-  const hi=new Set(m.hi||[]);const LEFT=new Set(bk==="holy"?["nazareth","bethlehem","jerusalem","beatitudes"]:bk==="arabia"?["bountiful"]:["jerusalem","damascus","commerce","shechem","capernaum","independence"]);const DY=bk==="holy"?{capernaum:30,jericho:10,jerusalem:-6,bethlehem:30,beatitudes:-30}:{lemuel:40,farwest:-14,independence:30,liberty:40};
+  const hi=new Set(m.hi||[]);const LEFT=new Set(bk==="holy"?["nazareth","bethlehem","jerusalem","beatitudes"]:bk==="arabia"?["bountiful"]:["jerusalem","damascus","commerce","shechem","capernaum","independence","harmony","palmyra","fayette"]);const DY=bk==="holy"?{capernaum:30,jericho:10,jerusalem:-6,bethlehem:30,beatitudes:-30}:{lemuel:40,farwest:-14,independence:30,liberty:40};
   CONTEXT[bk].concat(m.hi||[]).filter((k,i,a)=>a.indexOf(k)===i).forEach(k=>{const [n,lon,lat]=PL[k],c=P(lon,lat),H=hi.has(k);
     const left=LEFT.has(k);const dx=Z(left?-16:16),anc=left?"end":"start";
     s+=H?`<circle cx="${c[0]}" cy="${c[1]}" r="${Z(34)}" class="m-ring"/><circle cx="${c[0]}" cy="${c[1]}" r="${Z(15)}" class="m-pin"/><text x="${+c[0]+dx*2.8}" y="${+c[1]+Z(-22+(DY[k]||0))}" class="m-pl hi" text-anchor="${anc}">${n}</text>`
