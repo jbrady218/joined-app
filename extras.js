@@ -69,3 +69,4 @@ function parAfter(){const k=bk+"."+ch;
   el.insertAdjacentHTML("beforeend",h);});}
 document.addEventListener("click",e=>{const b=e.target.closest("[data-par]");if(!b)return;e.stopPropagation();PAR_MODE=b.dataset.par;try{localStorage.setItem(KEY+"-par",PAR_MODE);}catch(x){}renderReader();},true);
 if(typeof view!=="undefined"&&view==="read"){renderTop();renderReader();}
+if(typeof view!=="undefined"&&(view==="scriptures"||view==="volume"))route();

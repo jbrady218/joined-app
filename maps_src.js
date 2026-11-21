@@ -1,5 +1,5 @@
-const BASES={ne:{...__NE__,img:"data:image/jpeg;base64,__NEIMG__"},us:{...__US__,img:"data:image/jpeg;base64,__USIMG__"},holy:{...__HOLY__,img:"data:image/jpeg;base64,__HOLYIMG__"},sinai:{...__SINAI__,img:"data:image/jpeg;base64,__SINAIIMG__"},arabia:{...__ARABIA__,img:"data:image/jpeg;base64,__ARABIAIMG__"}};
-const PL={jerusalem:["Jerusalem",35.235,31.778],babylon:["Babylon",44.421,32.536],carchemish:["Carchemish",38.017,36.829],damascus:["Damascus",36.29,33.51],
+const BASES={ne:{...__NE__,img:"data:image/jpeg;base64,__NEIMG__"},us:{...__US__,img:"data:image/jpeg;base64,__USIMG__"},holy:{...__HOLY__,img:"data:image/jpeg;base64,__HOLYIMG__"},sinai:{...__SINAI__,img:"data:image/jpeg;base64,__SINAIIMG__"},arabia:{...__ARABIA__,img:"data:image/jpeg;base64,__ARABIAIMG__"},east:{...__EAST__,img:"data:image/jpeg;base64,__EASTIMG__"}};
+const PL={harmony:["Harmony, PA",-75.70,41.94],palmyra:["Palmyra",-77.23,43.07],fayette:["Fayette",-76.83,42.83],hiram:["Hiram",-81.14,41.31],adam:["Adam-ondi-Ahman",-93.97,39.97],winterq:["Winter Quarters",-95.95,41.32],jerusalem:["Jerusalem",35.235,31.778],babylon:["Babylon",44.421,32.536],carchemish:["Carchemish",38.017,36.829],damascus:["Damascus",36.29,33.51],
  nineveh:["Nineveh",43.15,36.36],ur:["Ur",46.10,30.96],susa:["Susa",48.26,32.19],hamath:["Hamath",36.75,35.13],haran:["Haran",39.03,36.86],shechem:["Shechem",35.28,32.21],
  bethel:["Bethel",35.22,31.93],egypt:["Egypt",31.25,30.05],capernaum:["Capernaum",35.575,32.881],aqaba:["Gulf of Aqaba",35.0,29.53],lemuel:["Valley of Lemuel?",34.80,28.62],
  liberty:["Liberty Jail",-94.419,39.246],farwest:["Far West",-94.08,39.76],quincy:["Quincy",-91.41,39.94],commerce:["Commerce (Nauvoo)",-91.385,40.55],
@@ -8,7 +8,7 @@ const PL={jerusalem:["Jerusalem",35.235,31.778],babylon:["Babylon",44.421,32.536
  bethabara:["Bethabara (traditional site)",35.553,31.837],kursi:["Gergesa (Kursi)",35.650,32.826],tyre:["Tyre",35.195,33.271],sidon:["Sidon",35.371,33.563],
  caesareaphilippi:["Caesarea Philippi",35.694,33.248],tabor:["Mount Tabor",35.390,32.687],bethany:["Bethany",35.262,31.771],
  samaria:["Samaria",35.19,32.28],gilgal:["Gilgal",35.49,31.85],nahom:["Nahom",44.60,15.85],bountiful:["Bountiful?",53.47,16.73]};
-const CONTEXT={arabia:["jerusalem"],sinai:["jerusalem"],holy:["jerusalem","nazareth","bethlehem","jericho","capernaum"],ne:["jerusalem","damascus","babylon","nineveh"],us:["stlouis","commerce","independence"]};
+const CONTEXT={arabia:["jerusalem"],sinai:["jerusalem"],holy:["jerusalem","nazareth","bethlehem","jericho","capernaum"],ne:["jerusalem","damascus","babylon","nineveh"],us:["stlouis","commerce","independence"],east:[]};
 const RG={judah:["Judah",[[34.8,31.95],[35.42,31.95],[35.36,31.15],[34.85,31.25]]],
  babylonia:["Babylonia (Shinar)",[[43.8,33.45],[44.9,33.5],[46.3,32.3],[47.6,31.2],[47.9,30.3],[46.6,30.4],[45.6,30.9],[44.6,31.6],[43.9,32.4]]],
  chaldea:["Chaldea",[[45.0,31.95],[46.4,31.95],[47.7,31.05],[47.9,30.2],[46.4,30.3],[45.3,30.9]]],
@@ -29,8 +29,9 @@ const RIVERS={arabia:[],sinai:[["Jordan",[[35.6,32.5],[35.55,32.1],[35.55,31.75]
  us:[["Mississippi",[[-91.2,43.3],[-91.15,42.3],[-90.6,41.6],[-91.0,40.9],[-91.385,40.55],[-91.4,39.94],[-91.0,39.4],[-90.2,38.8],[-90.19,38.63],[-89.5,37.4],[-89.2,37.0],[-89.5,36.0]],[[-90.95,41.2]]],
  ["Missouri",[[-96.2,41.7],[-96.0,41.4],[-95.9,41.25],[-95.6,40.4],[-94.85,39.77],[-94.6,39.12],[-93.9,39.2],[-92.9,39.05],[-92.2,38.6],[-91.4,38.7],[-90.2,38.8]],[[-93.1,39.25]]],
  ["Ohio",[[-80.0,40.45],[-80.9,39.7],[-81.6,39.3],[-82.6,38.6],[-83.6,38.65],[-84.5,39.1],[-85.8,38.25],[-86.6,37.9],[-87.6,37.95],[-88.4,37.4],[-89.2,37.0]],[[-85.6,37.9]]]]};
-const LABELS={arabia:[["Red Sea",38.2,21.0],["ARABIA",45.5,24.0],["Arabian Sea",56.5,14.5],["Persian Gulf",51.2,27.4],["EGYPT",30.8,27.0]],sinai:[["Mediterranean Sea",33.4,32.1],["Dead Sea",35.95,31.35],["SINAI",33.8,29.6],["Red Sea",34.3,27.75],["ARABIA",36.9,28.9],["EGYPT",32.9,30.8]],holy:[["Mediterranean Sea",34.45,32.3],["Sea of Galilee",35.62,32.655],["Dead Sea",35.86,31.5],["DECAPOLIS",36.15,32.5],["PEREA (beyond Jordan)",35.95,31.95]],ne:[["Mediterranean Sea",32.0,33.0],["Persian Gulf",49.3,28.3],["Arabian Desert",40.2,30.4],["EGYPT",30.6,28.4],["ASSYRIA",43.6,37.6],["MEDIA",47.8,35.9]],
+const LABELS={east:[["LAKE MICHIGAN",-87.0,43.9],["LAKE ERIE",-81.0,42.0],["LAKE ONTARIO",-77.6,43.75],["MISSOURI",-92.6,38.4],["ILLINOIS",-89.6,39.6],["IOWA",-93.4,42.0],["INDIANA",-86.3,39.9],["OHIO",-82.8,40.0],["PENNSYLVANIA",-77.6,40.7],["NEW YORK",-75.3,42.9],["Mississippi R.",-90.7,41.9],["Missouri R.",-94.0,39.0],["Ohio R.",-84.6,38.7]],arabia:[["Red Sea",38.2,21.0],["ARABIA",45.5,24.0],["Arabian Sea",56.5,14.5],["Persian Gulf",51.2,27.4],["EGYPT",30.8,27.0]],sinai:[["Mediterranean Sea",33.4,32.1],["Dead Sea",35.95,31.35],["SINAI",33.8,29.6],["Red Sea",34.3,27.75],["ARABIA",36.9,28.9],["EGYPT",32.9,30.8]],holy:[["Mediterranean Sea",34.45,32.3],["Sea of Galilee",35.62,32.655],["Dead Sea",35.86,31.5],["DECAPOLIS",36.15,32.5],["PEREA (beyond Jordan)",35.95,31.95]],ne:[["Mediterranean Sea",32.0,33.0],["Persian Gulf",49.3,28.3],["Arabian Desert",40.2,30.4],["EGYPT",30.6,28.4],["ASSYRIA",43.6,37.6],["MEDIA",47.8,35.9]],
  us:[["MISSOURI",-92.4,38.0],["ILLINOIS",-89.4,40.4],["IOWA",-93.6,41.2],["KANSAS",-95.6,38.2]]};
+RIVERS.east=RIVERS.us;
 const BASE_OF=k=>PL[k][1]<0?"us":"ne";
 function prjB(B,lon,lat){const x=(lon+180)/360*B.N,y=(1-Math.log(Math.tan(Math.PI/4+lat*Math.PI/360))/Math.PI)/2*B.N;return [((x-B.x0)*B.s).toFixed(1),((y-B.y0)*B.s).toFixed(1)];}
 // Fit a map to the places it is about. Uses the closer Holy Land base when everything fits on it.
@@ -44,7 +45,7 @@ function mapSVG(m){if(m.plan)return mapFig(PLANS[m.plan](m),m);
   const B=BASES[bk],P=(lon,lat)=>prjB(B,lon,lat),pts=a=>a.map(p=>P(p[0],p[1]).join(" ")).join(" L");
   let vx=0,vy=0,vw=B.W,vh=B.H,z=1;
   if(fp.length){const c=fp.map(p=>P(p[0],p[1]).map(Number));let x0=Math.min(...c.map(p=>p[0])),x1=Math.max(...c.map(p=>p[0])),y0=Math.min(...c.map(p=>p[1])),y1=Math.max(...c.map(p=>p[1]));
-    const minZ=bk==="holy"?0.42:bk==="sinai"?0.5:bk==="us"?0.45:0.3;const pad=1.5;
+    const minZ=bk==="holy"?0.42:bk==="sinai"?0.5:bk==="us"?0.45:bk==="east"?0.3:0.3;const pad=1.5;
     z=Math.max(minZ,Math.min(1,Math.max((x1-x0)*pad/B.W,(y1-y0)*pad/B.H,(x1-x0+B.W*0.12)/B.W,(y1-y0+B.H*0.12)/B.H)));
     if(m.zoom)z=m.zoom;vw=B.W*z;vh=B.H*z;const cx=(x0+x1)/2,cy=(y0+y1)/2;vx=Math.max(0,Math.min(B.W-vw,cx-vw/2));vy=Math.max(0,Math.min(B.H-vh,cy-vh/2));}
   const zt=z*(bk==="holy"?0.72:bk==="sinai"?0.62:bk==="arabia"?0.62:1);
