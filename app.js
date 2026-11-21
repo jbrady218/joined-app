@@ -463,16 +463,16 @@ function renderTop(){
   document.body.classList.toggle("not-bible",!isBible(bk));
   document.querySelectorAll("[data-mode]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.mode===mode)));
   const nc=$("#ncount");if(nc)nc.textContent=S.notes.length;
-  const tab=({home:"",read:"cont",family:"study",study:"study",words:"study",books:"study",topics:"study",prepare:"study",scriptures:"scr",volume:"scr"})[view]||"";document.querySelectorAll(".nv[data-tab]").forEach(b=>b.classList.toggle("on",b.dataset.tab===tab));
+  const tab=({home:"home",read:"cont",scriptures:"scr",volume:"scr"})[view]||"";document.querySelectorAll(".nv[data-tab]").forEach(b=>b.classList.toggle("on",b.dataset.tab===tab));
   setBars(true);
 }
 // Bars slide away while you read downward and return when you scroll up; a double-tap on empty space toggles them.
 function setBars(show){document.body.classList.toggle("bars-off",!show);}
 let BAR_Y=0;window.addEventListener("scroll",()=>{if(view!=="read"||document.body.classList.contains("sheet-open"))return;const y=window.scrollY,d=y-BAR_Y;if(Math.abs(d)<10)return;BAR_Y=y;if(d>0&&y>160)setBars(false);else if(d<0)setBars(true);},{passive:true});
 let TAP={t:0,x:0,y:0};const NO_TAP="button,a,input,textarea,select,.verse,#panel,.selbar,#hsearch,#acct,#tourwrap,.bnav,.chpop,header.top,.lbar,#lbar";
-document.addEventListener("touchend",e=>{if(view!=="read"||e.target.closest(NO_TAP)||!e.changedTouches[0])return;const t=e.changedTouches[0],now=Date.now();
+document.addEventListener("touchend",e=>{if(e.target.closest(NO_TAP)||!e.changedTouches[0])return;const t=e.changedTouches[0],now=Date.now();
   if(now-TAP.t<320&&Math.abs(t.clientX-TAP.x)<30&&Math.abs(t.clientY-TAP.y)<30){setBars(document.body.classList.contains("bars-off"));TAP.t=0;TAP.last=now;}else TAP={last:TAP.last,t:now,x:t.clientX,y:t.clientY};},{passive:true});
-document.addEventListener("dblclick",e=>{if(view!=="read"||e.target.closest(NO_TAP)||Date.now()-(TAP.last||0)<700)return;setBars(document.body.classList.contains("bars-off"));});
+document.addEventListener("dblclick",e=>{if(e.target.closest(NO_TAP)||Date.now()-(TAP.last||0)<700)return;setBars(document.body.classList.contains("bars-off"));});
 function renderReader(){
   const C=CHAPTERS[CK(bk,ch)],B=BOOKS[bk],bib=isBible(bk),md=bib?mode:"std",ver=verOf(bk);const fns=[];SEEN=new Set();
   const verLabel=bib?(mode==="kjv"?"KING JAMES VERSION":mode==="web"?"WORLD ENGLISH BIBLE":"KJV · WEB"):"";

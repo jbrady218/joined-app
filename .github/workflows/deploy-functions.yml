@@ -6,7 +6,7 @@ name: Deploy Firebase functions
 on:
   push:
     branches: [main]
-    paths: ["deploy/joined-site/functions/**"]
+    paths: ["deploy/joined-site/functions/**", "deploy/joined-site/public/index.html"]
   workflow_dispatch:
     inputs:
       set_key:
@@ -41,3 +41,7 @@ jobs:
       - name: Deploy functions
         if: env.HAS_SA == 'true'
         run: cd deploy/joined-site && firebase deploy --only functions --project joined-3adda --non-interactive --force
+      - name: Deploy hosting page (first-screen shell)
+        if: env.HAS_SA == 'true'
+        continue-on-error: true
+        run: cd deploy/joined-site && firebase deploy --only hosting --project joined-3adda --non-interactive
